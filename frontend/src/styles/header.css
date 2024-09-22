@@ -1,4 +1,14 @@
 .header_wrapper {
-    background-color: red;
+    background-color: black;
     height: 10vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+.title {
+    color: white;
+    font-family: "Playfair_Display", serif;
+    font-size: xx-large;
 }

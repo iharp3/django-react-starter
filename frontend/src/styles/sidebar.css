@@ -1,5 +1,6 @@
 .sidebar_wrapper {
-    background-color: green;
-    width: 15%;
-    height: 100%; /* Ensure the sidebar takes full height */
+    background-color: rgb(83, 83, 83);
+    width: 20%;
+    height: 100%;
+    color: white;
   }

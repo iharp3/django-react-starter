@@ -1,20 +1,38 @@
 #root {
   text-align: center;
+}
 
+body {
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 .main_wrapper {
   display: flex;
   flex-direction: row;
-  height: 90vh; /* Full screen height */
+  height: 90vh; 
   justify-content: center;
   align-items: center;
 }
 
 .main_content {
-  flex-grow: 1; /* Take up remaining space */
+  flex-grow: 1; 
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center; /* Center content vertically and horizontally */
+  align-items: center; 
+  height: 100%;
+  color: white;
+}
+
+.map {
+  width: 100%;
+  height: 50%;
+  background-color: blue;
+}
+
+.tabs {
+  width: 100%;
+  height: 50%;
+  background-color: brown;
 }
