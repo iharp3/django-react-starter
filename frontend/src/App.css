@@ -24,15 +24,3 @@ body {
   height: 100%;
   color: white;
 }
-
-.map {
-  width: 100%;
-  height: 50%;
-  background-color: blue;
-}
-
-.tabs {
-  width: 100%;
-  height: 50%;
-  background-color: brown;
-}

@@ -1,6 +1,20 @@
 .sidebar_wrapper {
-    background-color: rgb(83, 83, 83);
+    background-color: rgb(241, 241, 241);
     width: 20%;
     height: 100%;
-    color: white;
-  }
+    color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.padding {
+    margin-top: 48px;
+}
+
+.hr {
+    margin-top: 6px;
+    border: 0.5px solid rgb(183, 183, 183);
+    width: 80%;
+}
