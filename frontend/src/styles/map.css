@@ -1,5 +1,9 @@
-.map_wrapper {
-    width: 100%;
-    height: 50%;
-    background-color: blue;
-  }
+.map-container {
+  position: relative;
+  /* margin-left: 390px; */
+  height: 60%;
+  width: 100%;
+  margin-left: 0px;
+
+  /* width: calc(100% - 390px); */
+}

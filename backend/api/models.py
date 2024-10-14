@@ -1,53 +1,41 @@
 from django.db import models
-from datetime import datetime
+from django.utils import timezone
 
-
-# Create your models here.
-class PlusRequest(models.Model):
-
-    a = models.IntegerField()
-    b = models.IntegerField()
-
-
-    def __str__(self):
-        return str(self.a + self.b)
-    
-AGGREGATION_CHOICES = [
-        ("mean", "mean"),
+class Query(models.Model):
+    TEMPORAL_CHOICES = (
+        ("hourly", "hourly"),
+        ("daily", "daily"),
+        ("monthly", "monthly"),
+        ("yearly", "yearly"),
+    )
+    AGG_CHOICES = (
         ("min", "min"),
         ("max", "max"),
-    ]
-SPATIAL_RESOLUTION_CHOICES = [
-    ("0.25", "0.25"),
-    ("0.5", "0.5"),
-    ("1", "1"),
-    ("2", "2"),
-]
-TEMPORAL_RESOLUTION_CHOICES = [
-    ("hour", "hour"),
-    ("day", "day"),
-    ("month", "month"),
-    ("year", "year"),
-]
+        ("mean", "mean"),
+    )
+    REQUEST_CHOICES = (
+        ("Time Series", "Time Series"),
+        ("Heat Map", "Heat Map"),
+        ("Data Download", "Data Download"),
+    )
 
-# Create your models here.
-class RasterRequest(models.Model):
-    variable = models.CharField(max_length=100)
-    # spatial
-    north = models.DecimalField(max_digits=5, decimal_places=3)
-    south = models.DecimalField(max_digits=5, decimal_places=3)
-    west = models.DecimalField(max_digits=6, decimal_places=3)
-    east = models.DecimalField(max_digits=6, decimal_places=3)
-    # spatial_resolution = models.CharField(max_length=10, choices=SPATIAL_RESOLUTION_CHOICES, default="0.25")
-    # spatial_agg_method = models.CharField(max_length=10, choices=AGGREGATION_CHOICES, default="mean")
-    # temporal
-    start_datetime = models.DateTimeField()
-    end_datetime = models.DateTimeField()
-    temporal_resolution = models.CharField(max_length=10, choices=TEMPORAL_RESOLUTION_CHOICES, default="hour")
-    temporal_agg_method = models.CharField(max_length=10, choices=AGGREGATION_CHOICES, default="mean")
-    # metadata
-    session_id = models.CharField(max_length=20)
+    VARIABLE_CHOICES = (       
+    ("2m Temperature","2m_temperature"),
+    ("Surface Pressure","surface_pressure"),
+    ("Total Precipitation","total_precipitation"),
+    )
+
+    variable = models.CharField(max_length=50, choices=VARIABLE_CHOICES, default="2m_temperature")
+    requestType = models.CharField(max_length=15, choices=REQUEST_CHOICES)
+    startDateTime = models.DateTimeField(default=timezone.now)
+    endDateTime = models.DateTimeField(default=timezone.now)
+    temporalLevel = models.CharField(max_length=10, choices=TEMPORAL_CHOICES)
+    aggLevel = models.CharField(max_length=10, choices=AGG_CHOICES)
+    north = models.DecimalField(max_digits=40, decimal_places=35)
+    east = models.DecimalField(max_digits=40, decimal_places=35)
+    south = models.DecimalField(max_digits=40, decimal_places=35)
+    west = models.DecimalField(max_digits=40, decimal_places=35)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.variable
+        return self.title

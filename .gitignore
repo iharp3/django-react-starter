@@ -162,3 +162,5 @@ cython_debug/
 #.idea/
 
 frontend/node_modules/
+backend/api/migrations/
+aweek.nc

@@ -1,9 +1,10 @@
 from rest_framework import serializers
-from .models import PlusRequest
+from .models import Query
 
 
 
-class PlusRequestSerializer(serializers.ModelSerializer):
+class QuerySeriazlier(serializers.ModelSerializer):        
     class Meta:
-        model = PlusRequest
-        fields = "__all__"
+        model = Query 
+        # fields = "__all__"
+        fields = ["id","variable","startDateTime","endDateTime","temporalLevel","north","south","east","west","created_at"]

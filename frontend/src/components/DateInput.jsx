@@ -2,13 +2,11 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import PropTypes from 'prop-types';
 import { Box } from '@mui/material';
 import utc from "dayjs/plugin/utc";
 import dayjs from 'dayjs';
 
-//import dayjs from 'dayjs';
-
-// eslint-disable-next-line react/prop-types
 const DateInput = ({date, setDate, label, sx}) => {
 
     dayjs.extend(utc);
@@ -37,6 +35,13 @@ const DateInput = ({date, setDate, label, sx}) => {
         </LocalizationProvider>
     </Box>
   );
+}
+
+DateInput.propTypes = {
+    date: PropTypes.any,
+    setDate: PropTypes.func,
+    label: PropTypes.string,
+    sx: PropTypes.object,
 }
 
 export default DateInput;

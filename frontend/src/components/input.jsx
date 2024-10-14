@@ -8,8 +8,6 @@ import Select from '@mui/material/Select';
 
 const Input = ({ val, setVal, label, options, sx, size }) => {
 
-    console.log(val);
-
     const handleChange = (event) => {
         setVal(event.target.value);
     };
@@ -21,7 +19,7 @@ const Input = ({ val, setVal, label, options, sx, size }) => {
                 <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    value={val}
+                    value={!val ? options[0] : val}
                     label={label}
                     onChange={handleChange}                    
                 >
