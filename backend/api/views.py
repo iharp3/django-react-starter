@@ -13,44 +13,6 @@ from .scripts import *
 from django.utils.dateparse import parse_datetime
 from django.utils.timezone import make_naive
 
-
-@api_view(["GET"])
-def page_one(request):    
-    poo = "2023-01-01T06:00:00.000Z"
-    start_time = "2023-01-01 00:00:00"
-    end_time = "2023-01-03 00:00:00" # Through 2023-01-07 I think
-    # Greenland
-    max_lat = 85
-    min_lat = 60
-    min_lon = -70
-    max_lon = -10
-
-    html = ret_html(
-        start_datetime=start_time,
-        end_datetime=end_time,
-        min_lat=min_lat,
-        max_lat=max_lat,
-        min_lon=min_lon,
-        max_lon=max_lon,
-    )
-    ds = slice_raster(
-        variable="2m_temperature",
-        start_datetime=start_time,
-        end_datetime=end_time,
-        time_resolution="hour",
-        time_agg_method="mean",
-        min_lat=min_lat,
-        max_lat=max_lat,
-        min_lon=min_lon,
-        max_lon=max_lon,
-    )
-
-    html_string = ds.__str__()
-
-    # ds_dict = ds.to_dict()    
-
-    return Response({"html_string": html_string})
-    # return JsonResponse(ds_dict)
 @api_view(["POST"])
 def query(request):
     print("Request for Time Seies ")
@@ -66,6 +28,7 @@ def query(request):
         endDateTime = request.data.get("endDateTime")
         temporalLevel = request.data.get("temporalLevel")
         variable = request.data.get("variable")
+        time_agg_method = request.data.get("aggLevel")
 
         start_dt = parse_datetime(startDateTime)
         end_dt = parse_datetime(endDateTime)
@@ -81,12 +44,12 @@ def query(request):
         formatted_start = start_dt.strftime("%Y-%m-%d %H:%M:%S") if start_dt else None
         formatted_end = end_dt.strftime("%Y-%m-%d %H:%M:%S") if end_dt else None
 
-        ds = slice_raster(
+        ds = get_raster(
             variable="2m_temperature",
             start_datetime=formatted_start,
             end_datetime=formatted_end,
-            time_resolution="hour",
-            time_agg_method="mean",
+            time_resolution=temporalLevel,
+            time_agg_method=time_agg_method,
             min_lat=south,
             max_lat=north,
             min_lon=west,

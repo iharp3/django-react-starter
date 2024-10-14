@@ -5,7 +5,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 
-const RadioButtons = ({label, options, val, setVal}) => {
+const RadioButtons = ({label, options, val, setVal, subLabel}) => {
 
     return (
         <FormControl sx={{}}>
@@ -13,7 +13,7 @@ const RadioButtons = ({label, options, val, setVal}) => {
             <RadioGroup
             row
             aria-labelledby={label}
-            name="row-radio-buttons-group" 
+            name={subLabel} 
             sx={{width: "400px", scale: "65%"}}
             value={val}
             onChange={setVal}
@@ -34,6 +34,7 @@ RadioButtons.propTypes = {
         PropTypes.string),
     val: PropTypes.string,
     setVal: PropTypes.func,
+    subLabel: PropTypes.string,
 }
 
 export default RadioButtons;

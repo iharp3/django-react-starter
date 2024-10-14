@@ -7,4 +7,4 @@ class QuerySeriazlier(serializers.ModelSerializer):
     class Meta:
         model = Query 
         # fields = "__all__"
-        fields = ["id","variable","startDateTime","endDateTime","temporalLevel","north","south","east","west","created_at"]
+        fields = ["id","variable","startDateTime","endDateTime","temporalLevel","north","south","east","west","created_at", "aggLevel"]

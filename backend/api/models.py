@@ -3,10 +3,10 @@ from django.utils import timezone
 
 class Query(models.Model):
     TEMPORAL_CHOICES = (
-        ("hourly", "hourly"),
-        ("daily", "daily"),
-        ("monthly", "monthly"),
-        ("yearly", "yearly"),
+        ("hour", "hour"),
+        ("day", "day"),
+        ("month", "month"),
+        ("year", "year"),
     )
     AGG_CHOICES = (
         ("min", "min"),

@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react'
 import { BoundsContext } from './util/context/BoundsContext'
 import Header from './components/header'
 import Sidebar from './components/sidebar'
-import Map from './components/Map'
+import MyMap from "./components/map"
 import Tabs from './components/tabs'
 import dayjs from 'dayjs'
 import './App.css'
@@ -13,6 +13,8 @@ function App() {
   const [startDate, setStartDate] = useState(dayjs("2023-01-01T00:00"));
   const [endDate, setEndDate] = useState(dayjs("2023-01-30T00:00"));
   const [variable, setVariable] = useState("2m Temperature");
+  const [aggLevel, setAggLevel] = useState("min");
+  const [tempLevel, setTempLevel] = useState("hour");
   const [htmlString, setHtml] = useState("");
 
   const { drawnShapeBounds, setDrawnShapeBounds } = useContext(BoundsContext);
@@ -23,7 +25,7 @@ function App() {
     variable: variable,
     startDateTime: startDate,
     endDateTime: endDate,
-    temporalLevel: "daily",
+    temporalLevel: "day",
     aggLevel: "mean",
     spatialLevel: "2.0",
     north: 84,
@@ -41,15 +43,19 @@ function App() {
       ...prev, 
       variable: variable,
       startDateTime: startDate,
-      endDateTime: endDate,      
-    }))    
-
-  }, [variable, startDate, endDate]);
+      endDateTime: endDate,  
+      aggLevel: aggLevel,
+      temporalLevel: tempLevel,    
+    }))        
+  }, [variable, startDate, endDate, aggLevel, tempLevel]);
 
   
   const handleChange = (e) => {
     let myValue;
     const { name, value } = e.target;
+    console.log("NAME/VAL", name, value);
+    console.log(e.target);
+    console.log(formData);
     // Convert the input value to a number
     if (
       name === "north" ||
@@ -181,9 +187,13 @@ function App() {
           setEndDate={setEndDate}
           formData={formData}
           handleChange={handleChange}
-          queryData={queryData}/>
+          queryData={queryData}
+          aggLevel={aggLevel}
+          setAgg={setAggLevel}
+          tempLevel={tempLevel} 
+          setTempLevel={setTempLevel}/>
         <div className="main_content">
-          <Map/>
+          <MyMap/>
           <Tabs htmlString={htmlString}/>
         </div>
       </div>

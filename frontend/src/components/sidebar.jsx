@@ -7,7 +7,7 @@ import { Button } from '@mui/material'
 import '../styles/sidebar.css'
 
 
-const Sidebar = ({
+const Sidebar = ({ //aggLevel, setAddLevel, tempLevel, setTempLevel
     variable, 
     setVariable, 
     startDate, 
@@ -16,7 +16,11 @@ const Sidebar = ({
     setEndDate, 
     formData, 
     handleChange,
-    queryData}) => {
+    queryData,
+    aggLevel,
+    setAggLevel,
+    tempLevel,
+    setTempLevel,}) => {
 
     return (
         <>
@@ -38,8 +42,8 @@ const Sidebar = ({
                     date={endDate} 
                     setDate={setEndDate}
                     label="End Date & Time"/>  
-                <RadioButtons label="Temporal Resolution" options = {["hourly", "daily", "monthly", "yearly"]} var={formData.temporalLevel} setVal={handleChange}/>  
-                <RadioButtons label="Temporal Aggregation" options = {["min", "max", "mean"]} var={formData.aggLevel} setVal={handleChange}/>  
+                <RadioButtons label="Temporal Resolution" options = {["hour", "day", "month", "year"]} var={formData.temporalLevel} setVal={handleChange} subLabel="temporalLevel"/>  
+                <RadioButtons label="Temporal Aggregation" options = {["min", "max", "mean"]} var={formData.aggLevel} setVal={handleChange} subLabel="aggLevel"/>  
                 <div className="hr"/>                         
                 <CardinalDirections formData={formData} handleChange={handleChange}/>
                 <div className="hr"/>
@@ -59,6 +63,10 @@ Sidebar.propTypes = {
     formData: PropTypes.object,
     handleChange: PropTypes.func,
     queryData: PropTypes.func,
+    aggLevel: PropTypes.string,
+    setAggLevel: PropTypes.func,
+    tempLevel: PropTypes.any,
+    setTempLevel: PropTypes.func,
 };
 
 export default Sidebar;
