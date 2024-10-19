@@ -9,25 +9,27 @@ from rest_framework.response import Response
 import rest_framework.status as status
 from datetime import datetime
 import random
-from .scripts import *
 from django.utils.dateparse import parse_datetime
 from django.utils.timezone import make_naive
 
+from .iharp_query.query import get_raster
+
+
 @api_view(["POST"])
 def query(request):
-    print("Request for Time Seies ")
+    print("Request for raster")
     serializer = QuerySeriazlier(data=request.data)
     if serializer.is_valid():
         serializer.save()
         print(request.data)
-        north = round(float(request.data.get("north")),3)
-        south = round(float(request.data.get("south")),3)
-        east = round(float(request.data.get("east")),3)
-        west = round(float(request.data.get("west")),3)
+        variable = request.data.get("variable")
+        north = round(float(request.data.get("north")), 3)
+        south = round(float(request.data.get("south")), 3)
+        east = round(float(request.data.get("east")), 3)
+        west = round(float(request.data.get("west")), 3)
         startDateTime = request.data.get("startDateTime")
         endDateTime = request.data.get("endDateTime")
         temporalLevel = request.data.get("temporalLevel")
-        variable = request.data.get("variable")
         time_agg_method = request.data.get("aggLevel")
 
         start_dt = parse_datetime(startDateTime)
