@@ -14,14 +14,20 @@ from django.utils.timezone import make_naive
 
 from .iharp_query.query import get_raster
 
+import logging
+
+logger = logging.getLogger(__name__)
+FORMAT = "[%(asctime)s %(name)s-%(levelname)s]: %(message)s"
+logging.basicConfig(level=logging.INFO, format=FORMAT, datefmt="%d/%b/%Y %H:%M:%S")
+
 
 @api_view(["POST"])
 def query(request):
-    print("Request for raster")
+    logger.info("Request for raster")
     serializer = QuerySeriazlier(data=request.data)
     if serializer.is_valid():
         serializer.save()
-        print(request.data)
+        logger.info(request.data)
         variable = request.data.get("variable")
         north = round(float(request.data.get("north")), 3)
         south = round(float(request.data.get("south")), 3)
