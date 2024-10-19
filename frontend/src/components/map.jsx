@@ -103,15 +103,15 @@ const MyMap = () => {
     const northEast = [90, 180]; // Example: New York City
     const bounds = [southWest, northEast];
     const initialRectangleBounds = [
-      [84, -111], // Top-left (north, west)
-      [84, 104],  // Top-right (north, east)
-      [52, 104],  // Bottom-right (south, east)
-      [52, -111], // Bottom-left (south, west)
+      [84, -74], // Top-left (north, west)
+      [84, -10],  // Top-right (north, east)
+      [59, -10],  // Bottom-right (south, east)
+      [59, -74], // Bottom-left (south, west)
     ]; // Define the initial bounds for the rectangle
   
     return (
       <Map
-        center={[70, -40]}
+        center={[75, -40]}
         zoom={1.5}
         zoomControl={false}
         minZoom={1.5}

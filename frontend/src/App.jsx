@@ -10,8 +10,8 @@ import './App.css'
 
 function App() {
 
-  const [startDate, setStartDate] = useState(dayjs("2023-01-01T00:00"));
-  const [endDate, setEndDate] = useState(dayjs("2023-01-30T00:00"));
+  const [startDate, setStartDate] = useState(dayjs("2023-01-01T00:00Z"));
+  const [endDate, setEndDate] = useState(dayjs("2023-01-31T00:00Z"));
   const [variable, setVariable] = useState("2m Temperature");
   const [aggLevel, setAggLevel] = useState("min");
   const [tempLevel, setTempLevel] = useState("hour");
@@ -29,9 +29,9 @@ function App() {
     aggLevel: "mean",
     spatialLevel: "2.0",
     north: 84,
-    south: 52,
-    east: 104,
-    west: -111,
+    south: 59,
+    east: -10,
+    west: -74,
     secondAgg: "",
     comparison: "",
     value: 285,
