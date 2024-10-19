@@ -28,7 +28,6 @@ def gen_file_list(
     else:
         file_path = f"{AGG_DATA_PATH}/{variable}/{variable}-{time_resolution}-{time_agg_method}.nc"
         file_list.append(file_path)
-    print(file_list)
     return file_list
 
 
