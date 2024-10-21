@@ -7,34 +7,34 @@ import { Box } from '@mui/material';
 import utc from "dayjs/plugin/utc";
 import dayjs from 'dayjs';
 
-const DateInput = ({date, setDate, label, sx}) => {
+const DateInput = ({ date, setDate, label, sx }) => {
 
     dayjs.extend(utc);
-    const maxDate = dayjs("2023-12-31T23");
-    const minDate = dayjs("2014-01-01 00");
+    const maxDate = dayjs("2023-12-31T23:00Z");
+    const minDate = dayjs("1984-01-01T00:00Z");
 
-  return (
-    <Box sx={sx}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={['DateTimePicker']}>
-                <DateTimePicker 
-                sx={{scale: 0.9}}
-                views={['year', 'day', 'hours']}
-                label={label}
-                disableFuture
-                ampm={false}
-                value={date}
-                timezone="UTC"
-                minutesStep={60}
-                secondsStep={0}
-                maxDateTime={maxDate}
-                minDateTime={minDate}
-                onChange={(newDate) => setDate(newDate)} 
-                />
-            </DemoContainer>
-        </LocalizationProvider>
-    </Box>
-  );
+    return (
+        <Box sx={sx}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={['DateTimePicker']}>
+                    <DateTimePicker
+                        sx={{ scale: 0.9 }}
+                        views={['year', 'day', 'hours']}
+                        label={label}
+                        disableFuture
+                        ampm={false}
+                        value={date}
+                        timezone="UTC"
+                        minutesStep={60}
+                        secondsStep={0}
+                        maxDateTime={maxDate}
+                        minDateTime={minDate}
+                        onChange={(newDate) => setDate(newDate)}
+                    />
+                </DemoContainer>
+            </LocalizationProvider>
+        </Box>
+    );
 }
 
 DateInput.propTypes = {
