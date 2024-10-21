@@ -6,8 +6,8 @@ import PropTypes from 'prop-types';
 import { Button } from '@mui/material'
 import '../styles/sidebar.css'
 
-
-const Sidebar = ({ //aggLevel, setAddLevel, tempLevel, setTempLevel
+// Once the date is changed the tempRes and Agglevel get reset in formdata back to their useState initial values
+const Sidebar = ({
     variable, 
     setVariable, 
     startDate, 
@@ -16,11 +16,7 @@ const Sidebar = ({ //aggLevel, setAddLevel, tempLevel, setTempLevel
     setEndDate, 
     formData, 
     handleChange,
-    queryData,
-    aggLevel,
-    setAggLevel,
-    tempLevel,
-    setTempLevel,}) => {
+    queryData,}) => {
 
     return (
         <>
@@ -63,10 +59,6 @@ Sidebar.propTypes = {
     formData: PropTypes.object,
     handleChange: PropTypes.func,
     queryData: PropTypes.func,
-    aggLevel: PropTypes.string,
-    setAggLevel: PropTypes.func,
-    tempLevel: PropTypes.any,
-    setTempLevel: PropTypes.func,
 };
 
 export default Sidebar;

@@ -13,8 +13,6 @@ function App() {
   const [startDate, setStartDate] = useState(dayjs("2023-01-01T00:00Z"));
   const [endDate, setEndDate] = useState(dayjs("2023-01-31T00:00Z"));
   const [variable, setVariable] = useState("2m Temperature");
-  const [aggLevel, setAggLevel] = useState("min");
-  const [tempLevel, setTempLevel] = useState("hour");
   const [htmlString, setHtml] = useState("");
 
   const { drawnShapeBounds, setDrawnShapeBounds } = useContext(BoundsContext);
@@ -44,18 +42,13 @@ function App() {
       variable: variable,
       startDateTime: startDate,
       endDateTime: endDate,  
-      aggLevel: aggLevel,
-      temporalLevel: tempLevel,    
     }))        
-  }, [variable, startDate, endDate, aggLevel, tempLevel]);
+  }, [variable, startDate, endDate]);
 
   
   const handleChange = (e) => {
     let myValue;
     const { name, value } = e.target;
-    console.log("NAME/VAL", name, value);
-    console.log(e.target);
-    console.log(formData);
     // Convert the input value to a number
     if (
       name === "north" ||
@@ -187,11 +180,7 @@ function App() {
           setEndDate={setEndDate}
           formData={formData}
           handleChange={handleChange}
-          queryData={queryData}
-          aggLevel={aggLevel}
-          setAgg={setAggLevel}
-          tempLevel={tempLevel} 
-          setTempLevel={setTempLevel}/>
+          queryData={queryData}/>
         <div className="main_content">
           <MyMap/>
           <Tabs htmlString={htmlString}/>
