@@ -41,7 +41,7 @@ def get_raster(
     max_lat: float,
     min_lon: float,
     max_lon: float,
-    # spatial_resolution: float,  # e.g., 0.25, 0.5, 1.0, 2.5, 5.0
+    # spatial_resolution: float,  # e.g., 0.25, 0.5, 1.0
 ):
     file_list = gen_file_list(variable, start_datetime, end_datetime, time_resolution, time_agg_method)
     ds_list = []
@@ -52,7 +52,7 @@ def get_raster(
             longitude=slice(min_lon, max_lon),
         )
         ds_list.append(ds)
-    ds = xr.concat(ds_list, dim="time")
+    ds = xr.concat([i.chunk() for i in ds_list], dim="time")
     return ds
 
 

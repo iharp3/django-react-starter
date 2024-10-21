@@ -5,3 +5,4 @@ xarray
 numpy
 pandas
 netcdf4
+dask[complete]
