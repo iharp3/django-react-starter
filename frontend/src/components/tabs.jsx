@@ -2,6 +2,8 @@ import PropTypes from "prop-types"
 import { useState } from 'react';
 import { Box, Tab } from '@mui/material'
 import { Tabs as TabMui } from '@mui/material';
+import TimeSeries from "./TimeSeries";
+import HeatMap from "./HeatMap";
 import '../styles/tabs.css'
 
 function CustomTabPanel(props) {
@@ -10,12 +12,13 @@ function CustomTabPanel(props) {
   return (
     <div
       role="tabpanel"
+      className="tabpanel"
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      {value === index && <Box sx={{width: "100%", height: "100%"}}>{children}</Box>}
     </div>
   );
 }
@@ -34,7 +37,7 @@ function a11yProps(index) {
   };
 }
 
-const Tabs = ({ htmlString }) => {
+const Tabs = ({ htmlString, handleTimeSeries, timeSeriesImage, handleHeatMap, heatMapImage }) => {
 
   const [tabNum, setTab] = useState(0);
 
@@ -45,33 +48,38 @@ const Tabs = ({ htmlString }) => {
   return (
     <>
       <div className="tabs_wrapper">
-        <Box sx={{ width: '100%' }}>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Box sx={{ width: '100%'}}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider'}}>
             <TabMui value={tabNum} onChange={handleChange} aria-label="Navigation">
               <Tab label="Raster Data" />
               <Tab label="Time Series" />
               <Tab label="Heatmap" />
-              <Tab label="Page Four" />
+              {/* For Both below, need predicat input(>, <, =, !=) and some comparison value input. */}
+              <Tab label="Find Times Results" />
+              <Tab label="Find Area" />
             </TabMui>
           </Box>
           <div className="page_wrapper">
             <CustomTabPanel value={tabNum} index={0} {...a11yProps(0)}>
-              {!htmlString ? (
-                <div className="">No Content</div>
-              ) :
-                (
-                  <pre className="">{`${htmlString}`}</pre>
-                )}
-              {/* <div dangerouslySetInnerHTML={{ __html: htmlContent }} />                         */}
+              <div className="raster_data">
+                {!htmlString ? (
+                  <div className="no_content">No Content</div>
+                ) : (
+                  <pre className="raster_content">{`${htmlString}`}</pre>
+                )}      
+              </div>        
             </CustomTabPanel>
-            <CustomTabPanel value={tabNum} index={1} {...a11yProps(1)}>
-              Time Series
+            <CustomTabPanel sx={{ width: "100%", height: "255px"}} value={tabNum} index={1} {...a11yProps(1)}>
+              <TimeSeries handleTimeSeries={handleTimeSeries} timeSeriesImage={timeSeriesImage}/>
             </CustomTabPanel>
-            <CustomTabPanel value={tabNum} index={2} {...a11yProps(2)}>
-              Heatmap
+            <CustomTabPanel sx={{ width: "100%", height: "255px"}} value={tabNum} index={2} {...a11yProps(2)}>
+              <HeatMap handleHeatMap={handleHeatMap} heatMapImage={heatMapImage}/>
             </CustomTabPanel>
             <CustomTabPanel value={tabNum} index={3} {...a11yProps(3)}>
-              Page Four
+              Times Results, plot Implementation in iharp-queries github
+            </CustomTabPanel>
+            <CustomTabPanel value={tabNum} index={4} {...a11yProps(4)}>
+                Area Results
             </CustomTabPanel>
           </div>
         </Box>
@@ -79,8 +87,13 @@ const Tabs = ({ htmlString }) => {
     </>
   )
 }
+
 Tabs.propTypes = {
   htmlString: PropTypes.string,
+  handleTimeSeries: PropTypes.func,
+  timeSeriesImage: PropTypes.object,
+  handleHeatMap: PropTypes.func,
+  heatMapImage: PropTypes.object,
 }
 
 export default Tabs

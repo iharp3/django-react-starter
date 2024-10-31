@@ -14,6 +14,8 @@ function App() {
   const [endDate, setEndDate] = useState(dayjs("2023-01-31T00:00Z"));
   const [variable, setVariable] = useState("2m Temperature");
   const [htmlString, setHtml] = useState("");
+  const [timeSeriesImage, setImageRecieved] = useState({});
+  const [heatMapImage, setHeatMap] = useState({});
 
   const { drawnShapeBounds, setDrawnShapeBounds } = useContext(BoundsContext);
 
@@ -114,12 +116,11 @@ function App() {
     // setTemporalLevelSelected(value !== "");
   };
 
-  const queryData = async () => {
-    console.log("FORMDATA", formData);
+  const queryData = async () => {    
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/query/", {
+      const response = await fetch("/api/query/", {
         method: "POST",
-        headers: {
+        headers: {          
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
@@ -127,8 +128,7 @@ function App() {
 
       if (response.ok) {
         const jsonData = await response.json();
-        setHtml(jsonData);
-        console.log(jsonData);
+        setHtml(jsonData);        
       }
       else {
         const errorResponse = await response.json();
@@ -167,6 +167,178 @@ function App() {
     // }
   }, [drawnShapeBounds]);
 
+  const handleTimeSeries = async (e) => {
+    if (e) e.preventDefault();
+  
+    if (formData.variable === "") {
+      // If not, display an error message or perform any other action to prompt the user to select a temporal level
+      alert(
+        "ERROR: Please select a variable before proceeding..."
+      );
+      return; // Exit the function early
+    }
+    else if (endDate.isBefore(startDate)) {
+      alert(
+        "ERROR: End Date Time Must Be After Than Start Date Time"
+      );
+      return; // Exit the function early
+    }
+    else if (formData.temporalLevel === "") {
+      // If not, display an error message or perform any other action to prompt the user to select a temporal level
+      alert(
+        "ERROR: Please select a temporal level resolution before proceeding..."
+      );
+      return; // Exit the function early
+    } else if (!startDate) {
+      alert("ERROR: Please select a start date and time before proceeding.");
+      return; // Exit the function early
+    } else if (!endDate) {
+      alert("ERROR: Please select an end date and time before proceeding..");
+      return; // Exit the function early
+    } else if (
+      isNaN(formData.north) ||
+      isNaN(formData.south) ||
+      isNaN(formData.east) ||
+      isNaN(formData.west) ||
+      (formData.north > 90) ||
+      (formData.south < -90) ||
+      (formData.west < -180) ||
+      (formData.east > 180)
+    ) {
+      alert(
+        "ERROR: Please select an area on the map or enter FOUR coordinates of interest manually(S,N,W,E) before proceeding..."
+      );
+      alert(
+        "Coordinates should be between -90:90 and -180:180 for (S,N,W,E) respectively..."
+      );
+      return; // Exit the function early
+    }
+
+    formData.requestType = "Time Series";
+    formData.startDateTime = startDate;
+    formData.endDateTime = endDate;
+    // TODO: Change this once dropdown/radio is added
+    formData.secondAgg = "max";
+    try {
+
+      // console.log(formData);
+      // Send request to the backend to fetch both time series data and image data
+      const response = await fetch("/api/timeseries/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      // Check if the response is successful
+      if (response.ok) {
+        // Parse the response as JSON
+        const responseData = await response.json();
+        console.log("Successfully requested time series data:", responseData);
+        setImageRecieved(responseData);
+      } else {
+        const errorResponse = await response.json();
+        // setProgress(5);
+        // setProgressDesc(errorResponse.error, response.status);
+        console.error(
+          "Failed to fetch time series data. HTTP status:",
+          response.status,
+          "Error message:",
+          errorResponse.error
+        );
+      }
+    } catch (error) {
+      console.error("Error requesting Time Series:", error);
+    }
+  };
+
+  const handleHeatMap = async (e) => {
+    if (e) e.preventDefault();
+
+    if (formData.variable === "") {
+      // If not, display an error message or perform any other action to prompt the user to select a temporal level
+      alert(
+        "ERROR: Please select a variable before proceeding..."
+      );
+      return; // Exit the function early
+    }
+    else if (endDate.isBefore(startDate)) {
+      alert(
+        "ERROR: End Date Time Must Be After Than Start Date Time"
+      );
+      return; // Exit the function early
+    }
+    else if (formData.temporalLevel === "") {
+      // If not, display an error message or perform any other action to prompt the user to select a temporal level
+      alert(
+        "ERROR: Please select a temporal level resolution before proceeding..."
+      );
+      return; // Exit the function early
+    } else if (!startDate) {
+      alert("ERROR: Please select a start date and time before proceeding.");
+      return; // Exit the function early
+    } else if (!endDate) {
+      alert("ERROR: Please select an end date and time before proceeding..");
+      return; // Exit the function early
+    } else if (
+      isNaN(formData.north) ||
+      isNaN(formData.south) ||
+      isNaN(formData.east) ||
+      isNaN(formData.west) ||
+      (formData.north > 90) ||
+      (formData.south < -90) ||
+      (formData.west < -180) ||
+      (formData.east > 180)
+    ) {
+      alert(
+        "ERROR: Please select an area on the map or enter FOUR coordinates of interest manually(S,N,W,E) before proceeding..."
+      );
+      alert(
+        "Coordinates should be between -90:90 and -180:180 for (S,N,W,E) respectively..."
+      );
+      return; // Exit the function early
+    }
+
+    formData.requestType = "Heap Map";
+    formData.startDateTime = startDate;
+    formData.endDateTime = endDate;
+    // TODO: Change this once dropdown/radio is added
+    formData.secondAgg = "max";
+    try {
+
+      // console.log(formData);
+      // Send request to the backend to fetch both time series data and image data
+      const response = await fetch("/api/heatmap/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      // Check if the response is successful
+      if (response.ok) {
+        // Parse the response as JSON
+        const responseData = await response.json();
+        console.log("Successfully requested heat map data:", responseData);
+        setHeatMap(responseData);
+      } else {
+        const errorResponse = await response.json();
+        // setProgress(5);
+        // setProgressDesc(errorResponse.error, response.status);
+        console.error(
+          "Failed to fetch heat map. HTTP status:",
+          response.status,
+          "Error message:",
+          errorResponse.error
+        );
+      }
+    } catch (error) {
+      console.error("Error requesting Heat Map:", error);
+    }
+  }
+
   return (
     <>
       <Header/>
@@ -183,7 +355,12 @@ function App() {
           queryData={queryData}/>
         <div className="main_content">
           <MyMap/>
-          <Tabs htmlString={htmlString}/>
+          <Tabs 
+            htmlString={htmlString} 
+            handleTimeSeries={handleTimeSeries} 
+            timeSeriesImage={timeSeriesImage}
+            handleHeatMap={handleHeatMap}
+            heatMapImage={heatMapImage}/>
         </div>
       </div>
     </>

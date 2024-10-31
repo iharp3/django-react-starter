@@ -19,10 +19,10 @@ class Query(models.Model):
         ("Data Download", "Data Download"),
     )
 
-    VARIABLE_CHOICES = (       
-    ("2m Temperature","2m_temperature"),
-    ("Surface Pressure","surface_pressure"),
-    ("Total Precipitation","total_precipitation"),
+    VARIABLE_CHOICES = (
+        ("2m Temperature", "2m_temperature"),
+        ("Surface Pressure", "surface_pressure"),
+        ("Total Precipitation", "total_precipitation"),
     )
 
     variable = models.CharField(max_length=50, choices=VARIABLE_CHOICES, default="2m_temperature")
@@ -36,6 +36,7 @@ class Query(models.Model):
     south = models.DecimalField(max_digits=40, decimal_places=35)
     west = models.DecimalField(max_digits=40, decimal_places=35)
     created_at = models.DateTimeField(auto_now_add=True)
+    secondAgg = models.CharField(max_length=25, choices=AGG_CHOICES, default="min")
 
     def __str__(self):
         return self.title

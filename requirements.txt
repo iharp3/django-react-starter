@@ -6,3 +6,4 @@ numpy
 pandas
 netcdf4
 dask[complete]
+plotly
