@@ -18,3 +18,11 @@ python backend/manage.py runserver
 # frontend
 
 npm run dev
+
+
+# Build
+npm run build
+
+copy /home/huan1531/django-react-starter/frontend/dist to /home/huan1531/django-react-starter/backend/frontend/dist
+
+start backend with : python manage.py runserver 0.0.0.0:8000
