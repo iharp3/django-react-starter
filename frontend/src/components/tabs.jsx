@@ -4,7 +4,9 @@ import { Box, Tab } from '@mui/material'
 import { Tabs as TabMui } from '@mui/material';
 import TimeSeries from "./TimeSeries";
 import HeatMap from "./HeatMap";
-import '../styles/tabs.css'
+import FindTime from "./FindTime";
+import FindArea from "./FindArea";
+import '../styles/tabs.css';
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -37,7 +39,7 @@ function a11yProps(index) {
   };
 }
 
-const Tabs = ({ htmlString, handleTimeSeries, timeSeriesImage, handleHeatMap, heatMapImage }) => {
+const Tabs = ({ formData, htmlString, handleTimeSeries, timeSeriesImage, handleHeatMap, heatMapImage, handleFindTime, findTimeImage, findAreaImage, handleFindArea }) => {
 
   const [tabNum, setTab] = useState(0);
 
@@ -56,7 +58,7 @@ const Tabs = ({ htmlString, handleTimeSeries, timeSeriesImage, handleHeatMap, he
               <Tab label="Heatmap" />
               {/* For Both below, need predicat input(>, <, =, !=) and some comparison value input. */}
               <Tab label="Find Times Results" />
-              <Tab label="Find Area" />
+              <Tab label="Find Area Results" />
             </TabMui>
           </Box>
           <div className="page_wrapper">
@@ -76,10 +78,10 @@ const Tabs = ({ htmlString, handleTimeSeries, timeSeriesImage, handleHeatMap, he
               <HeatMap handleHeatMap={handleHeatMap} heatMapImage={heatMapImage}/>
             </CustomTabPanel>
             <CustomTabPanel value={tabNum} index={3} {...a11yProps(3)}>
-              Times Results, plot Implementation in iharp-queries github
+              <FindTime handleFindTime={handleFindTime} findTimeImage={findTimeImage}/>
             </CustomTabPanel>
             <CustomTabPanel value={tabNum} index={4} {...a11yProps(4)}>
-                Area Results
+              <FindArea findAreaImage={findAreaImage} handleFindArea={handleFindArea} formData={formData}/>
             </CustomTabPanel>
           </div>
         </Box>
@@ -89,11 +91,16 @@ const Tabs = ({ htmlString, handleTimeSeries, timeSeriesImage, handleHeatMap, he
 }
 
 Tabs.propTypes = {
+  formData: PropTypes.object,
   htmlString: PropTypes.string,
   handleTimeSeries: PropTypes.func,
   timeSeriesImage: PropTypes.object,
   handleHeatMap: PropTypes.func,
   heatMapImage: PropTypes.object,
+  handleFindTime: PropTypes.func, 
+  findTimeImage: PropTypes.object,
+  handleFindArea: PropTypes.func,
+  findAreaImage: PropTypes.object,
 }
 
 export default Tabs

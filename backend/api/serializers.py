@@ -13,3 +13,8 @@ class TimeSeriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Query
         fields = ["id","variable","startDateTime","endDateTime","temporalLevel","north","south","east","west","created_at", "aggLevel", "secondAgg",]
+
+class FindTimeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Query
+        fields = ["id", "variable", "startDateTime", "endDateTime", "temporalLevel", "north", "south", "east", "west", "created_at", "aggLevel", "secondAgg", "filterPredicate", "filterValue"]

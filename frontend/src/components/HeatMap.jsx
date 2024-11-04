@@ -3,7 +3,7 @@ import { Button } from '@mui/material';
 import Plot from 'react-plotly.js';
 import "../styles/heatmap.css";
 
-
+// BUG, with areas like Alaska, it doesn't display.
 const HeatMap = ({ handleHeatMap, heatMapImage }) => {
 
   const heatmapLayout = {
@@ -42,7 +42,8 @@ const HeatMap = ({ handleHeatMap, heatMapImage }) => {
     toImageButtonOptions: {
         format: 'png',
         filename: 'heatmap_image'
-    }
+    },
+    modeBarButtonsToRemove: ['zoomOut2d', 'zoomIn2d'],
   };
 
   // // TODO: Add radio buttons

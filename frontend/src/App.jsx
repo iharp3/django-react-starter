@@ -16,6 +16,8 @@ function App() {
   const [htmlString, setHtml] = useState("");
   const [timeSeriesImage, setImageRecieved] = useState({});
   const [heatMapImage, setHeatMap] = useState({});
+  const [findTimeImage, setFindTime] = useState({});
+  const [findAreaImage, setFindArea] = useState({});
 
   const { drawnShapeBounds, setDrawnShapeBounds } = useContext(BoundsContext);
 
@@ -339,6 +341,176 @@ function App() {
     }
   }
 
+  const handleFindTime = async (e) => {
+    if (e) e.preventDefault();
+
+    if (formData.variable === "") {
+      // If not, display an error message or perform any other action to prompt the user to select a temporal level
+      alert(
+        "ERROR: Please select a variable before proceeding..."
+      );
+      return; // Exit the function early
+    }
+    else if (endDate.isBefore(startDate)) {
+      alert(
+        "ERROR: End Date Time Must Be After Than Start Date Time"
+      );
+      return; // Exit the function early
+    }
+    else if (formData.temporalLevel === "") {
+      // If not, display an error message or perform any other action to prompt the user to select a temporal level
+      alert(
+        "ERROR: Please select a temporal level resolution before proceeding..."
+      );
+      return; // Exit the function early
+    } else if (!startDate) {
+      alert("ERROR: Please select a start date and time before proceeding.");
+      return; // Exit the function early
+    } else if (!endDate) {
+      alert("ERROR: Please select an end date and time before proceeding..");
+      return; // Exit the function early
+    } else if (
+      isNaN(formData.north) ||
+      isNaN(formData.south) ||
+      isNaN(formData.east) ||
+      isNaN(formData.west) ||
+      (formData.north > 90) ||
+      (formData.south < -90) ||
+      (formData.west < -180) ||
+      (formData.east > 180)
+    ) {
+      alert(
+        "ERROR: Please select an area on the map or enter FOUR coordinates of interest manually(S,N,W,E) before proceeding..."
+      );
+      alert(
+        "Coordinates should be between -90:90 and -180:180 for (S,N,W,E) respectively..."
+      );
+      return; // Exit the function early
+    }
+
+    formData.requestType = "Find Time";
+    formData.startDateTime = startDate;
+    formData.endDateTime = endDate;
+    // TODO: Change this once dropdown/radio is added
+    formData.secondAgg = "max";
+    try {
+      // console.log(formData);
+      // Send request to the backend to fetch both time series data and image data
+      const response = await fetch("/api/findtime/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      // Check if the response is successful
+      if (response.ok) {
+        // Parse the response as JSON
+        const responseData = await response.json();
+        console.log("Successfully requested find time data:", responseData);
+        setFindTime(responseData);
+      } else {
+        const errorResponse = await response.json();
+        // setProgress(5);
+        // setProgressDesc(errorResponse.error, response.status);
+        console.error(
+          "Failed to fetch find time. HTTP status:",
+          response.status,
+          "Error message:",
+          errorResponse.error
+        );
+      }
+    } catch (error) {
+      console.error("Error requesting Find Time:", error);
+    }  
+  }
+
+  const handleFindArea = async (e) => {
+    if (e) e.preventDefault();
+
+    if (formData.variable === "") {
+      // If not, display an error message or perform any other action to prompt the user to select a temporal level
+      alert(
+        "ERROR: Please select a variable before proceeding..."
+      );
+      return; // Exit the function early
+    }
+    else if (endDate.isBefore(startDate)) {
+      alert(
+        "ERROR: End Date Time Must Be After Than Start Date Time"
+      );
+      return; // Exit the function early
+    }
+    else if (formData.temporalLevel === "") {
+      // If not, display an error message or perform any other action to prompt the user to select a temporal level
+      alert(
+        "ERROR: Please select a temporal level resolution before proceeding..."
+      );
+      return; // Exit the function early
+    } else if (!startDate) {
+      alert("ERROR: Please select a start date and time before proceeding.");
+      return; // Exit the function early
+    } else if (!endDate) {
+      alert("ERROR: Please select an end date and time before proceeding..");
+      return; // Exit the function early
+    } else if (
+      isNaN(formData.north) ||
+      isNaN(formData.south) ||
+      isNaN(formData.east) ||
+      isNaN(formData.west) ||
+      (formData.north > 90) ||
+      (formData.south < -90) ||
+      (formData.west < -180) ||
+      (formData.east > 180)
+    ) {
+      alert(
+        "ERROR: Please select an area on the map or enter FOUR coordinates of interest manually(S,N,W,E) before proceeding..."
+      );
+      alert(
+        "Coordinates should be between -90:90 and -180:180 for (S,N,W,E) respectively..."
+      );
+      return; // Exit the function early
+    }
+
+    formData.requestType = "Find Area";
+    formData.startDateTime = startDate;
+    formData.endDateTime = endDate;
+    // TODO: Change this once dropdown/radio is added
+    formData.secondAgg = "max";
+    try {
+      // console.log(formData);
+      // Send request to the backend to fetch both time series data and image data
+      const response = await fetch("/api/findarea/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      // Check if the response is successful
+      if (response.ok) {
+        // Parse the response as JSON
+        const responseData = await response.json();
+        console.log("Successfully requested find area data:", responseData);
+        setFindArea(responseData);
+      } else {
+        const errorResponse = await response.json();
+        // setProgress(5);
+        // setProgressDesc(errorResponse.error, response.status);
+        console.error(
+          "Failed to fetch find area. HTTP status:",
+          response.status,
+          "Error message:",
+          errorResponse.error
+        );
+      }
+    } catch (error) {
+      console.error("Error requesting Find Area:", error);
+    }  
+  }
+
   return (
     <>
       <Header/>
@@ -356,11 +528,16 @@ function App() {
         <div className="main_content">
           <MyMap/>
           <Tabs 
+            formData={formData}
             htmlString={htmlString} 
             handleTimeSeries={handleTimeSeries} 
             timeSeriesImage={timeSeriesImage}
             handleHeatMap={handleHeatMap}
-            heatMapImage={heatMapImage}/>
+            heatMapImage={heatMapImage}
+            handleFindTime={handleFindTime}
+            findTimeImage={findTimeImage}
+            handleFindArea={handleFindArea}
+            findAreaImage={findAreaImage}/>
         </div>
       </div>
     </>

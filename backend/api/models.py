@@ -25,6 +25,15 @@ class Query(models.Model):
         ("Total Precipitation", "total_precipitation"),
     )
 
+    FILTER_PREDICATE_CHOICES = [
+        ('>', '>'),
+        ('<', '<'),
+        ('>=', '>='),
+        ('<=', '<='),
+        ('=', '='),
+        ('!=', '!=')
+    ]
+
     variable = models.CharField(max_length=50, choices=VARIABLE_CHOICES, default="2m_temperature")
     requestType = models.CharField(max_length=15, choices=REQUEST_CHOICES)
     startDateTime = models.DateTimeField(default=timezone.now)
@@ -37,6 +46,8 @@ class Query(models.Model):
     west = models.DecimalField(max_digits=40, decimal_places=35)
     created_at = models.DateTimeField(auto_now_add=True)
     secondAgg = models.CharField(max_length=25, choices=AGG_CHOICES, default="min")
+    filterPredicate = models.CharField(max_length=2, choices=FILTER_PREDICATE_CHOICES, default='=')        
+    filterValue = models.FloatField(default=255.0)
 
     def __str__(self):
         return self.title

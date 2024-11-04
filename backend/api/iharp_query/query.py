@@ -10,7 +10,6 @@ from .utils.get_whole_period import (
 )
 from .utils.const import long_short_name_dict, RAW_DATA_PATH, AGG_DATA_PATH
 
-
 def gen_file_list(
     variable: str,
     start_datetime: str,
@@ -28,6 +27,7 @@ def gen_file_list(
     else:
         file_path = f"{AGG_DATA_PATH}/{variable}/{variable}-{time_resolution}-{time_agg_method}.nc"
         file_list.append(file_path)
+    print(file_list)
     return file_list
 
 
@@ -41,7 +41,7 @@ def get_raster(
     max_lat: float,
     min_lon: float,
     max_lon: float,
-    # spatial_resolution: float,  # e.g., 0.25, 0.5, 1.0
+    # spatial_resolution: float,  # e.g., 0.25, 0.5, 1.0, 2.5, 5.0
 ):
     file_list = gen_file_list(variable, start_datetime, end_datetime, time_resolution, time_agg_method)
     ds_list = []
@@ -371,8 +371,208 @@ def find_time_pyramid(
     filter_predicate: str,  # e.g., ">", "<", "==", ">=", "<="
     filter_value: float,
 ):
-    # TODO:
-    pass
+    """
+    Optimizations hueristics:
+        - find hour >  x: if year-min >  x, return True ; if year-max <= x, return False
+        - find hour <  x: if year-min >= x, return False; if year-max <  x, return True
+        - find hour == x: if year-min >  x, return False; if year-max <  x, return False
+        - find hour >= x: if year-min >= x, return True ; if year-max <  x, return False
+        - find hour <= x: if year-min >  x, return False; if year-max <= x, return True
+    """
+    if time_resolution == "hour" and filter_predicate != "!=":
+        return find_time_pyramid_hour(
+            variable,
+            start_datetime,
+            end_datetime,
+            time_resolution,  # e.g., "hour", "day", "month", "year"
+            time_agg_method,  # e.g., "mean", "max", "min"
+            min_lat,
+            max_lat,
+            min_lon,
+            max_lon,
+            time_series_aggregation_method,  # e.g., "mean", "max", "min"
+            filter_predicate,  # e.g., ">", "<", "==", "!=", ">=", "<="
+            filter_value,
+        )
+    return find_time_baseline(
+        variable,
+        start_datetime,
+        end_datetime,
+        time_resolution,  # e.g., "hour", "day", "month", "year"
+        time_agg_method,  # e.g., "mean", "max", "min"
+        min_lat,
+        max_lat,
+        min_lon,
+        max_lon,
+        time_series_aggregation_method,  # e.g., "mean", "max", "min"
+        filter_predicate,  # e.g., ">", "<", "==", "!=", ">=", "<="
+        filter_value,
+    )
+
+
+def find_time_pyramid_hour(
+    variable: str,
+    start_datetime: str,
+    end_datetime: str,
+    time_resolution: str,  # e.g., "hour", "day", "month", "year"
+    time_agg_method: str,  # e.g., "mean", "max", "min"
+    min_lat: float,
+    max_lat: float,
+    min_lon: float,
+    max_lon: float,
+    time_series_aggregation_method: str,  # e.g., "mean", "max", "min"
+    filter_predicate: str,  # e.g., ">", "<", "==", ">=", "<="
+    filter_value: float,
+):
+    """
+    Using yearly, monthly and daily pre-aggregation to batch set True/False for hourly find time query
+    """
+    short_variable = long_short_name_dict[variable]
+    years, months, days, hours = get_whole_period_between(start_datetime, end_datetime)
+    time_points = pd.date_range(start=start_datetime, end=end_datetime, freq="h")
+    result = xr.Dataset(
+        data_vars={short_variable: (["time"], [None] * len(time_points))},
+        coords=dict(time=time_points),
+    )
+
+    if years:
+        year_min = xr.open_dataset(f"{AGG_DATA_PATH}/{variable}/{variable}-year-min.nc")
+        year_max = xr.open_dataset(f"{AGG_DATA_PATH}/{variable}/{variable}-year-max.nc")
+        for year in years:
+            year_determined = False
+            year_datetime = f"{year}-12-31 00:00:00"
+            curr_year_min = year_min.sel(
+                time=year_datetime, latitude=slice(max_lat, min_lat), longitude=slice(min_lon, max_lon)
+            )[short_variable].min()
+            curr_year_max = year_max.sel(
+                time=year_datetime, latitude=slice(max_lat, min_lat), longitude=slice(min_lon, max_lon)
+            )[short_variable].max()
+            if filter_predicate == ">":
+                if curr_year_min > filter_value:
+                    print(f"{year}: min > filter, True")
+                    year_determined = True
+                    result[short_variable].loc[str(year) : str(year)] = True
+                elif curr_year_max <= filter_value:
+                    print(f"{year}: max <= filter, False")
+                    year_determined = True
+                    result[short_variable].loc[str(year) : str(year)] = False
+            elif filter_predicate == "<":
+                if curr_year_min >= filter_value:
+                    print(f"{year}: min >= filter, False")
+                    year_determined = True
+                    result[short_variable].loc[str(year) : str(year)] = False
+                elif curr_year_max < filter_value:
+                    print(f"{year}: max < filter, True")
+                    year_determined = True
+                    result[short_variable].loc[str(year) : str(year)] = True
+            elif filter_predicate == "==":
+                if curr_year_min > filter_value or curr_year_max < filter_value:
+                    print(f"{year}: min > filter or max < filter, False")
+                    year_determined = True
+                    result[short_variable].loc[str(year) : str(year)] = False
+            if not year_determined:
+                # add monthes to months
+                months = months + [f"{year}-{month:02d}" for month in range(1, 13)]
+
+    if months:
+        print(months)
+        month_min = xr.open_dataset(f"{AGG_DATA_PATH}/{variable}/{variable}-month-min.nc")
+        month_max = xr.open_dataset(f"{AGG_DATA_PATH}/{variable}/{variable}-month-max.nc")
+        for month in months:
+            month_determined = False
+            month_datetime = f"{month}-{get_last_date_of_month(pd.Timestamp(month))} 00:00:00"
+            curr_month_min = month_min.sel(
+                time=month_datetime, latitude=slice(max_lat, min_lat), longitude=slice(min_lon, max_lon)
+            )[short_variable].min()
+            curr_month_max = month_max.sel(
+                time=month_datetime, latitude=slice(max_lat, min_lat), longitude=slice(min_lon, max_lon)
+            )[short_variable].max()
+            if filter_predicate == ">":
+                if curr_month_min > filter_value:
+                    print(f"{month}: min > filter, True")
+                    month_determined = True
+                    result[short_variable].loc[month:month] = True
+                elif curr_month_max <= filter_value:
+                    print(f"{month}: max <= filter, False")
+                    month_determined = True
+                    result[short_variable].loc[month:month] = False
+            elif filter_predicate == "<":
+                if curr_month_min >= filter_value:
+                    print(f"{month}: min >= filter, False")
+                    month_determined = True
+                    result[short_variable].loc[month:month] = False
+                elif curr_month_max < filter_value:
+                    print(f"{month}: max < filter, True")
+                    month_determined = True
+                    result[short_variable].loc[month:month] = True
+            elif filter_predicate == "==":
+                if curr_month_min > filter_value or curr_month_max < filter_value:
+                    print(f"{month}: min > filter or max < filter, False")
+                    month_determined = True
+                    result[short_variable].loc[month:month] = False
+            if not month_determined:
+                # add days to days
+                days = days + [
+                    f"{month}-{day:02d}" for day in range(1, get_last_date_of_month(pd.Timestamp(month)) + 1)
+                ]
+
+    if days:
+        print(days)
+        day_min = xr.open_dataset(f"{AGG_DATA_PATH}/{variable}/{variable}-day-min.nc")
+        day_max = xr.open_dataset(f"{AGG_DATA_PATH}/{variable}/{variable}-day-max.nc")
+        for day in days:
+            day_datetime = f"{day} 00:00:00"
+            curr_day_min = day_min.sel(
+                time=day_datetime, latitude=slice(max_lat, min_lat), longitude=slice(min_lon, max_lon)
+            )[short_variable].min()
+            curr_day_max = day_max.sel(
+                time=day_datetime, latitude=slice(max_lat, min_lat), longitude=slice(min_lon, max_lon)
+            )[short_variable].max()
+            if filter_predicate == ">":
+                if curr_day_min > filter_value:
+                    print(f"{day}: min > filter, True")
+                    result[short_variable].loc[day:day] = True
+                elif curr_day_max <= filter_value:
+                    print(f"{day}: max <= filter, False")
+                    result[short_variable].loc[day:day] = False
+            elif filter_predicate == "<":
+                if curr_day_min >= filter_value:
+                    print(f"{day}: min >= filter, False")
+                    result[short_variable].loc[day:day] = False
+                elif curr_day_max < filter_value:
+                    print(f"{day}: max < filter, True")
+                    result[short_variable].loc[day:day] = True
+            elif filter_predicate == "==":
+                if curr_day_min > filter_value or curr_day_max < filter_value:
+                    print(f"{day}: min > filter or max < filter, False")
+                    result[short_variable].loc[day:day] = False
+
+    result_undetermined = result["time"].where(result[short_variable].isnull(), drop=True)
+    if result_undetermined.size > 0:
+        min_hour = result_undetermined.min().values
+        max_hour = result_undetermined.max().values
+        min_hour = pd.Timestamp(min_hour).strftime("%Y-%m-%d %H:%M:%S")
+        max_hour = pd.Timestamp(max_hour).strftime("%Y-%m-%d %H:%M:%S")
+        print("Check hour: ", min_hour, max_hour)
+
+        rest = find_time_baseline(
+            variable,
+            min_hour,
+            max_hour,
+            time_resolution,  # e.g., "hour", "day", "month", "year"
+            time_agg_method,  # e.g., "mean", "max", "min"
+            min_lat,
+            max_lat,
+            min_lon,
+            max_lon,
+            time_series_aggregation_method,  # e.g., "mean", "max", "min"
+            filter_predicate,  # e.g., ">", "<", "==", "!=", ">=", "<="
+            filter_value,
+        )
+
+        result[short_variable].loc[f"{min_hour}":f"{max_hour}"] = rest[short_variable]
+        result[short_variable] = result[short_variable].astype(bool)
+    return result
 
 
 def find_area_baseline(
