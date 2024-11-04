@@ -8,3 +8,4 @@ netcdf4
 dask[complete]
 plotly
 python-dotenv
+geopandas
