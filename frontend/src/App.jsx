@@ -12,7 +12,7 @@ function App() {
 
   const [startDate, setStartDate] = useState(dayjs("2023-01-01T00:00Z"));
   const [endDate, setEndDate] = useState(dayjs("2023-01-31T23:00Z"));
-  const [variable, setVariable] = useState("2m Temperature");
+  const [variable, setVariable] = useState("2m_temperature");
   const [htmlString, setHtml] = useState("");
   const [timeSeriesImage, setImageRecieved] = useState({});
   const [heatMapImage, setHeatMap] = useState({});
