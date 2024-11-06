@@ -11,12 +11,14 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from shapely.geometry import Polygon
 
-from .iharp_query.query import get_raster, get_timeseries, get_heatmap, find_time_pyramid, find_area_baseline
+from .iharp_query.query import get_raster, get_timeseries, get_heatmap, find_time_pyramid, find_area_baseline, \
+    get_variable_short_name
 from .serializers import QuerySeriazlier, TimeSeriesSerializer, FindTimeSerializer
 
 logger = logging.getLogger(__name__)
-FORMAT = "[%(asctime)s %(name)s-%(levelname)s]: %(message)s"
-logging.basicConfig(level=logging.INFO, format=FORMAT, datefmt="%d/%b/%Y %H:%M:%S")
+MSG_FORMAT = "[%(asctime)s %(name)s-%(levelname)s]: %(message)s"
+LOG_DATE_FORMAT = "%d/%b/%Y %H:%M:%S"
+logging.basicConfig(level=logging.INFO, format=MSG_FORMAT, datefmt=LOG_DATE_FORMAT)
 
 
 def format_datetime_string(dt_input):
@@ -88,35 +90,24 @@ def timeseries(request):
         serializer.save()
 
         variable = request.data.get("variable")
+        start_datetime = request.data.get("startDateTime")
+        end_datetime = request.data.get("endDateTime")
+        time_resolution = request.data.get("temporalLevel")
+        time_agg_method = request.data.get("aggLevel")
         north = round(float(request.data.get("north")), 3)
         south = round(float(request.data.get("south")), 3)
         east = round(float(request.data.get("east")), 3)
         west = round(float(request.data.get("west")), 3)
-        startDateTime = request.data.get("startDateTime")
-        endDateTime = request.data.get("endDateTime")
-        temporalLevel = request.data.get("temporalLevel")
-        time_agg_method = request.data.get("aggLevel")
         ts_agg_method = request.data.get("secondAgg")
 
-        start_dt = parse_datetime(startDateTime)
-        end_dt = parse_datetime(endDateTime)
-
-        # Convert to naive datetimes (if they have timezone info)
-        if start_dt and start_dt.tzinfo is not None:
-            start_dt = make_naive(start_dt)
-
-        if end_dt and end_dt.tzinfo is not None:
-            end_dt = make_naive(end_dt)
-
-        # Format the datetimes to "YYYY-MM-DD HH:MM:SS"
-        formatted_start = start_dt.strftime("%Y-%m-%d %H:%M:%S") if start_dt else None
-        formatted_end = end_dt.strftime("%Y-%m-%d %H:%M:%S") if end_dt else None
+        formatted_start = format_datetime_string(start_datetime)
+        formatted_end = format_datetime_string(end_datetime)
 
         ts = get_timeseries(
-            variable="2m_temperature",
+            variable=variable,
             start_datetime=formatted_start,
             end_datetime=formatted_end,
-            time_resolution=temporalLevel,
+            time_resolution=time_resolution,
             time_agg_method=time_agg_method,
             min_lat=south,
             max_lat=north,
@@ -125,7 +116,8 @@ def timeseries(request):
             time_series_aggregation_method=ts_agg_method,
         )
 
-        fig = go.Figure([go.Scatter(x=ts['time'], y=ts["t2m"])])
+        short_variable = get_variable_short_name(variable)
+        fig = go.Figure([go.Scatter(x=ts['time'], y=ts[short_variable])])
 
         json_fig = fig.to_json()
         json_data = json.loads(json_fig)
