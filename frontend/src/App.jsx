@@ -11,7 +11,7 @@ import './App.css'
 function App() {
 
   const [startDate, setStartDate] = useState(dayjs("2023-01-01T00:00Z"));
-  const [endDate, setEndDate] = useState(dayjs("2023-01-31T00:00Z"));
+  const [endDate, setEndDate] = useState(dayjs("2023-01-31T23:00Z"));
   const [variable, setVariable] = useState("2m Temperature");
   const [htmlString, setHtml] = useState("");
   const [timeSeriesImage, setImageRecieved] = useState({});
@@ -29,27 +29,27 @@ function App() {
     endDateTime: endDate,
     temporalLevel: "day",
     aggLevel: "mean",
-    spatialLevel: "2.0",
+    // spatialLevel: "2.0",
     north: 84,
     south: 59,
     east: -10,
     west: -74,
-    secondAgg: "",
-    comparison: "",
-    value: 285,
-    downloadOption: "",
+    // secondAgg: "",
+    // comparison: "",
+    // value: 285,
+    // downloadOption: "",
   });
 
   useEffect(() => {
     setFormData((prev) => ({
-      ...prev, 
+      ...prev,
       variable: variable,
       startDateTime: startDate,
-      endDateTime: endDate,  
-    }))        
+      endDateTime: endDate,
+    }))
   }, [variable, startDate, endDate]);
 
-  
+
   const handleChange = (e) => {
     let myValue;
     const { name, value } = e.target;
@@ -114,15 +114,15 @@ function App() {
           },
         }));
       }
-    }   
+    }
     // setTemporalLevelSelected(value !== "");
   };
 
-  const queryData = async () => {    
+  const queryData = async () => {
     try {
       const response = await fetch("/api/query/", {
         method: "POST",
-        headers: {          
+        headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
@@ -130,7 +130,7 @@ function App() {
 
       if (response.ok) {
         const jsonData = await response.json();
-        setHtml(jsonData);        
+        setHtml(jsonData);
       }
       else {
         const errorResponse = await response.json();
@@ -141,7 +141,7 @@ function App() {
           errorResponse.error
         );
       }
-    } catch(error) {
+    } catch (error) {
       console.error("Error fetching data", error)
     }
   }
@@ -171,7 +171,7 @@ function App() {
 
   const handleTimeSeries = async (e) => {
     if (e) e.preventDefault();
-  
+
     if (formData.variable === "") {
       // If not, display an error message or perform any other action to prompt the user to select a temporal level
       alert(
@@ -423,7 +423,7 @@ function App() {
       }
     } catch (error) {
       console.error("Error requesting Find Time:", error);
-    }  
+    }
   }
 
   const handleFindArea = async (e) => {
@@ -508,36 +508,36 @@ function App() {
       }
     } catch (error) {
       console.error("Error requesting Find Area:", error);
-    }  
+    }
   }
 
   return (
     <>
-      <Header/>
+      <Header />
       <div className="main_wrapper">
-        <Sidebar 
-          variable={formData.variable} 
-          setVariable = {setVariable}
+        <Sidebar
+          variable={formData.variable}
+          setVariable={setVariable}
           startDate={startDate}
           setStartDate={setStartDate}
           endDate={endDate}
           setEndDate={setEndDate}
           formData={formData}
           handleChange={handleChange}
-          queryData={queryData}/>
+          queryData={queryData} />
         <div className="main_content">
-          <MyMap/>
-          <Tabs 
+          <MyMap />
+          <Tabs
             formData={formData}
-            htmlString={htmlString} 
-            handleTimeSeries={handleTimeSeries} 
+            htmlString={htmlString}
+            handleTimeSeries={handleTimeSeries}
             timeSeriesImage={timeSeriesImage}
             handleHeatMap={handleHeatMap}
             heatMapImage={heatMapImage}
             handleFindTime={handleFindTime}
             findTimeImage={findTimeImage}
             handleFindArea={handleFindArea}
-            findAreaImage={findAreaImage}/>
+            findAreaImage={findAreaImage} />
         </div>
       </div>
     </>
