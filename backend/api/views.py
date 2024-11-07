@@ -11,8 +11,14 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from shapely.geometry import Polygon
 
-from .iharp_query.query import get_raster, get_timeseries, get_heatmap, find_time_pyramid, find_area_baseline, \
-    get_variable_short_name
+from .iharp_query.query import (
+    get_raster,
+    get_timeseries,
+    get_heatmap,
+    find_time_pyramid,
+    find_area_baseline,
+    get_variable_short_name,
+)
 from .serializers import QuerySeriazlier, TimeSeriesSerializer, FindTimeSerializer
 
 logger = logging.getLogger(__name__)
@@ -117,7 +123,7 @@ def timeseries(request):
         )
 
         short_variable = get_variable_short_name(variable)
-        fig = go.Figure([go.Scatter(x=ts['time'], y=ts[short_variable])])
+        fig = go.Figure([go.Scatter(x=ts["time"], y=ts[short_variable])])
 
         json_fig = fig.to_json()
         json_data = json.loads(json_fig)
@@ -131,7 +137,7 @@ def timeseries(request):
 @api_view(["POST"])
 def heatmap(request):
     logger.info("Request for heat map")
-    # Can just ues the time series serializer since it's 
+    # Can just ues the time series serializer since it's
     # dealing with the same data
     serializer = TimeSeriesSerializer(data=request.data)
 
@@ -144,25 +150,14 @@ def heatmap(request):
         south = round(float(request.data.get("south")), 3)
         east = round(float(request.data.get("east")), 3)
         west = round(float(request.data.get("west")), 3)
-        startDateTime = request.data.get("startDateTime")
-        endDateTime = request.data.get("endDateTime")
+        start_datetime = request.data.get("startDateTime")
+        end_datetime = request.data.get("endDateTime")
         temporalLevel = request.data.get("temporalLevel")
         time_agg_method = request.data.get("aggLevel")
         hm_agg_method = request.data.get("secondAgg")
 
-        start_dt = parse_datetime(startDateTime)
-        end_dt = parse_datetime(endDateTime)
-
-        # Convert to naive datetimes (if they have timezone info)
-        if start_dt and start_dt.tzinfo is not None:
-            start_dt = make_naive(start_dt)
-
-        if end_dt and end_dt.tzinfo is not None:
-            end_dt = make_naive(end_dt)
-
-        # Format the datetimes to "YYYY-MM-DD HH:MM:SS"
-        formatted_start = start_dt.strftime("%Y-%m-%d %H:%M:%S") if start_dt else None
-        formatted_end = end_dt.strftime("%Y-%m-%d %H:%M:%S") if end_dt else None
+        formatted_start = format_datetime_string(start_datetime)
+        formatted_end = format_datetime_string(end_datetime)
 
         hm = get_heatmap(
             variable="2m_temperature",
@@ -175,10 +170,7 @@ def heatmap(request):
             heatmap_aggregation_method=hm_agg_method,
         )
         fig = go.Figure(data=go.Heatmap(x=hm["longitude"], y=hm["latitude"], z=hm["t2m"], colorscale="RdBu_r"))
-        fig.update_layout(
-            yaxis=dict(scaleanchor="x", scaleratio=1),
-            xaxis=dict(constrain="domain")
-        )
+        fig.update_layout(yaxis=dict(scaleanchor="x", scaleratio=1), xaxis=dict(constrain="domain"))
         json_fig = fig.to_json()
         json_data = json.loads(json_fig)
 
@@ -202,35 +194,20 @@ def findTime(request):
         south = round(float(request.data.get("south")), 3)
         east = round(float(request.data.get("east")), 3)
         west = round(float(request.data.get("west")), 3)
-        startDateTime = request.data.get("startDateTime")
-        endDateTime = request.data.get("endDateTime")
+        start_datetime = request.data.get("startDateTime")
+        end_datetime = request.data.get("endDateTime")
         temporalLevel = request.data.get("temporalLevel")
         time_agg_method = request.data.get("aggLevel")
         ts_agg_method = request.data.get("secondAgg")
         filter_predicate = request.data.get("filterPredicate")
         filter_value = request.data.get("filterValue")
 
-        start_dt = parse_datetime(startDateTime)
-        end_dt = parse_datetime(endDateTime)
-
-        if start_dt and start_dt.tzinfo is not None:
-            start_dt = make_naive(start_dt)
-
-        if end_dt and end_dt.tzinfo is not None:
-            end_dt = make_naive(end_dt)
-
-        formatted_start = start_dt.strftime("%Y-%m-%d %H:%M:%S") if start_dt else None
-        formatted_end = end_dt.strftime("%Y-%m-%d %H:%M:%S") if end_dt else None
+        formatted_start = format_datetime_string(start_datetime)
+        formatted_end = format_datetime_string(end_datetime)
 
         # TODO: Replace temporary static variables below:
-        ts_agg_method = "mean"
-        variable = "2m_temperature"
-        filter_predicate = ">"
-        filter_value = 263
-        temporalLevel = "year"
-        time_agg_method = "mean"
         ### Add check if temporal agg level is larger than the difference between start/end throw some error:
-        # ie if tempAgg is 'year' but start - end = 2 months. That doesn't make sense. 
+        # ie if tempAgg is 'year' but start - end = 2 months. That doesn't make sense.
 
         ft = find_time_pyramid(
             variable=variable,
@@ -244,7 +221,7 @@ def findTime(request):
             max_lon=-10,
             time_series_aggregation_method="mean",
             filter_predicate=">",
-            filter_value=263,
+            filter_value=250,
         ).compute()
 
         color_map = {True: "blue", False: "red"}
@@ -253,7 +230,8 @@ def findTime(request):
                 go.Scatter(
                     x=ft["time"],
                     y=ft["t2m"],
-                    marker=dict(size=15, color=[color_map[i] for i in ft["t2m"].values]),
+                    mode="lines+markers",
+                    marker=dict(size=12, color=[color_map[i] for i in ft["t2m"].values]),
                     line=dict(color="lightgray"),
                 )
             ]
@@ -361,7 +339,8 @@ def findArea(request):
                     "sourcetype": "raster",
                     "sourceattribution": "United States Geological Survey",
                     "source": [
-                        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
+                        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                    ],
                 }
             ],
             margin={"r": 0, "t": 0, "l": 0, "b": 0},
