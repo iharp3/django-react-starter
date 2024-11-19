@@ -8,34 +8,37 @@ import '../styles/sidebar.css'
 
 // Once the date is changed the tempRes and Agglevel get reset in formdata back to their useState initial values
 const Sidebar = ({
-    variable, 
-    setVariable, 
-    startDate, 
-    setStartDate, 
-    endDate, 
-    setEndDate, 
-    formData, 
+    variable,
+    setVariable,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    formData,
     handleChange,
-    queryData,}) => {
+    queryData, }) => {
 
     return (
         <>
-            <div className="sidebar_wrapper">   
-                <div className="padding"/>
-                <Input 
-                    val={variable} 
-                    setVal={setVariable} 
-                    label={"Variable"} 
-                    options={["2m Temperature", "Surface Pressure", "Total Precipitation"]}
-                    sx={{width: "80%"}}
+            <div className="sidebar_wrapper">
+                <div className="padding" />
+                <Input
+                    val={variable}
+                    setVal={setVariable}
+                    label={"Variable"}
+                    options={["2m_temperature",
+                        //"Surface Pressure",
+                        //Total Precipitation",
+                    ]}
+                    sx={{ width: "65%" }}
                     size={"small"}
-                    varLabel={"variable"}/>
-                <DateInput 
-                    date={startDate} 
+                    varLabel={"variable"} />
+                <DateInput
+                    date={startDate}
                     setDate={setStartDate}
-                    label="Start Date & Time"/>
-                <DateInput 
-                    date={endDate} 
+                    label="Start Date & Time" />
+                <DateInput
+                    date={endDate}
                     setDate={setEndDate}
                     label="End Date & Time"/>  
                 <RadioButtons

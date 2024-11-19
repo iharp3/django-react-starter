@@ -10,12 +10,17 @@ from .utils.get_whole_period import (
 )
 from .utils.const import long_short_name_dict, RAW_DATA_PATH, AGG_DATA_PATH
 
+
+def get_variable_short_name(variable):
+    return long_short_name_dict[variable]
+
+
 def gen_file_list(
-    variable: str,
-    start_datetime: str,
-    end_datetime: str,
-    time_resolution: str,  # e.g., "hour", "day", "month", "year"
-    time_agg_method: str,  # e.g., "mean", "max", "min"
+        variable: str,
+        start_datetime: str,
+        end_datetime: str,
+        time_resolution: str,  # e.g., "hour", "day", "month", "year"
+        time_agg_method: str,  # e.g., "mean", "max", "min"
 ):
     file_list = []
     if time_resolution == "hour":
@@ -32,16 +37,16 @@ def gen_file_list(
 
 
 def get_raster(
-    variable: str,
-    start_datetime: str,
-    end_datetime: str,
-    time_resolution: str,  # e.g., "hour", "day", "month", "year"
-    time_agg_method: str,  # e.g., "mean", "max", "min"
-    min_lat: float,
-    max_lat: float,
-    min_lon: float,
-    max_lon: float,
-    # spatial_resolution: float,  # e.g., 0.25, 0.5, 1.0, 2.5, 5.0
+        variable: str,
+        start_datetime: str,
+        end_datetime: str,
+        time_resolution: str,  # e.g., "hour", "day", "month", "year"
+        time_agg_method: str,  # e.g., "mean", "max", "min"
+        min_lat: float,
+        max_lat: float,
+        min_lon: float,
+        max_lon: float,
+        # spatial_resolution: float,  # e.g., 0.25, 0.5, 1.0, 2.5, 5.0
 ):
     file_list = gen_file_list(variable, start_datetime, end_datetime, time_resolution, time_agg_method)
     ds_list = []
@@ -57,16 +62,16 @@ def get_raster(
 
 
 def get_timeseries(
-    variable: str,
-    start_datetime: str,
-    end_datetime: str,
-    time_resolution: str,  # e.g., "hour", "day", "month", "year"
-    time_agg_method: str,  # e.g., "mean", "max", "min"
-    min_lat: float,
-    max_lat: float,
-    min_lon: float,
-    max_lon: float,
-    time_series_aggregation_method: str,  # e.g., "mean", "max", "min"
+        variable: str,
+        start_datetime: str,
+        end_datetime: str,
+        time_resolution: str,  # e.g., "hour", "day", "month", "year"
+        time_agg_method: str,  # e.g., "mean", "max", "min"
+        min_lat: float,
+        max_lat: float,
+        min_lon: float,
+        max_lon: float,
+        time_series_aggregation_method: str,  # e.g., "mean", "max", "min"
 ):
     ds = get_raster(
         variable,
@@ -89,13 +94,13 @@ def get_timeseries(
 
 
 def get_mean_heatmap(
-    variable: str,
-    start_datetime: str,
-    end_datetime: str,
-    min_lat: float,
-    max_lat: float,
-    min_lon: float,
-    max_lon: float,
+        variable: str,
+        start_datetime: str,
+        end_datetime: str,
+        min_lat: float,
+        max_lat: float,
+        min_lon: float,
+        max_lon: float,
 ):
     years, months, days, hours = get_whole_period_between(start_datetime, end_datetime)
     year_hours = []
@@ -160,13 +165,13 @@ def get_mean_heatmap(
 
 
 def get_min_heatmap(
-    variable: str,
-    start_datetime: str,
-    end_datetime: str,
-    min_lat: float,
-    max_lat: float,
-    min_lon: float,
-    max_lon: float,
+        variable: str,
+        start_datetime: str,
+        end_datetime: str,
+        min_lat: float,
+        max_lat: float,
+        min_lon: float,
+        max_lon: float,
 ):
     years, months, days, hours = get_whole_period_between(start_datetime, end_datetime)
     xrds_list = []
@@ -216,13 +221,13 @@ def get_min_heatmap(
 
 
 def get_max_heatmap(
-    variable: str,
-    start_datetime: str,
-    end_datetime: str,
-    min_lat: float,
-    max_lat: float,
-    min_lon: float,
-    max_lon: float,
+        variable: str,
+        start_datetime: str,
+        end_datetime: str,
+        min_lat: float,
+        max_lat: float,
+        min_lon: float,
+        max_lon: float,
 ):
     years, months, days, hours = get_whole_period_between(start_datetime, end_datetime)
     xrds_list = []
@@ -271,14 +276,14 @@ def get_max_heatmap(
 
 
 def get_heatmap(
-    variable: str,
-    start_datetime: str,
-    end_datetime: str,
-    min_lat: float,
-    max_lat: float,
-    min_lon: float,
-    max_lon: float,
-    heatmap_aggregation_method: str,  # e.g., "mean", "max", "min"
+        variable: str,
+        start_datetime: str,
+        end_datetime: str,
+        min_lat: float,
+        max_lat: float,
+        min_lon: float,
+        max_lon: float,
+        heatmap_aggregation_method: str,  # e.g., "mean", "max", "min"
 ):
     if heatmap_aggregation_method == "mean":
         return get_mean_heatmap(
@@ -315,18 +320,18 @@ def get_heatmap(
 
 
 def find_time_baseline(
-    variable: str,
-    start_datetime: str,
-    end_datetime: str,
-    time_resolution: str,  # e.g., "hour", "day", "month", "year"
-    time_agg_method: str,  # e.g., "mean", "max", "min"
-    min_lat: float,
-    max_lat: float,
-    min_lon: float,
-    max_lon: float,
-    time_series_aggregation_method: str,  # e.g., "mean", "max", "min"
-    filter_predicate: str,  # e.g., ">", "<", "==", "!=", ">=", "<="
-    filter_value: float,
+        variable: str,
+        start_datetime: str,
+        end_datetime: str,
+        time_resolution: str,  # e.g., "hour", "day", "month", "year"
+        time_agg_method: str,  # e.g., "mean", "max", "min"
+        min_lat: float,
+        max_lat: float,
+        min_lon: float,
+        max_lon: float,
+        time_series_aggregation_method: str,  # e.g., "mean", "max", "min"
+        filter_predicate: str,  # e.g., ">", "<", "==", "!=", ">=", "<="
+        filter_value: float,
 ):
     ts = get_timeseries(
         variable,
@@ -358,18 +363,18 @@ def find_time_baseline(
 
 
 def find_time_pyramid(
-    variable: str,
-    start_datetime: str,
-    end_datetime: str,
-    time_resolution: str,  # e.g., "hour", "day", "month", "year"
-    time_agg_method: str,  # e.g., "mean", "max", "min"
-    min_lat: float,
-    max_lat: float,
-    min_lon: float,
-    max_lon: float,
-    time_series_aggregation_method: str,  # e.g., "mean", "max", "min"
-    filter_predicate: str,  # e.g., ">", "<", "==", ">=", "<="
-    filter_value: float,
+        variable: str,
+        start_datetime: str,
+        end_datetime: str,
+        time_resolution: str,  # e.g., "hour", "day", "month", "year"
+        time_agg_method: str,  # e.g., "mean", "max", "min"
+        min_lat: float,
+        max_lat: float,
+        min_lon: float,
+        max_lon: float,
+        time_series_aggregation_method: str,  # e.g., "mean", "max", "min"
+        filter_predicate: str,  # e.g., ">", "<", "==", ">=", "<="
+        filter_value: float,
 ):
     """
     Optimizations hueristics:
@@ -411,18 +416,18 @@ def find_time_pyramid(
 
 
 def find_time_pyramid_hour(
-    variable: str,
-    start_datetime: str,
-    end_datetime: str,
-    time_resolution: str,  # e.g., "hour", "day", "month", "year"
-    time_agg_method: str,  # e.g., "mean", "max", "min"
-    min_lat: float,
-    max_lat: float,
-    min_lon: float,
-    max_lon: float,
-    time_series_aggregation_method: str,  # e.g., "mean", "max", "min"
-    filter_predicate: str,  # e.g., ">", "<", "==", ">=", "<="
-    filter_value: float,
+        variable: str,
+        start_datetime: str,
+        end_datetime: str,
+        time_resolution: str,  # e.g., "hour", "day", "month", "year"
+        time_agg_method: str,  # e.g., "mean", "max", "min"
+        min_lat: float,
+        max_lat: float,
+        min_lon: float,
+        max_lon: float,
+        time_series_aggregation_method: str,  # e.g., "mean", "max", "min"
+        filter_predicate: str,  # e.g., ">", "<", "==", ">=", "<="
+        filter_value: float,
 ):
     """
     Using yearly, monthly and daily pre-aggregation to batch set True/False for hourly find time query
@@ -451,25 +456,25 @@ def find_time_pyramid_hour(
                 if curr_year_min > filter_value:
                     print(f"{year}: min > filter, True")
                     year_determined = True
-                    result[short_variable].loc[str(year) : str(year)] = True
+                    result[short_variable].loc[str(year): str(year)] = True
                 elif curr_year_max <= filter_value:
                     print(f"{year}: max <= filter, False")
                     year_determined = True
-                    result[short_variable].loc[str(year) : str(year)] = False
+                    result[short_variable].loc[str(year): str(year)] = False
             elif filter_predicate == "<":
                 if curr_year_min >= filter_value:
                     print(f"{year}: min >= filter, False")
                     year_determined = True
-                    result[short_variable].loc[str(year) : str(year)] = False
+                    result[short_variable].loc[str(year): str(year)] = False
                 elif curr_year_max < filter_value:
                     print(f"{year}: max < filter, True")
                     year_determined = True
-                    result[short_variable].loc[str(year) : str(year)] = True
+                    result[short_variable].loc[str(year): str(year)] = True
             elif filter_predicate == "==":
                 if curr_year_min > filter_value or curr_year_max < filter_value:
                     print(f"{year}: min > filter or max < filter, False")
                     year_determined = True
-                    result[short_variable].loc[str(year) : str(year)] = False
+                    result[short_variable].loc[str(year): str(year)] = False
             if not year_determined:
                 # add monthes to months
                 months = months + [f"{year}-{month:02d}" for month in range(1, 13)]
@@ -576,16 +581,16 @@ def find_time_pyramid_hour(
 
 
 def find_area_baseline(
-    variable: str,
-    start_datetime: str,
-    end_datetime: str,
-    min_lat: float,
-    max_lat: float,
-    min_lon: float,
-    max_lon: float,
-    heatmap_aggregation_method: str,  # e.g., "mean", "max", "min"
-    filter_predicate: str,  # e.g., ">", "<", "==", "!=", ">=", "<="
-    filter_value: float,
+        variable: str,
+        start_datetime: str,
+        end_datetime: str,
+        min_lat: float,
+        max_lat: float,
+        min_lon: float,
+        max_lon: float,
+        heatmap_aggregation_method: str,  # e.g., "mean", "max", "min"
+        filter_predicate: str,  # e.g., ">", "<", "==", "!=", ">=", "<="
+        filter_value: float,
 ):
     hm = get_heatmap(
         variable,

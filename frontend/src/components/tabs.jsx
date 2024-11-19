@@ -7,6 +7,7 @@ import HeatMap from "./HeatMap";
 import FindTime from "./FindTime";
 import FindArea from "./FindArea";
 import '../styles/tabs.css';
+import { Button } from '@mui/material';
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -20,7 +21,7 @@ function CustomTabPanel(props) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{width: "100%", height: "100%"}}>{children}</Box>}
+      {value === index && <Box sx={{ width: "100%", height: "100%" }}>{children}</Box>}
     </div>
   );
 }
@@ -53,12 +54,12 @@ const Tabs = ({ formData, tsAggMethod, setTsAggMethod, htmlString, handleTimeSer
         <Box sx={{ width: '100%'}}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider'}}>
             <TabMui value={tabNum} onChange={handleTabChange} aria-label="Navigation">
-              <Tab label="Raster Data" />
+              <Tab label="Raster Info" />
               <Tab label="Time Series" />
               <Tab label="Heatmap" />
               {/* For Both below, need predicat input(>, <, =, !=) and some comparison value input. */}
-              <Tab label="Find Times Results" />
-              <Tab label="Find Area Results" />
+              <Tab label="Find Time" />
+              <Tab label="Find Area" />
             </TabMui>
           </Box>
           <div className="page_wrapper">
@@ -68,25 +69,28 @@ const Tabs = ({ formData, tsAggMethod, setTsAggMethod, htmlString, handleTimeSer
                   <div className="no_content">No Content</div>
                 ) : (
                   <pre className="raster_content">{`${htmlString}`}</pre>
-                )}      
-              </div>        
+                )}
+              </div>
+              <div className="download_btn">
+                <Button variant="outlined" sx={{ marginBottom: "48px", marginTop: "auto" }}>Download(todo)</Button>
+              </div>
             </CustomTabPanel>
             <CustomTabPanel sx={{ width: "100%", height: "255px"}} value={tabNum} index={1} {...a11yProps(1)}>
               <TimeSeries 
-                handleTimeSeries={handleTimeSeries} 
-                timeSeriesImage={timeSeriesImage} 
-                aggMethod={tsAggMethod} 
-                handleChange={setTsAggMethod}
-                formData={formData}/>
+                  handleTimeSeries={handleTimeSeries} 
+                  timeSeriesImage={timeSeriesImage} 
+                  aggMethod={tsAggMethod} 
+                  handleChange={setTsAggMethod}
+                  formData={formData}/>
             </CustomTabPanel>
-            <CustomTabPanel sx={{ width: "100%", height: "255px"}} value={tabNum} index={2} {...a11yProps(2)}>
-              <HeatMap handleHeatMap={handleHeatMap} heatMapImage={heatMapImage}/>
+            <CustomTabPanel sx={{ width: "100%", height: "255px" }} value={tabNum} index={2} {...a11yProps(2)}>
+              <HeatMap handleHeatMap={handleHeatMap} heatMapImage={heatMapImage} />
             </CustomTabPanel>
             <CustomTabPanel value={tabNum} index={3} {...a11yProps(3)}>
-              <FindTime handleFindTime={handleFindTime} findTimeImage={findTimeImage}/>
+              <FindTime handleFindTime={handleFindTime} findTimeImage={findTimeImage} />
             </CustomTabPanel>
             <CustomTabPanel value={tabNum} index={4} {...a11yProps(4)}>
-              <FindArea findAreaImage={findAreaImage} handleFindArea={handleFindArea} formData={formData}/>
+              <FindArea findAreaImage={findAreaImage} handleFindArea={handleFindArea} formData={formData} />
             </CustomTabPanel>
           </div>
         </Box>
@@ -104,7 +108,7 @@ Tabs.propTypes = {
   timeSeriesImage: PropTypes.object,
   handleHeatMap: PropTypes.func,
   heatMapImage: PropTypes.object,
-  handleFindTime: PropTypes.func, 
+  handleFindTime: PropTypes.func,
   findTimeImage: PropTypes.object,
   handleFindArea: PropTypes.func,
   findAreaImage: PropTypes.object,
