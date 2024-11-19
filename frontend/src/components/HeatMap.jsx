@@ -3,7 +3,7 @@ import { Button } from '@mui/material';
 import Plot from 'react-plotly.js';
 import "../styles/heatmap.css";
 
-// BUG, with areas like Alaska, it doesn't display.
+// TODO,bug with areas where the height is a bit larger than the width.
 const HeatMap = ({ handleHeatMap, heatMapImage }) => {
 
   const heatmapLayout = {

@@ -13,6 +13,8 @@ function App() {
   const [startDate, setStartDate] = useState(dayjs("2023-01-01T00:00Z"));
   const [endDate, setEndDate] = useState(dayjs("2023-01-31T00:00Z"));
   const [variable, setVariable] = useState("2m Temperature");
+  const [tsAggMethod, setTsAggMethod] = useState("mean");
+  const [hmAggMethod, seHmsAggMethod] = useState("mean");
   const [htmlString, setHtml] = useState("");
   const [timeSeriesImage, setImageRecieved] = useState({});
   const [heatMapImage, setHeatMap] = useState({});
@@ -34,10 +36,12 @@ function App() {
     south: 59,
     east: -10,
     west: -74,
+    // TODO replace this
     secondAgg: "",
     comparison: "",
     value: 285,
     downloadOption: "",
+    ts_agg_method: tsAggMethod,
   });
 
   useEffect(() => {
@@ -49,8 +53,15 @@ function App() {
     }))        
   }, [variable, startDate, endDate]);
 
-  
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      ts_agg_method: tsAggMethod
+    }))
+  }, [tsAggMethod])
+
   const handleChange = (e) => {
+    console.log(e );
     let myValue;
     const { name, value } = e.target;
     // Convert the input value to a number
@@ -529,6 +540,8 @@ function App() {
           <MyMap/>
           <Tabs 
             formData={formData}
+            tsAggMethod={tsAggMethod}
+            setTsAggMethod={setTsAggMethod}
             htmlString={htmlString} 
             handleTimeSeries={handleTimeSeries} 
             timeSeriesImage={timeSeriesImage}

@@ -192,7 +192,7 @@ def heatmap(request):
         )
         json_fig = fig.to_json()        
         json_data = json.loads(json_fig)
-
+        
         return JsonResponse(json_data, status=201)
 
     logger.error("Invalid data: %s", serializer.errors)

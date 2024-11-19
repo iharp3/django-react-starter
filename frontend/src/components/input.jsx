@@ -6,7 +6,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
 
-const Input = ({ val, setVal, label, options, sx, size }) => {
+const Input = ({ val, setVal, label, options, sx, size, name }) => {
 
     const handleChange = (event) => {
         setVal(event.target.value);
@@ -21,7 +21,8 @@ const Input = ({ val, setVal, label, options, sx, size }) => {
                     id="demo-simple-select"
                     value={!val ? options[0] : val}
                     label={label}
-                    onChange={handleChange}                    
+                    onChange={handleChange} 
+                    name={name}                   
                 >
                     {options.map((option) => (
                         <MenuItem key={option} value={option}>
@@ -42,6 +43,7 @@ Input.propTypes = {
         PropTypes.string),
     sx: PropTypes.object,
     size: PropTypes.string,
+    name: PropTypes.string,
 };
 
 export default Input;

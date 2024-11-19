@@ -38,8 +38,20 @@ const Sidebar = ({
                     date={endDate} 
                     setDate={setEndDate}
                     label="End Date & Time"/>  
-                <RadioButtons label="Temporal Resolution" options = {["hour", "day", "month", "year"]} var={formData.temporalLevel} setVal={handleChange} subLabel="temporalLevel"/>  
-                <RadioButtons label="Temporal Aggregation" options = {["min", "max", "mean"]} var={formData.aggLevel} setVal={handleChange} subLabel="aggLevel"/>  
+                <RadioButtons
+                    label="Temporal Resolution" 
+                    options = {["hour", "day", "month", "year"]} 
+                    var={formData.temporalLevel} 
+                    setVal={handleChange} 
+                    subLabel="temporalLevel"
+                    defaultValue={"day"}/>  
+                <RadioButtons 
+                    label="Temporal Aggregation" 
+                    options = {["min", "max", "mean"]} 
+                    var={formData.aggLevel} 
+                    setVal={handleChange} 
+                    subLabel="aggLevel"
+                    defaultValue={"mean"}/>  
                 <div className="hr"/>                         
                 <CardinalDirections formData={formData} handleChange={handleChange}/>
                 <div className="hr"/>

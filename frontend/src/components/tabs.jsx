@@ -39,11 +39,11 @@ function a11yProps(index) {
   };
 }
 
-const Tabs = ({ formData, htmlString, handleTimeSeries, timeSeriesImage, handleHeatMap, heatMapImage, handleFindTime, findTimeImage, findAreaImage, handleFindArea }) => {
+const Tabs = ({ formData, tsAggMethod, setTsAggMethod, htmlString, handleTimeSeries, timeSeriesImage, handleHeatMap, heatMapImage, handleFindTime, findTimeImage, findAreaImage, handleFindArea }) => {
 
   const [tabNum, setTab] = useState(0);
 
-  const handleChange = (event, newValue) => {
+  const handleTabChange = (event, newValue) => {
     setTab(newValue);
   };
 
@@ -52,7 +52,7 @@ const Tabs = ({ formData, htmlString, handleTimeSeries, timeSeriesImage, handleH
       <div className="tabs_wrapper">
         <Box sx={{ width: '100%'}}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider'}}>
-            <TabMui value={tabNum} onChange={handleChange} aria-label="Navigation">
+            <TabMui value={tabNum} onChange={handleTabChange} aria-label="Navigation">
               <Tab label="Raster Data" />
               <Tab label="Time Series" />
               <Tab label="Heatmap" />
@@ -72,7 +72,12 @@ const Tabs = ({ formData, htmlString, handleTimeSeries, timeSeriesImage, handleH
               </div>        
             </CustomTabPanel>
             <CustomTabPanel sx={{ width: "100%", height: "255px"}} value={tabNum} index={1} {...a11yProps(1)}>
-              <TimeSeries handleTimeSeries={handleTimeSeries} timeSeriesImage={timeSeriesImage}/>
+              <TimeSeries 
+                handleTimeSeries={handleTimeSeries} 
+                timeSeriesImage={timeSeriesImage} 
+                aggMethod={tsAggMethod} 
+                handleChange={setTsAggMethod}
+                formData={formData}/>
             </CustomTabPanel>
             <CustomTabPanel sx={{ width: "100%", height: "255px"}} value={tabNum} index={2} {...a11yProps(2)}>
               <HeatMap handleHeatMap={handleHeatMap} heatMapImage={heatMapImage}/>
@@ -92,6 +97,8 @@ const Tabs = ({ formData, htmlString, handleTimeSeries, timeSeriesImage, handleH
 
 Tabs.propTypes = {
   formData: PropTypes.object,
+  setTsAggMethod: PropTypes.func,
+  tsAggMethod: PropTypes.string,
   htmlString: PropTypes.string,
   handleTimeSeries: PropTypes.func,
   timeSeriesImage: PropTypes.object,
