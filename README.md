@@ -35,10 +35,11 @@ tmux new -d -s django "python manage.py runserver 0.0.0.0:8000"
 
 # TODO
 
-1. Default radio button: "day", "mean"
-2. Larger font for radio button and region input
-3. Remove unused query parameter from formData
-4. A file for "RASTER DATA" tab, add download button to the tab
-5. Time series need second aggregation
-6. Heatmap need second aggregation
-7. [api.views-INFO]: values
+1. Time series need second aggregation
+2. Heatmap need second aggregation
+3. Find time need second aggregation, predicate and input value
+4. Find area need second aggregation, predicate and input value
+5. Default radio button: "day", "mean"
+6. Larger font for radio button and region input
+7. Remove unused query parameter from formData
+8. [api.views-INFO]: values
