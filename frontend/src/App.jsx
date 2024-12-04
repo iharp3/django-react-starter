@@ -12,9 +12,10 @@ function App() {
 
   const [startDate, setStartDate] = useState(dayjs("2023-01-01T00:00Z"));
   const [endDate, setEndDate] = useState(dayjs("2023-01-31T00:00Z"));
-  const [variable, setVariable] = useState("2m_temperature");
-  const [tsAggMethod, setTsAggMethod] = useState("mean");
-  const [hmAggMethod, seHmsAggMethod] = useState("mean");
+  const [variable, setVariable] = useState("2M Temperature");
+  const [secondAgg, setSecondAggMethod] = useState("mean");
+  const [comparisonVal, setComparisonVal] = useState(285);
+  const [predicate, setPredicate] = useState("<");
   const [htmlString, setHtml] = useState("");
   const [timeSeriesImage, setImageRecieved] = useState({});
   const [heatMapImage, setHeatMap] = useState({});
@@ -26,7 +27,7 @@ function App() {
 
   const [formData, setFormData] = useState({
     requestType: "",
-    variable: variable,
+    variable: "2M Temperature",
     startDateTime: startDate,
     endDateTime: endDate,
     temporalLevel: "day",
@@ -36,12 +37,10 @@ function App() {
     south: 59,
     east: -10,
     west: -74,
-    // TODO replace this
-    secondAgg: "",
-    // comparison: "",
-    // value: 285,
     // downloadOption: "",
-    ts_agg_method: tsAggMethod,
+    secondAgg: secondAgg,
+    filterValue: comparisonVal,
+    filterPredicate: predicate,
   });
 
   useEffect(() => {
@@ -56,12 +55,15 @@ function App() {
   useEffect(() => {
     setFormData((prev) => ({
       ...prev,
-      ts_agg_method: tsAggMethod
+      filterValue: comparisonVal,
+      filterPredicate: predicate,
+      secondAgg: secondAgg,
     }))
-  }, [tsAggMethod])
+  }, [secondAgg, comparisonVal, predicate])
 
   const handleChange = (e) => {
-    console.log(e );
+    // console.log(e);
+    console.log(formData);
     let myValue;
     const { name, value } = e.target;
     // Convert the input value to a number
@@ -230,8 +232,7 @@ function App() {
     formData.requestType = "Time Series";
     formData.startDateTime = startDate;
     formData.endDateTime = endDate;
-    // TODO: Change this once dropdown/radio is added
-    formData.secondAgg = "max";
+    formData.secondAgg = secondAgg;
     try {
 
       // console.log(formData);
@@ -316,8 +317,7 @@ function App() {
     formData.requestType = "Heap Map";
     formData.startDateTime = startDate;
     formData.endDateTime = endDate;
-    // TODO: Change this once dropdown/radio is added
-    formData.secondAgg = "max";
+    formData.secondAgg = secondAgg;
     try {
 
       // console.log(formData);
@@ -402,8 +402,7 @@ function App() {
     formData.requestType = "Find Time";
     formData.startDateTime = startDate;
     formData.endDateTime = endDate;
-    // TODO: Change this once dropdown/radio is added
-    formData.secondAgg = "max";
+    formData.secondAgg = secondAgg;
     try {
       // console.log(formData);
       // Send request to the backend to fetch both time series data and image data
@@ -487,8 +486,7 @@ function App() {
     formData.requestType = "Find Area";
     formData.startDateTime = startDate;
     formData.endDateTime = endDate;
-    // TODO: Change this once dropdown/radio is added
-    formData.secondAgg = "max";
+    formData.secondAgg = secondAgg;
     try {
       // console.log(formData);
       // Send request to the backend to fetch both time series data and image data
@@ -540,8 +538,7 @@ function App() {
           <MyMap />
           <Tabs
             formData={formData}
-            tsAggMethod={tsAggMethod}
-            setTsAggMethod={setTsAggMethod}
+            setSecondAggMethod={setSecondAggMethod}
             htmlString={htmlString} 
             handleTimeSeries={handleTimeSeries} 
             timeSeriesImage={timeSeriesImage}
@@ -550,7 +547,9 @@ function App() {
             handleFindTime={handleFindTime}
             findTimeImage={findTimeImage}
             handleFindArea={handleFindArea}
-            findAreaImage={findAreaImage} />
+            findAreaImage={findAreaImage}
+            setComparisonVal={setComparisonVal} 
+            setPredicate={setPredicate}/>
         </div>
       </div>
     </>

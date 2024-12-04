@@ -1,15 +1,17 @@
 import json
+import os
 import logging
-
 import geopandas as gpd
 import plotly.express as px
 import plotly.graph_objs as go
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse
 from django.utils.dateparse import parse_datetime
 from django.utils.timezone import make_naive
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from shapely.geometry import Polygon
+import xarray as xr
+from io import BytesIO
 
 from .iharp_query.query import (
     get_raster,
@@ -34,7 +36,7 @@ def format_datetime_string(dt_input):
     to 2023-01-01 00:00:00
     """
     dt = parse_datetime(dt_input)
-    if dt and dt.tzinfo is not None:  # Convert to naive datetime (if they have timezone info)
+    if dt and dt.tzinfo is not None:
         dt = make_naive(dt)
     dt_formatted = dt.strftime("%Y-%m-%d %H:%M:%S") if dt else None
     return dt_formatted
@@ -48,6 +50,7 @@ def query(request):
         serializer.save()
         logger.info(request.data)
         variable = request.data.get("variable")
+        variable = variable.lower().replace(" ", "_")
         start_datetime = request.data.get("startDateTime")
         end_datetime = request.data.get("endDateTime")
         time_resolution = request.data.get("temporalLevel")
@@ -70,7 +73,7 @@ def query(request):
             max_lat=north,
             min_lon=west,
             max_lon=east,
-        )
+        )        
 
         response = ds.__str__()
 
@@ -79,23 +82,76 @@ def query(request):
     print("Serializer errors:", serializer.errors)
     return Response(serializer.errors, status=400)
 
+@api_view(["POST"])
+def download_query(request):
+    logger.info("Request for raster download")
+    serializer = QuerySeriazlier(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        logger.info(request.data)
+        variable = request.data.get("variable")
+        variable = variable.lower().replace(" ", "_")
+        start_datetime = request.data.get("startDateTime")
+        end_datetime = request.data.get("endDateTime")
+        time_resolution = request.data.get("temporalLevel")
+        time_agg_method = request.data.get("aggLevel")
+        north = round(float(request.data.get("north")), 3)
+        south = round(float(request.data.get("south")), 3)
+        east = round(float(request.data.get("east")), 3)
+        west = round(float(request.data.get("west")), 3)
+        rid = serializer.data["id"]
+
+        formatted_start = format_datetime_string(start_datetime)
+        formatted_end = format_datetime_string(end_datetime)
+
+        ds = get_raster(
+            variable=variable,
+            start_datetime=formatted_start,
+            end_datetime=formatted_end,
+            time_resolution=time_resolution,
+            time_agg_method=time_agg_method,
+            min_lat=south,
+            max_lat=north,
+            min_lon=west,
+            max_lon=east,
+        )
+
+        file_name = f"iHARPV_{rid}.nc"
+        file_path = f"tmp/data/{file_name}"
+        ds.to_netcdf(file_path)
+
+        if os.path.exists(file_path):
+
+            # TODO: Dynamically Delete written files.
+            
+            # def cleanup_file():
+            #     print("Attempted Cleanup")
+            #     if os.path.exists(file_path):
+            #         os.remove(file_path)
+            #         print(f"Removed {file_path}")
+
+            response = FileResponse(open(file_path, 'rb'), as_attachment=True)
+
+            # response.close_connection = cleanup_file
+            response['Content-Disposition'] = f'attachment; filename="{file_name}"'
+            return response
+        else:
+            return JsonResponse({"error": "File not found"}, status=404)
+
+    print("Serializer errors:", serializer.errors)
+    return Response(serializer.errors, status=400)
 
 @api_view(["POST"])
 def timeseries(request):
     logger.info("Request for time series")
     serializer = TimeSeriesSerializer(data=request.data)
 
-    # df =  ts.to_pandas()
-    # plotly go.figure()
-
-    # then some to_json
-    # Would need plotly in both frontend and backend
-    # Then send the json data to frontend, previously they wrote them to a json file but just pass the large json data
     if serializer.is_valid():
         logger.info(request.data)
         serializer.save()
 
         variable = request.data.get("variable")
+        variable = variable.lower().replace(" ", "_")
         start_datetime = request.data.get("startDateTime")
         end_datetime = request.data.get("endDateTime")
         time_resolution = request.data.get("temporalLevel")
@@ -146,6 +202,7 @@ def heatmap(request):
         serializer.save()
 
         variable = request.data.get("variable")
+        variable = variable.lower().replace(" ", "_")
         north = round(float(request.data.get("north")), 3)
         south = round(float(request.data.get("south")), 3)
         east = round(float(request.data.get("east")), 3)
@@ -160,7 +217,7 @@ def heatmap(request):
         formatted_end = format_datetime_string(end_datetime)
 
         hm = get_heatmap(
-            variable="2m_temperature",
+            variable=variable,
             start_datetime=formatted_start,
             end_datetime=formatted_end,
             min_lat=south,
@@ -190,6 +247,7 @@ def findTime(request):
         serializer.save()
 
         variable = request.data.get("variable")
+        variable = variable.lower().replace(" ", "_")
         north = round(float(request.data.get("north")), 3)
         south = round(float(request.data.get("south")), 3)
         east = round(float(request.data.get("east")), 3)
@@ -205,7 +263,7 @@ def findTime(request):
         formatted_start = format_datetime_string(start_datetime)
         formatted_end = format_datetime_string(end_datetime)
 
-        # TODO: Replace temporary static variables below:
+        # TODO: Replace temporary static variable for ts_agg_method below:
         ### Add check if temporal agg level is larger than the difference between start/end throw some error:
         # ie if tempAgg is 'year' but start - end = 2 months. That doesn't make sense.
 
@@ -215,13 +273,13 @@ def findTime(request):
             end_datetime=formatted_end,
             time_resolution=temporalLevel,
             time_agg_method=time_agg_method,
-            max_lat=85,
-            min_lat=60,
-            min_lon=-70,
-            max_lon=-10,
-            time_series_aggregation_method="mean",
-            filter_predicate=">",
-            filter_value=250,
+            max_lat=north,
+            min_lat=south,
+            min_lon=west,
+            max_lon=east,
+            time_series_aggregation_method=ts_agg_method,
+            filter_predicate=filter_predicate,
+            filter_value=float(filter_value),
         ).compute()
 
         color_map = {True: "blue", False: "red"}
@@ -256,6 +314,7 @@ def findArea(request):
         serializer.save()
 
         variable = request.data.get("variable")
+        variable = variable.lower().replace(" ", "_")
         north = round(float(request.data.get("north")), 3)
         south = round(float(request.data.get("south")), 3)
         east = round(float(request.data.get("east")), 3)
@@ -280,12 +339,7 @@ def findArea(request):
         formatted_start = start_dt.strftime("%Y-%m-%d %H:%M:%S") if start_dt else None
         formatted_end = end_dt.strftime("%Y-%m-%d %H:%M:%S") if end_dt else None
 
-        # TODO: Replace temporary static variables below:
-        ts_agg_method = "mean"
-        variable = "2m_temperature"
-        filter_predicate = ">"
-        filter_value = 260
-        ### Also need updated query.py
+        # TODO: Replace temporary static variables below
 
         fa = find_area_baseline(
             variable=variable,
@@ -297,7 +351,7 @@ def findArea(request):
             max_lon=east,
             heatmap_aggregation_method=fa_agg_method,
             filter_predicate=filter_predicate,
-            filter_value=filter_value,
+            filter_value=float(filter_value),
         )
 
         fa_low = fa.isel(latitude=slice(0, len(fa["latitude"]), 4), longitude=slice(0, len(fa["longitude"]), 4))

@@ -20,7 +20,7 @@ class Query(models.Model):
     )
 
     VARIABLE_CHOICES = (
-        ("2m_temperature", "2m_temperature"),
+        ("2M Temperature", "2M Temperature"),
         ("Surface Pressure", "surface_pressure"),
         ("Total Precipitation", "total_precipitation"),
     )
@@ -34,7 +34,7 @@ class Query(models.Model):
         ('!=', '!=')
     ]
 
-    variable = models.CharField(max_length=50, choices=VARIABLE_CHOICES, default="2m_temperature")
+    variable = models.CharField(max_length=50, choices=VARIABLE_CHOICES, default="2M Temperature")
     requestType = models.CharField(max_length=15, choices=REQUEST_CHOICES)
     startDateTime = models.DateTimeField(default=timezone.now)
     endDateTime = models.DateTimeField(default=timezone.now)

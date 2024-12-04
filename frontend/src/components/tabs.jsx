@@ -40,13 +40,55 @@ function a11yProps(index) {
   };
 }
 
-const Tabs = ({ formData, tsAggMethod, setTsAggMethod, htmlString, handleTimeSeries, timeSeriesImage, handleHeatMap, heatMapImage, handleFindTime, findTimeImage, findAreaImage, handleFindArea }) => {
+const Tabs = ({ 
+    formData, 
+    htmlString, 
+    handleTimeSeries, 
+    timeSeriesImage, 
+    handleHeatMap, 
+    heatMapImage, 
+    handleFindTime, 
+    findTimeImage, 
+    findAreaImage, 
+    handleFindArea, 
+    setSecondAggMethod,
+    setComparisonVal, 
+    setPredicate, }) => {
 
   const [tabNum, setTab] = useState(0);
 
   const handleTabChange = (event, newValue) => {
     setTab(newValue);
   };
+
+  const handleDownload = async () => {
+    try {
+      const response = await fetch('/api/download_raster/', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+  
+      if (response.ok) {
+        const blob = await response.blob();
+        const fileName = "iHARPV_download.nc";
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a); 
+        a.click(); 
+        a.remove();
+        window.URL.revokeObjectURL(url);
+      } else {
+        console.error('Download failed');
+      }
+    } catch (error) {
+      console.error('Error downloading file:', error);
+    }
+  };  
 
   return (
     <>
@@ -57,7 +99,6 @@ const Tabs = ({ formData, tsAggMethod, setTsAggMethod, htmlString, handleTimeSer
               <Tab label="Raster Info" />
               <Tab label="Time Series" />
               <Tab label="Heatmap" />
-              {/* For Both below, need predicat input(>, <, =, !=) and some comparison value input. */}
               <Tab label="Find Time" />
               <Tab label="Find Area" />
             </TabMui>
@@ -68,29 +109,48 @@ const Tabs = ({ formData, tsAggMethod, setTsAggMethod, htmlString, handleTimeSer
                 {!htmlString ? (
                   <div className="no_content">No Content</div>
                 ) : (
-                  <pre className="raster_content">{`${htmlString}`}</pre>
+                  <div className="raster_info">
+                    <div className="download_btn">
+                      {/* Consider: StreamingHttpResponse or maybe Celery task queue? */}
+                      <Button onClick={handleDownload} variant="outlined" sx={{ marginBottom: "48px", marginTop: "auto", textWrap: "noWrap"}}>Download</Button>
+                    </div>
+                    <div className="hline"></div>
+                    <pre className="raster_content">{`${htmlString}`}</pre>
+                  </div>
                 )}
-              </div>
-              <div className="download_btn">
-                <Button variant="outlined" sx={{ marginBottom: "48px", marginTop: "auto" }}>Download(todo)</Button>
               </div>
             </CustomTabPanel>
             <CustomTabPanel sx={{ width: "100%", height: "255px"}} value={tabNum} index={1} {...a11yProps(1)}>
               <TimeSeries 
                   handleTimeSeries={handleTimeSeries} 
                   timeSeriesImage={timeSeriesImage} 
-                  aggMethod={tsAggMethod} 
-                  handleChange={setTsAggMethod}
+                  handleChange={setSecondAggMethod}
                   formData={formData}/>
             </CustomTabPanel>
             <CustomTabPanel sx={{ width: "100%", height: "255px" }} value={tabNum} index={2} {...a11yProps(2)}>
-              <HeatMap handleHeatMap={handleHeatMap} heatMapImage={heatMapImage} />
+              <HeatMap 
+                  handleHeatMap={handleHeatMap} 
+                  heatMapImage={heatMapImage}
+                  formData={formData}
+                  handleChange={setSecondAggMethod} />
             </CustomTabPanel>
             <CustomTabPanel value={tabNum} index={3} {...a11yProps(3)}>
-              <FindTime handleFindTime={handleFindTime} findTimeImage={findTimeImage} />
+              <FindTime 
+                handleFindTime={handleFindTime} 
+                findTimeImage={findTimeImage} 
+                formData={formData} 
+                setComparisonVal={setComparisonVal}
+                setPredicate={setPredicate} 
+                handleChange={setSecondAggMethod}/>
             </CustomTabPanel>
             <CustomTabPanel value={tabNum} index={4} {...a11yProps(4)}>
-              <FindArea findAreaImage={findAreaImage} handleFindArea={handleFindArea} formData={formData} />
+              <FindArea 
+                findAreaImage={findAreaImage} 
+                handleFindArea={handleFindArea} 
+                formData={formData} 
+                setComparisonVal={setComparisonVal}
+                setPredicate={setPredicate} 
+                handleChange={setSecondAggMethod}/>
             </CustomTabPanel>
           </div>
         </Box>
@@ -101,8 +161,9 @@ const Tabs = ({ formData, tsAggMethod, setTsAggMethod, htmlString, handleTimeSer
 
 Tabs.propTypes = {
   formData: PropTypes.object,
-  setTsAggMethod: PropTypes.func,
-  tsAggMethod: PropTypes.string,
+  setSecondAggMethod: PropTypes.func,
+  setPredicate: PropTypes.func,
+  setComparisonVal: PropTypes.func,
   htmlString: PropTypes.string,
   handleTimeSeries: PropTypes.func,
   timeSeriesImage: PropTypes.object,

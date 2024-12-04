@@ -22,8 +22,7 @@ const Input = ({ val, setVal, label, options, sx, size, name }) => {
                     value={!val ? options[0] : val}
                     label={label}
                     onChange={handleChange} 
-                    name={name}                   
-                >
+                    name={name}>
                     {options.map((option) => (
                         <MenuItem key={option} value={option}>
                             {option}  {/* Add this line to display the option title */}

@@ -15,7 +15,7 @@ const RadioButtons = ({label, options, val, setVal, subLabel, defaultValue}) => 
             row
             aria-labelledby={label}
             name={subLabel} 
-            sx={{width: "400px", scale: "65%"}}
+            sx={{width: "400px", scale: "85%", justifyContent: "center"}}
             value={val}
             onChange={setVal}
             >

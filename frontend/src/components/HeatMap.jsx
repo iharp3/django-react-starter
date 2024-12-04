@@ -1,10 +1,11 @@
 import PropTypes from "prop-types";
 import { Button } from '@mui/material';
 import Plot from 'react-plotly.js';
+import Input from './input';
 import "../styles/heatmap.css";
 
 // TODO,bug with areas where the height is a bit larger than the width.
-const HeatMap = ({ handleHeatMap, heatMapImage }) => {
+const HeatMap = ({ handleHeatMap, heatMapImage, formData, handleChange }) => {
 
   const heatmapLayout = {
     autosize: true,
@@ -12,33 +13,33 @@ const HeatMap = ({ handleHeatMap, heatMapImage }) => {
     xaxis: {
         title: { text: 'Longitude' },
         automargin: true,
-        constrain: 'domain',    // Keeps x-axis within domain limits
+        constrain: 'domain',
         showgrid: false
     },
     yaxis: {
         title: { text: 'Latitude' },
         automargin: true,
-        scaleanchor: "x",        // Ensures equal aspect ratio
+        scaleanchor: "x", 
         scaleratio: 1,
         showgrid: false
     },
     coloraxis: {
-        colorscale: 'RdBu',      // Ensure colorscale matches backend
+        colorscale: 'RdBu', 
         colorbar: {
-            title: 'Temperature (°K)', // Label for the color bar
+            title: 'Temperature (°K)',
             ticksuffix: '°K',
             outlinewidth: 1
         }
     },
-    hovermode: 'closest',        // Displays hover information near the cursor
-    showlegend: false            // Hides legend as it’s a single heatmap
+    hovermode: 'closest',
+    showlegend: false 
   };
 
   const heatmapConfig = {
     displayModeBar: true,
     responsive: true,
     displaylogo: false,
-    scrollZoom: true,  // Allows zooming with scroll
+    scrollZoom: true,
     toImageButtonOptions: {
         format: 'png',
         filename: 'heatmap_image'
@@ -46,29 +47,35 @@ const HeatMap = ({ handleHeatMap, heatMapImage }) => {
     modeBarButtonsToRemove: ['zoomOut2d', 'zoomIn2d'],
   };
 
-  // // TODO: Add radio buttons
   return (
-    <>
-      <div className="heat_map">
-        <div className="hm_inputs">
-          <Button onClick={() => handleHeatMap()} variant="outlined" sx={{marginBottom: "48px", marginTop: "auto"}}>Query</Button>
-        </div>
-        { heatMapImage && Object.keys(heatMapImage).length > 0 ? (
-        <div className="hm_plot">
-          <Plot
-              className="hm_plotly"
-              data={heatMapImage.data}
-              layout={heatmapLayout}
-              frames={heatMapImage.frames}
-              config={heatmapConfig}/>
-        </div>
-        ) : (
-          <div className="hm_plot">
-            No Heat Map Data
-          </div>
-        )}
+    <div className="heat_map">
+      <div className="hm_inputs">
+        <Input
+          val={formData.secondAgg}
+          setVal={handleChange}
+          name="hm_agg_method"
+          label={"Select Aggregation Method"}
+          options={["min", "max", "mean"]}
+          sx={{ width: "80%" }}
+          size={"small"}/>
+        <Button onClick={() => handleHeatMap()} variant="outlined" sx={{marginBottom: "48px", marginTop: "auto"}}>Query</Button>
       </div>
-    </>
+      <div className="hline"></div>
+      { heatMapImage && Object.keys(heatMapImage).length > 0 ? (
+      <div className="hm_plot">
+        <Plot
+            className="hm_plotly"
+            data={heatMapImage.data}
+            layout={heatmapLayout}
+            frames={heatMapImage.frames}
+            config={heatmapConfig}/>
+      </div>
+      ) : (
+        <div className="hm_plot">
+          No Heat Map Data
+        </div>
+      )}
+    </div>
   )
 }
 

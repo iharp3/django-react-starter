@@ -1,9 +1,10 @@
 import PropTypes from "prop-types";
-import { Button } from '@mui/material';
+import { Button, TextField } from '@mui/material';
+import Input from "./input";
 import Plot from 'react-plotly.js';
 import "../styles/findarea.css";
 
-const FindArea = ({ findAreaImage, handleFindArea, formData }) => {  
+const FindArea = ({ findAreaImage, handleFindArea, formData, setComparisonVal, setPredicate, handleChange }) => {  
 
   const bounds = [
     (formData.north + formData.south) / 2,
@@ -53,23 +54,48 @@ const findAreaConfig = {
 
   return (
     <div className="find_area">
-        <div className="fa_inputs">
-          <Button onClick={() => handleFindArea()} variant="outlined" sx={{marginBottom: "48px", marginTop: "auto"}}>Query</Button>
+      <div className="fa_inputs">
+        <Input
+          val={formData.secondAgg}
+          setVal={handleChange}
+          name="ts_agg_method"
+          label={"Select Aggregation"}
+          options={["min", "max", "mean"]}
+          sx={{ width: "80%" }}
+          size={"small"}/>
+        <div className="fa_text_input_wrapper">
+          <Input
+            name="fa_predicate"
+            label={"Predicate"}
+            options={["<", ">", "=", "<=", ">=", "!="]}
+            sx={{ width: "60%", ml: "1vw"}}
+            size={"small"}
+            val={formData.filterPredicate}
+            setVal={setPredicate}/>
+          <TextField 
+            type="number" 
+            name="comparison_val" 
+            className="comparison_val"
+            value={formData.filterValue}
+            onChange={(e) => {setComparisonVal(e.target.value)}}/>
         </div>
-        { findAreaImage && Object.keys(findAreaImage).length > 0 ? (
+        <Button onClick={() => handleFindArea()} variant="outlined" sx={{marginBottom: "48px", marginTop: "auto"}}>Query</Button>
+      </div>
+      <div className="hline"></div>
+      { findAreaImage && Object.keys(findAreaImage).length > 0 ? (
+      <div className="fa_plot">
+        <Plot
+            className="fa_plotly"
+            data={findAreaImage.data}
+            layout={findAreaLayout}
+            frames={findAreaImage.frames}
+            config={findAreaConfig}/>
+      </div>
+      ) : (
         <div className="fa_plot">
-          <Plot
-              className="fa_plotly"
-              data={findAreaImage.data}
-              layout={findAreaLayout}
-              frames={findAreaImage.frames}
-              config={findAreaConfig}/>
+          No Find Area Data
         </div>
-        ) : (
-          <div className="fa_plot">
-            No Find Area Data
-          </div>
-        )}
+      )}
     </div>
   )
 }
@@ -77,6 +103,9 @@ const findAreaConfig = {
 FindArea.propTypes = {
   findAreaImage: PropTypes.object,
   handleFindArea: PropTypes.func,
+  setComparisonVal: PropTypes.func,
+  setPredicate: PropTypes.func,
+  handleChange: PropTypes.func,
 }
 
 export default FindArea

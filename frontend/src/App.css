@@ -24,3 +24,9 @@ body {
   height: 100%;
   color: white;
 }
+
+.hline {  
+  height: 90%;
+  border-left: 1px solid gray;
+  border-radius: 8px;
+}
