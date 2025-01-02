@@ -1,10 +1,10 @@
 import pandas as pd
 import xarray as xr
 
-from query_executor import QueryExecutor
-from query_executor_get_raster import GetRasterExecutor
-from query_executor_timeseries import TimeseriesExecutor
-from utils.get_whole_period import get_whole_period_between, get_last_date_of_month, time_array_to_range
+from .query_executor import QueryExecutor
+from .query_executor_get_raster import GetRasterExecutor
+from .query_executor_timeseries import TimeseriesExecutor
+from .utils.get_whole_period import get_whole_period_between, get_last_date_of_month, time_array_to_range
 
 
 class FindTimeExecutor(QueryExecutor):
@@ -45,6 +45,9 @@ class FindTimeExecutor(QueryExecutor):
             return self._execute_pyramid_hour()
         return self._execute_baseline()
 
+    def execute_baseline(self):
+        return self._execute_baseline()
+
     def _execute_baseline(self, start_datetime=None, end_datetime=None):
         if start_datetime is None:
             start_datetime = self.start_datetime
@@ -61,6 +64,7 @@ class FindTimeExecutor(QueryExecutor):
             self.min_lon,
             self.max_lon,
             self.time_series_aggregation_method,
+            metadata=self.metadata.f_path,
         )
         ts = timeseries_executor.execute()
         if self.filter_predicate == ">":
@@ -225,6 +229,7 @@ class FindTimeExecutor(QueryExecutor):
                 max_lon=self.max_lon,
                 temporal_resolution=temporal_res,
                 temporal_aggregation="min",
+                metadata=self.metadata.f_path,
             )
             get_max_executor = GetRasterExecutor(
                 variable=self.variable,
@@ -236,6 +241,7 @@ class FindTimeExecutor(QueryExecutor):
                 max_lon=self.max_lon,
                 temporal_resolution=temporal_res,
                 temporal_aggregation="max",
+                metadata=self.metadata.f_path,
             )
             range_min = get_min_executor.execute()
             range_max = get_max_executor.execute()
