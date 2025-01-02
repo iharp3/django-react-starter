@@ -22,12 +22,14 @@ from .iharp_query.query import (
     get_variable_short_name,
 )
 from .serializers import QuerySeriazlier, TimeSeriesSerializer, FindTimeSerializer
-from .iharp_query_executor import GetRasterExecutor
+from .iharp_query_executor import GetRasterExecutor, TimeseriesExecutor
 
 logger = logging.getLogger(__name__)
 MSG_FORMAT = "[%(asctime)s %(name)s-%(levelname)s]: %(message)s"
 LOG_DATE_FORMAT = "%d/%b/%Y %H:%M:%S"
 logging.basicConfig(level=logging.INFO, format=MSG_FORMAT, datefmt=LOG_DATE_FORMAT)
+
+metadata_fpath = "/home/huan1531/2025/django-react-starter/backend/api/iharp_query_executor/src/metadata.csv"
 
 
 def format_datetime_string(dt_input):
@@ -43,45 +45,45 @@ def format_datetime_string(dt_input):
     return dt_formatted
 
 
-# @api_view(["POST"])
-# def query(request):
-#     logger.info("Request for raster")
-#     serializer = QuerySeriazlier(data=request.data)
-#     if serializer.is_valid():
-#         serializer.save()
-#         logger.info(request.data)
-#         variable = request.data.get("variable")
-#         variable = variable.lower().replace(" ", "_")
-#         start_datetime = request.data.get("startDateTime")
-#         end_datetime = request.data.get("endDateTime")
-#         time_resolution = request.data.get("temporalLevel")
-#         time_agg_method = request.data.get("aggLevel")
-#         north = round(float(request.data.get("north")), 3)
-#         south = round(float(request.data.get("south")), 3)
-#         east = round(float(request.data.get("east")), 3)
-#         west = round(float(request.data.get("west")), 3)
+@api_view(["POST"])
+def query_deprecated(request):
+    logger.info("Request for raster")
+    serializer = QuerySeriazlier(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        logger.info(request.data)
+        variable = request.data.get("variable")
+        variable = variable.lower().replace(" ", "_")
+        start_datetime = request.data.get("startDateTime")
+        end_datetime = request.data.get("endDateTime")
+        time_resolution = request.data.get("temporalLevel")
+        time_agg_method = request.data.get("aggLevel")
+        north = round(float(request.data.get("north")), 3)
+        south = round(float(request.data.get("south")), 3)
+        east = round(float(request.data.get("east")), 3)
+        west = round(float(request.data.get("west")), 3)
 
-#         formatted_start = format_datetime_string(start_datetime)
-#         formatted_end = format_datetime_string(end_datetime)
+        formatted_start = format_datetime_string(start_datetime)
+        formatted_end = format_datetime_string(end_datetime)
 
-#         ds = get_raster(
-#             variable=variable,
-#             start_datetime=formatted_start,
-#             end_datetime=formatted_end,
-#             time_resolution=time_resolution,
-#             time_agg_method=time_agg_method,
-#             min_lat=south,
-#             max_lat=north,
-#             min_lon=west,
-#             max_lon=east,
-#         )
+        ds = get_raster(
+            variable=variable,
+            start_datetime=formatted_start,
+            end_datetime=formatted_end,
+            time_resolution=time_resolution,
+            time_agg_method=time_agg_method,
+            min_lat=south,
+            max_lat=north,
+            min_lon=west,
+            max_lon=east,
+        )
 
-#         response = ds.__str__()
+        response = ds.__str__()
 
-#         return Response(response, status=201)
+        return Response(response, status=201)
 
-#     print("Serializer errors:", serializer.errors)
-#     return Response(serializer.errors, status=400)
+    print("Serializer errors:", serializer.errors)
+    return Response(serializer.errors, status=400)
 
 
 @api_view(["POST"])
@@ -105,7 +107,6 @@ def query(request):
         formatted_start = format_datetime_string(start_datetime)
         formatted_end = format_datetime_string(end_datetime)
 
-        metadata_fpath = "/home/huan1531/2025/django-react-starter/backend/api/iharp_query_executor/src/metadata.csv"
         qe = GetRasterExecutor(
             metadata=metadata_fpath,
             variable=variable,
@@ -155,17 +156,25 @@ def download_query(request):
         formatted_start = format_datetime_string(start_datetime)
         formatted_end = format_datetime_string(end_datetime)
 
-        ds = get_raster(
+        qe = GetRasterExecutor(
+            metadata=metadata_fpath,
             variable=variable,
             start_datetime=formatted_start,
             end_datetime=formatted_end,
-            time_resolution=time_resolution,
-            time_agg_method=time_agg_method,
             min_lat=south,
             max_lat=north,
             min_lon=west,
             max_lon=east,
+            # min_lat=min_lat,
+            # max_lat=max_lat,
+            # min_lon=min_lon,
+            # max_lon=max_lon,
+            temporal_resolution=time_resolution,
+            temporal_aggregation=time_agg_method,
+            spatial_resolution=0.25,
+            spatial_aggregation=None,
         )
+        ds = qe.execute()
 
         file_name = f"iHARPV_{rid}.nc"
         file_path = f"tmp/data/{file_name}"
@@ -194,7 +203,7 @@ def download_query(request):
 
 
 @api_view(["POST"])
-def timeseries(request):
+def timeseries_deprecated(request):
     logger.info("Request for time series")
     serializer = TimeSeriesSerializer(data=request.data)
 
@@ -229,6 +238,61 @@ def timeseries(request):
             max_lon=east,
             time_series_aggregation_method=ts_agg_method,
         )
+
+        short_variable = get_variable_short_name(variable)
+        fig = go.Figure([go.Scatter(x=ts["time"], y=ts[short_variable])])
+
+        json_fig = fig.to_json()
+        json_data = json.loads(json_fig)
+
+        return JsonResponse(json_data, status=201)
+
+    logger.error("Invalid data: %s", serializer.errors)
+    return JsonResponse({"error": "Invalid data"}, status=400)
+
+
+@api_view(["POST"])
+def timeseries(request):
+    logger.info("Request for time series")
+    serializer = TimeSeriesSerializer(data=request.data)
+
+    if serializer.is_valid():
+        logger.info(request.data)
+        serializer.save()
+
+        variable = request.data.get("variable")
+        variable = variable.lower().replace(" ", "_")
+        start_datetime = request.data.get("startDateTime")
+        end_datetime = request.data.get("endDateTime")
+        time_resolution = request.data.get("temporalLevel")
+        time_agg_method = request.data.get("aggLevel")
+        north = round(float(request.data.get("north")), 3)
+        south = round(float(request.data.get("south")), 3)
+        east = round(float(request.data.get("east")), 3)
+        west = round(float(request.data.get("west")), 3)
+        ts_agg_method = request.data.get("secondAgg")
+
+        formatted_start = format_datetime_string(start_datetime)
+        formatted_end = format_datetime_string(end_datetime)
+
+        qe = TimeseriesExecutor(
+            metadata=metadata_fpath,
+            variable=variable,
+            start_datetime=formatted_start,
+            end_datetime=formatted_end,
+            min_lat=south,
+            max_lat=north,
+            min_lon=west,
+            max_lon=east,
+            # min_lat=min_lat,
+            # max_lat=max_lat,
+            # min_lon=min_lon,
+            # max_lon=max_lon,
+            temporal_resolution=time_resolution,
+            temporal_aggregation=time_agg_method,
+            time_series_aggregation_method=ts_agg_method,
+        )
+        ts = qe.execute()
 
         short_variable = get_variable_short_name(variable)
         fig = go.Figure([go.Scatter(x=ts["time"], y=ts[short_variable])])

@@ -1,5 +1,5 @@
-from query_executor import *
-from query_executor_get_raster import GetRasterExecutor
+from .query_executor import *
+from .query_executor_get_raster import GetRasterExecutor
 
 
 class TimeseriesExecutor(QueryExecutor):
@@ -43,7 +43,7 @@ class TimeseriesExecutor(QueryExecutor):
             max_lon=self.max_lon,
             temporal_resolution=self.temporal_resolution,
             temporal_aggregation=self.temporal_aggregation,
-            spatial_resolution=1,
+            spatial_resolution=self.spatial_resolution,
             spatial_aggregation=self.time_series_aggregation_method,
         )
         raster = get_raster_executor.execute()
