@@ -9,13 +9,13 @@ const FindTime = ({ handleFindTime, findTimeImage, formData, setPredicate, setCo
   const findTimeLayout = {
     title: "Time Series Plot",
     xaxis: {
-        title: "Time",
-        tickformat: "%Y-%m-%d %H:%M:%S",
-        showgrid: true,
+      title: "Time",
+      tickformat: "%Y-%m-%d %H:%M:%S",
+      showgrid: true,
     },
     yaxis: {
-        title: "2m Temperature (t2m)",
-        showgrid: true,
+      title: "2m Temperature (t2m)",
+      showgrid: true,
     },
     showlegend: false,
     margin: { t: 50, l: 60, r: 30, b: 50 },
@@ -24,10 +24,10 @@ const FindTime = ({ handleFindTime, findTimeImage, formData, setPredicate, setCo
   };
 
   const findTimeConfig = {
-    responsive: true,    
+    responsive: true,
     scrollZoom: true,
     displaylogo: false,
-    modeBarButtonsToRemove: ['select2d','lasso2d','zoomOut2d','zoomIn2d'],
+    modeBarButtonsToRemove: ['select2d', 'lasso2d', 'zoomOut2d', 'zoomIn2d'],
   };
 
   return (
@@ -40,35 +40,35 @@ const FindTime = ({ handleFindTime, findTimeImage, formData, setPredicate, setCo
           label={"Select Aggregation"}
           options={["min", "max", "mean"]}
           sx={{ width: "80%" }}
-          size={"small"}/>
+          size={"small"} />
         <div className="ft_text_input_wrapper">
           <Input
             name="ft_predicate"
             label={"Predicate"}
             options={["<", ">", "=", "<=", ">=", "!="]}
-            sx={{ width: "60%", ml: "1vw"}}
+            sx={{ width: "60%", ml: "1vw" }}
             size={"small"}
             val={formData.filterPredicate}
-            setVal={setPredicate}/>
-          <TextField 
-            type="number" 
-            name="comparison_val" 
+            setVal={setPredicate} />
+          <TextField
+            type="number"
+            name="comparison_val"
             className="comparison_val"
             value={formData.filterValue}
-            onChange={(e) => {setComparisonVal(e.target.value)}}/>
+            onChange={(e) => { setComparisonVal(e.target.value) }} />
         </div>
-        <Button onClick={() => handleFindTime()} variant="outlined" sx={{marginBottom: "48px", marginTop: "auto"}}>Query</Button>
+        <Button onClick={() => handleFindTime()} variant="outlined" sx={{ marginBottom: "48px", marginTop: "auto" }}>Query</Button>
       </div>
       <div className="hline"></div>
-      { findTimeImage && Object.keys(findTimeImage).length > 0 ? (
-      <div className="ft_plot">
-        <Plot
+      {findTimeImage && Object.keys(findTimeImage).length > 0 ? (
+        <div className="ft_plot">
+          <Plot
             className="ft_plotly"
             data={findTimeImage.data}
             layout={findTimeLayout}
             frames={findTimeImage.frames}
-            config={findTimeConfig}/>
-      </div>
+            config={findTimeConfig} />
+        </div>
       ) : (
         <div className="ft_plot">
           No Find Time Data
