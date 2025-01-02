@@ -22,7 +22,7 @@ from .iharp_query.query import (
     get_variable_short_name,
 )
 from .serializers import QuerySeriazlier, TimeSeriesSerializer, FindTimeSerializer
-from .iharp_query_executor import GetRasterExecutor, TimeseriesExecutor
+from .iharp_query_executor import GetRasterExecutor, TimeseriesExecutor, HeatmapExecutor
 
 logger = logging.getLogger(__name__)
 MSG_FORMAT = "[%(asctime)s %(name)s-%(levelname)s]: %(message)s"
@@ -307,7 +307,7 @@ def timeseries(request):
 
 
 @api_view(["POST"])
-def heatmap(request):
+def heatmap_deprecated(request):
     logger.info("Request for heat map")
     # Can just ues the time series serializer since it's
     # dealing with the same data
@@ -342,6 +342,62 @@ def heatmap(request):
             max_lon=east,
             heatmap_aggregation_method=hm_agg_method,
         )
+        fig = go.Figure(data=go.Heatmap(x=hm["longitude"], y=hm["latitude"], z=hm["t2m"], colorscale="RdBu_r"))
+        fig.update_layout(yaxis=dict(scaleanchor="x", scaleratio=1), xaxis=dict(constrain="domain"))
+        json_fig = fig.to_json()
+        json_data = json.loads(json_fig)
+
+        return JsonResponse(json_data, status=201)
+
+    logger.error("Invalid data: %s", serializer.errors)
+    return JsonResponse({"error": "Invalid data"}, status=400)
+
+
+@api_view(["POST"])
+def heatmap(request):
+    logger.info("Request for heat map")
+    # Can just ues the time series serializer since it's
+    # dealing with the same data
+    serializer = TimeSeriesSerializer(data=request.data)
+
+    if serializer.is_valid():
+        logger.info(request.data)
+        serializer.save()
+
+        variable = request.data.get("variable")
+        variable = variable.lower().replace(" ", "_")
+        north = round(float(request.data.get("north")), 3)
+        south = round(float(request.data.get("south")), 3)
+        east = round(float(request.data.get("east")), 3)
+        west = round(float(request.data.get("west")), 3)
+        start_datetime = request.data.get("startDateTime")
+        end_datetime = request.data.get("endDateTime")
+        temporalLevel = request.data.get("temporalLevel")
+        time_agg_method = request.data.get("aggLevel")
+        hm_agg_method = request.data.get("secondAgg")
+
+        formatted_start = format_datetime_string(start_datetime)
+        formatted_end = format_datetime_string(end_datetime)
+
+        qe = HeatmapExecutor(
+            metadata=metadata_fpath,
+            variable=variable,
+            start_datetime=formatted_start,
+            end_datetime=formatted_end,
+            min_lat=south,
+            max_lat=north,
+            min_lon=west,
+            max_lon=east,
+            # min_lat=min_lat,
+            # max_lat=max_lat,
+            # min_lon=min_lon,
+            # max_lon=max_lon,
+            spatial_resolution=0.25,
+            spatial_aggregation=None,
+            heatmap_aggregation_method=hm_agg_method,
+        )
+        hm = qe.execute()
+
         fig = go.Figure(data=go.Heatmap(x=hm["longitude"], y=hm["latitude"], z=hm["t2m"], colorscale="RdBu_r"))
         fig.update_layout(yaxis=dict(scaleanchor="x", scaleratio=1), xaxis=dict(constrain="domain"))
         json_fig = fig.to_json()
