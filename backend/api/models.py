@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
+
 class Query(models.Model):
     TEMPORAL_CHOICES = (
         ("hour", "hour"),
@@ -26,12 +27,12 @@ class Query(models.Model):
     )
 
     FILTER_PREDICATE_CHOICES = [
-        ('>', '>'),
-        ('<', '<'),
-        ('>=', '>='),
-        ('<=', '<='),
-        ('=', '='),
-        ('!=', '!=')
+        (">", ">"),
+        ("<", "<"),
+        (">=", ">="),
+        ("<=", "<="),
+        ("=", "="),
+        ("!=", "!="),
     ]
 
     variable = models.CharField(max_length=50, choices=VARIABLE_CHOICES, default="2M Temperature")
@@ -46,7 +47,7 @@ class Query(models.Model):
     west = models.DecimalField(max_digits=40, decimal_places=35)
     created_at = models.DateTimeField(auto_now_add=True)
     secondAgg = models.CharField(max_length=25, choices=AGG_CHOICES, default="min")
-    filterPredicate = models.CharField(max_length=2, choices=FILTER_PREDICATE_CHOICES, default='=')        
+    filterPredicate = models.CharField(max_length=2, choices=FILTER_PREDICATE_CHOICES, default="=")
     filterValue = models.FloatField(default=255.0)
 
     def __str__(self):
