@@ -14,7 +14,7 @@ const FindTime = ({ handleFindTime, findTimeImage, formData, setPredicate, setCo
       showgrid: true,
     },
     yaxis: {
-      title: "2m Temperature (t2m)",
+      title: "2m_temperature (t2m)",
       showgrid: true,
     },
     showlegend: false,
