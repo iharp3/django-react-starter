@@ -1,6 +1,6 @@
 # django-react-starter
 
-bash init_venv.sh 
+bash init_venv.sh
 
 # backend
 python backend/manage.py makemigrations

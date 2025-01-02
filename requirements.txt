@@ -9,3 +9,4 @@ dask[complete]
 plotly
 python-dotenv
 geopandas
+cdsapi
