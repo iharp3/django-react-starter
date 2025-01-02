@@ -40,25 +40,25 @@ const Sidebar = ({
                 <DateInput
                     date={endDate}
                     setDate={setEndDate}
-                    label="End Date & Time"/>  
+                    label="End Date & Time" />
                 <RadioButtons
-                    label="Temporal Resolution" 
-                    options = {["hour", "day", "month", "year"]} 
-                    var={formData.temporalLevel} 
-                    setVal={handleChange} 
+                    label="Temporal Resolution"
+                    options={["hour", "day", "month", "year"]}
+                    var={formData.temporalLevel}
+                    setVal={handleChange}
                     subLabel="temporalLevel"
-                    defaultValue={"day"}/>  
-                <RadioButtons 
-                    label="Temporal Aggregation" 
-                    options = {["min", "max", "mean"]} 
-                    var={formData.aggLevel} 
-                    setVal={handleChange} 
+                    defaultValue={"day"} />
+                <RadioButtons
+                    label="Temporal Aggregation"
+                    options={["min", "max", "mean"]}
+                    var={formData.aggLevel}
+                    setVal={handleChange}
                     subLabel="aggLevel"
-                    defaultValue={"mean"}/>  
-                <div className="hr"/>                         
-                <CardinalDirections formData={formData} handleChange={handleChange}/>
-                <div className="hr"/>
-                <Button onClick={() => queryData()} variant="outlined" sx={{marginBottom: "48px", marginTop: "auto"}}>Query</Button>
+                    defaultValue={"mean"} />
+                <div className="hr" />
+                <CardinalDirections formData={formData} handleChange={handleChange} />
+                <div className="hr" />
+                <Button onClick={() => queryData()} variant="outlined" sx={{ marginBottom: "48px", marginTop: "auto" }}>Query</Button>
             </div>
         </>
     )
