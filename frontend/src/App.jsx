@@ -539,8 +539,8 @@ function App() {
           <Tabs
             formData={formData}
             setSecondAggMethod={setSecondAggMethod}
-            htmlString={htmlString} 
-            handleTimeSeries={handleTimeSeries} 
+            htmlString={htmlString}
+            handleTimeSeries={handleTimeSeries}
             timeSeriesImage={timeSeriesImage}
             handleHeatMap={handleHeatMap}
             heatMapImage={heatMapImage}
@@ -548,8 +548,8 @@ function App() {
             findTimeImage={findTimeImage}
             handleFindArea={handleFindArea}
             findAreaImage={findAreaImage}
-            setComparisonVal={setComparisonVal} 
-            setPredicate={setPredicate}/>
+            setComparisonVal={setComparisonVal}
+            setPredicate={setPredicate} />
         </div>
       </div>
     </>
