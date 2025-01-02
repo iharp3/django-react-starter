@@ -12,7 +12,7 @@ function App() {
 
   const [startDate, setStartDate] = useState(dayjs("2023-01-01T00:00Z"));
   const [endDate, setEndDate] = useState(dayjs("2023-01-31T00:00Z"));
-  const [variable, setVariable] = useState("2M Temperature");
+  const [variable, setVariable] = useState("2m_temperature");
   const [secondAgg, setSecondAggMethod] = useState("mean");
   const [comparisonVal, setComparisonVal] = useState(285);
   const [predicate, setPredicate] = useState("<");
@@ -27,7 +27,7 @@ function App() {
 
   const [formData, setFormData] = useState({
     requestType: "",
-    variable: "2M Temperature",
+    variable: "2m_temperature",
     startDateTime: startDate,
     endDateTime: endDate,
     temporalLevel: "day",
