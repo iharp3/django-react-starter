@@ -55,7 +55,7 @@ class Query(models.Model):
     south = models.DecimalField(max_digits=10, decimal_places=7)
     west = models.DecimalField(max_digits=10, decimal_places=7)
     spatialResolution = models.DecimalField(max_digits=3, decimal_places=2, default=0.25)
-    spatialAggregation = models.CharField(max_length=10, choices=AGG_CHOICES, default="none")
+    spatialAggregation = models.CharField(max_length=10, choices=AGG_CHOICES)
     secondAgg = models.CharField(max_length=25, choices=AGG_CHOICES, null=True)
     filterPredicate = models.CharField(max_length=2, choices=FILTER_PREDICATE_CHOICES, null=True)
     filterValue = models.FloatField(null=True)
