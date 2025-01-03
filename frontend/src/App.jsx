@@ -53,14 +53,14 @@ function App() {
     }))
   }, [variable, startDate, endDate]);
 
-  // useEffect(() => {
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     filterValue: comparisonVal,
-  //     filterPredicate: predicate,
-  //     secondAgg: secondAgg,
-  //   }))
-  // }, [secondAgg, comparisonVal, predicate])
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      filterValue: comparisonVal,
+      filterPredicate: predicate,
+      secondAgg: secondAgg,
+    }))
+  }, [secondAgg, comparisonVal, predicate])
 
   const handleChange = (e) => {
     // console.log(e);

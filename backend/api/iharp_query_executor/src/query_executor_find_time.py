@@ -22,6 +22,8 @@ class FindTimeExecutor(QueryExecutor):
         time_series_aggregation_method: str,  # e.g., "mean", "max", "min"
         filter_predicate: str,  # e.g., ">", "<", "==", "!=", ">=", "<="
         filter_value: float,
+        spatial_resolution=1.0,  # e.g., 0.25, 0.5, 1.0
+        spatial_aggregation="mean",  # e.g., "mean", "max", "min"
         metadata=None,  # metadata file path
     ):
         super().__init__(
@@ -34,6 +36,8 @@ class FindTimeExecutor(QueryExecutor):
             max_lon,
             temporal_resolution,
             temporal_aggregation,
+            spatial_resolution=spatial_resolution,
+            spatial_aggregation=spatial_aggregation,
             metadata=metadata,
         )
         self.time_series_aggregation_method = time_series_aggregation_method
@@ -64,6 +68,8 @@ class FindTimeExecutor(QueryExecutor):
             self.min_lon,
             self.max_lon,
             self.time_series_aggregation_method,
+            spatial_resolution=self.spatial_resolution,
+            spatial_aggregation=self.spatial_aggregation,
             metadata=self.metadata.f_path,
         )
         ts = timeseries_executor.execute()

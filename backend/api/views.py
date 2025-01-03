@@ -35,7 +35,7 @@ MSG_FORMAT = "[%(asctime)s %(name)s-%(levelname)s]: %(message)s"
 LOG_DATE_FORMAT = "%d/%b/%Y %H:%M:%S"
 logging.basicConfig(level=logging.INFO, format=MSG_FORMAT, datefmt=LOG_DATE_FORMAT)
 
-metadata_fpath = "/home/huan1531/2025/django-react-starter/backend/api/iharp_query_executor/src/metadata.csv"
+metadata_fpath = "/data/iharp-customized-storage/storage/post/metadata.csv"
 
 
 def format_datetime_string(dt_input):
@@ -109,6 +109,8 @@ def query(request):
         south = round(float(request.data.get("south")), 3)
         east = round(float(request.data.get("east")), 3)
         west = round(float(request.data.get("west")), 3)
+        spatial_resolution = float(request.data.get("spatialResolution"))
+        spatial_aggregation = request.data.get("spatialAggregation")
 
         formatted_start = format_datetime_string(start_datetime)
         formatted_end = format_datetime_string(end_datetime)
@@ -128,8 +130,8 @@ def query(request):
             # max_lon=max_lon,
             temporal_resolution=time_resolution,
             temporal_aggregation=time_agg_method,
-            spatial_resolution=0.25,
-            spatial_aggregation=None,
+            spatial_resolution=spatial_resolution,
+            spatial_aggregation=spatial_aggregation,
         )
         ds = qe.execute()
         response = ds.__str__()
@@ -276,6 +278,8 @@ def timeseries(request):
         south = round(float(request.data.get("south")), 3)
         east = round(float(request.data.get("east")), 3)
         west = round(float(request.data.get("west")), 3)
+        spatial_resolution = float(request.data.get("spatialResolution"))
+        spatial_aggregation = request.data.get("spatialAggregation")
         ts_agg_method = request.data.get("secondAgg")
 
         formatted_start = format_datetime_string(start_datetime)
@@ -297,6 +301,8 @@ def timeseries(request):
             temporal_resolution=time_resolution,
             temporal_aggregation=time_agg_method,
             time_series_aggregation_method=ts_agg_method,
+            spatial_resolution=spatial_resolution,
+            spatial_aggregation=spatial_aggregation,
         )
         ts = qe.execute()
 
@@ -381,6 +387,8 @@ def heatmap(request):
         temporalResolution = request.data.get("temporalResolution")
         time_agg_method = request.data.get("temporalAggregation")
         hm_agg_method = request.data.get("secondAgg")
+        spatial_resolution = float(request.data.get("spatialResolution"))
+        spatial_aggregation = request.data.get("spatialAggregation")
 
         formatted_start = format_datetime_string(start_datetime)
         formatted_end = format_datetime_string(end_datetime)
@@ -398,8 +406,8 @@ def heatmap(request):
             # max_lat=max_lat,
             # min_lon=min_lon,
             # max_lon=max_lon,
-            spatial_resolution=0.25,
-            spatial_aggregation=None,
+            spatial_resolution=spatial_resolution,
+            spatial_aggregation=spatial_aggregation,
             heatmap_aggregation_method=hm_agg_method,
         )
         hm = qe.execute()
@@ -503,6 +511,8 @@ def findTime(request):
         ts_agg_method = request.data.get("secondAgg")
         filter_predicate = request.data.get("filterPredicate")
         filter_value = request.data.get("filterValue")
+        spatial_resolution = float(request.data.get("spatialResolution"))
+        spatial_aggregation = request.data.get("spatialAggregation")
 
         formatted_start = format_datetime_string(start_datetime)
         formatted_end = format_datetime_string(end_datetime)
@@ -525,6 +535,8 @@ def findTime(request):
             time_series_aggregation_method=ts_agg_method,
             filter_predicate=filter_predicate,
             filter_value=float(filter_value),
+            spatial_resolution=spatial_resolution,
+            spatial_aggregation=spatial_aggregation,
         )
         ft = qe.execute_baseline()
 
@@ -683,6 +695,8 @@ def findArea(request):
         endDateTime = request.data.get("endDateTime")
         temporalResolution = request.data.get("temporalResolution")
         time_agg_method = request.data.get("temporalAggregation")
+        spatial_resolution = float(request.data.get("spatialResolution"))
+        spatial_aggregation = request.data.get("spatialAggregation")
         fa_agg_method = request.data.get("secondAgg")
         filter_predicate = request.data.get("filterPredicate")
         filter_value = request.data.get("filterValue")
@@ -712,13 +726,14 @@ def findArea(request):
             heatmap_aggregation_method=fa_agg_method,
             filter_predicate=filter_predicate,
             filter_value=float(filter_value),
-            spatial_resolution=0.25,  # e.g., 0.25, 0.5, 1.0
-            spatial_aggregation=None,  # e.g., "mean", "max", "min"
+            spatial_resolution=spatial_resolution,
+            spatial_aggregation=spatial_aggregation,
             metadata=metadata_fpath,
         )
         fa = qe.execute()
 
-        fa_low = fa.isel(latitude=slice(0, len(fa["latitude"]), 4), longitude=slice(0, len(fa["longitude"]), 4))
+        fa_low = fa
+        # fa_low = fa.isel(latitude=slice(0, len(fa["latitude"]), 4), longitude=slice(0, len(fa["longitude"]), 4))
         df = fa_low.to_dataframe().reset_index()
         df["latitude"] = df["latitude"] - 0.5
         df["longitude"] = df["longitude"] - 0.5
