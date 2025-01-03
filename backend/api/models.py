@@ -3,25 +3,20 @@ from django.utils import timezone
 
 
 class Query(models.Model):
-    TEMPORAL_CHOICES = (
+    TEMPORAL_CHOICES = [
         ("hour", "hour"),
         ("day", "day"),
         ("month", "month"),
         ("year", "year"),
-    )
+    ]
 
-    SPATIAL_CHOICES = (
-        (0.25, "0.25"),
-        (0.5, "0.5"),
-        (1, "1"),
-    )
-
-    AGG_CHOICES = (
+    AGG_CHOICES = [
         ("min", "min"),
         ("max", "max"),
         ("mean", "mean"),
-    )
-    REQUEST_CHOICES = (
+    ]
+
+    REQUEST_CHOICES = [
         ("get_raster", "get_raster"),
         ("timeseries", "timeseries"),
         ("heatmap", "heatmap"),
@@ -30,13 +25,13 @@ class Query(models.Model):
         # ("Time Series", "Time Series"),
         # ("Heat Map", "Heat Map"),
         # ("Data Download", "Data Download"),
-    )
+    ]
 
-    VARIABLE_CHOICES = (
+    VARIABLE_CHOICES = [
         ("2m_temperature", "2m_temperature"),
         ("Surface Pressure", "surface_pressure"),
         ("Total Precipitation", "total_precipitation"),
-    )
+    ]
 
     FILTER_PREDICATE_CHOICES = [
         (">", ">"),
@@ -58,6 +53,8 @@ class Query(models.Model):
     east = models.DecimalField(max_digits=10, decimal_places=7)
     south = models.DecimalField(max_digits=10, decimal_places=7)
     west = models.DecimalField(max_digits=10, decimal_places=7)
+    spatialResolution = models.DecimalField(max_digits=3, decimal_places=2, default=0.25)
+    spatialAggregation = models.CharField(max_length=10, choices=AGG_CHOICES, default="none")
     secondAgg = models.CharField(max_length=25, choices=AGG_CHOICES, null=True)
     filterPredicate = models.CharField(max_length=2, choices=FILTER_PREDICATE_CHOICES, null=True)
     filterValue = models.FloatField(null=True)
