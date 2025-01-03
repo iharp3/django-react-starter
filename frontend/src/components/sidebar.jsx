@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { Button } from '@mui/material'
 import '../styles/sidebar.css'
 
-// Once the date is changed the tempRes and Agglevel get reset in formdata back to their useState initial values
+// Once the date is changed the tempRes and temporalAggregation get reset in formdata back to their useState initial values
 const Sidebar = ({
     variable,
     setVariable,
@@ -44,16 +44,16 @@ const Sidebar = ({
                 <RadioButtons
                     label="Temporal Resolution"
                     options={["hour", "day", "month", "year"]}
-                    var={formData.temporalLevel}
+                    var={formData.temporalResolution}
                     setVal={handleChange}
-                    subLabel="temporalLevel"
+                    subLabel="temporalResolution"
                     defaultValue={"day"} />
                 <RadioButtons
                     label="Temporal Aggregation"
                     options={["min", "max", "mean"]}
-                    var={formData.aggLevel}
+                    var={formData.temporalAggregation}
                     setVal={handleChange}
-                    subLabel="aggLevel"
+                    subLabel="temporalAggregation"
                     defaultValue={"mean"} />
                 <div className="hr" />
                 <CardinalDirections formData={formData} handleChange={handleChange} />

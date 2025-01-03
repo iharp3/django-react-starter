@@ -10,9 +10,9 @@ import './App.css'
 
 function App() {
 
+  const [variable, setVariable] = useState("2m_temperature");
   const [startDate, setStartDate] = useState(dayjs("2023-01-01T00:00Z"));
   const [endDate, setEndDate] = useState(dayjs("2023-01-31T23:00Z"));
-  const [variable, setVariable] = useState("2m_temperature");
   const [secondAgg, setSecondAggMethod] = useState("mean");
   const [comparisonVal, setComparisonVal] = useState(285);
   const [predicate, setPredicate] = useState("<");
@@ -27,11 +27,11 @@ function App() {
 
   const [formData, setFormData] = useState({
     requestType: "",
-    variable: "2m_temperature",
+    variable: variable,
     startDateTime: startDate,
     endDateTime: endDate,
-    temporalLevel: "day",
-    aggLevel: "mean",
+    temporalResolution: "day",
+    temporalAggregation: "mean",
     // spatialLevel: "2.0",
     north: 84,
     south: 59,
@@ -100,7 +100,7 @@ function App() {
         ...prevFormData,
         [name]: value,
       }));
-      // setTemporalLevelSelected(value !== "");
+      // settemporalResolutionSelected(value !== "");
     }
     if (drawnShapeBounds) {
       setDrawnShapeBounds((prevBounds) => ({
@@ -128,7 +128,7 @@ function App() {
         }));
       }
     }
-    // setTemporalLevelSelected(value !== "");
+    // settemporalResolutionSelected(value !== "");
   };
 
   const queryData = async () => {
@@ -198,7 +198,7 @@ function App() {
       );
       return; // Exit the function early
     }
-    else if (formData.temporalLevel === "") {
+    else if (formData.temporalResolution === "") {
       // If not, display an error message or perform any other action to prompt the user to select a temporal level
       alert(
         "ERROR: Please select a temporal level resolution before proceeding..."
@@ -283,7 +283,7 @@ function App() {
       );
       return; // Exit the function early
     }
-    else if (formData.temporalLevel === "") {
+    else if (formData.temporalResolution === "") {
       // If not, display an error message or perform any other action to prompt the user to select a temporal level
       alert(
         "ERROR: Please select a temporal level resolution before proceeding..."
@@ -368,7 +368,7 @@ function App() {
       );
       return; // Exit the function early
     }
-    else if (formData.temporalLevel === "") {
+    else if (formData.temporalResolution === "") {
       // If not, display an error message or perform any other action to prompt the user to select a temporal level
       alert(
         "ERROR: Please select a temporal level resolution before proceeding..."
@@ -452,7 +452,7 @@ function App() {
       );
       return; // Exit the function early
     }
-    else if (formData.temporalLevel === "") {
+    else if (formData.temporalResolution === "") {
       // If not, display an error message or perform any other action to prompt the user to select a temporal level
       alert(
         "ERROR: Please select a temporal level resolution before proceeding..."

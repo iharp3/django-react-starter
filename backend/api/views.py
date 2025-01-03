@@ -62,8 +62,8 @@ def query_deprecated(request):
         variable = variable.lower().replace(" ", "_")
         start_datetime = request.data.get("startDateTime")
         end_datetime = request.data.get("endDateTime")
-        time_resolution = request.data.get("temporalLevel")
-        time_agg_method = request.data.get("aggLevel")
+        time_resolution = request.data.get("temporalResolution")
+        time_agg_method = request.data.get("temporalAggregation")
         north = round(float(request.data.get("north")), 3)
         south = round(float(request.data.get("south")), 3)
         east = round(float(request.data.get("east")), 3)
@@ -103,8 +103,8 @@ def query(request):
         variable = variable.lower().replace(" ", "_")
         start_datetime = request.data.get("startDateTime")
         end_datetime = request.data.get("endDateTime")
-        time_resolution = request.data.get("temporalLevel")
-        time_agg_method = request.data.get("aggLevel")
+        time_resolution = request.data.get("temporalResolution")
+        time_agg_method = request.data.get("temporalAggregation")
         north = round(float(request.data.get("north")), 3)
         south = round(float(request.data.get("south")), 3)
         east = round(float(request.data.get("east")), 3)
@@ -151,8 +151,8 @@ def download_query(request):
         variable = variable.lower().replace(" ", "_")
         start_datetime = request.data.get("startDateTime")
         end_datetime = request.data.get("endDateTime")
-        time_resolution = request.data.get("temporalLevel")
-        time_agg_method = request.data.get("aggLevel")
+        time_resolution = request.data.get("temporalResolution")
+        time_agg_method = request.data.get("temporalAggregation")
         north = round(float(request.data.get("north")), 3)
         south = round(float(request.data.get("south")), 3)
         east = round(float(request.data.get("east")), 3)
@@ -221,8 +221,8 @@ def timeseries_deprecated(request):
         variable = variable.lower().replace(" ", "_")
         start_datetime = request.data.get("startDateTime")
         end_datetime = request.data.get("endDateTime")
-        time_resolution = request.data.get("temporalLevel")
-        time_agg_method = request.data.get("aggLevel")
+        time_resolution = request.data.get("temporalResolution")
+        time_agg_method = request.data.get("temporalAggregation")
         north = round(float(request.data.get("north")), 3)
         south = round(float(request.data.get("south")), 3)
         east = round(float(request.data.get("east")), 3)
@@ -270,8 +270,8 @@ def timeseries(request):
         variable = variable.lower().replace(" ", "_")
         start_datetime = request.data.get("startDateTime")
         end_datetime = request.data.get("endDateTime")
-        time_resolution = request.data.get("temporalLevel")
-        time_agg_method = request.data.get("aggLevel")
+        time_resolution = request.data.get("temporalResolution")
+        time_agg_method = request.data.get("temporalAggregation")
         north = round(float(request.data.get("north")), 3)
         south = round(float(request.data.get("south")), 3)
         east = round(float(request.data.get("east")), 3)
@@ -331,8 +331,8 @@ def heatmap_deprecated(request):
         west = round(float(request.data.get("west")), 3)
         start_datetime = request.data.get("startDateTime")
         end_datetime = request.data.get("endDateTime")
-        temporalLevel = request.data.get("temporalLevel")
-        time_agg_method = request.data.get("aggLevel")
+        temporalResolution = request.data.get("temporalResolution")
+        time_agg_method = request.data.get("temporalAggregation")
         hm_agg_method = request.data.get("secondAgg")
 
         formatted_start = format_datetime_string(start_datetime)
@@ -378,8 +378,8 @@ def heatmap(request):
         west = round(float(request.data.get("west")), 3)
         start_datetime = request.data.get("startDateTime")
         end_datetime = request.data.get("endDateTime")
-        temporalLevel = request.data.get("temporalLevel")
-        time_agg_method = request.data.get("aggLevel")
+        temporalResolution = request.data.get("temporalResolution")
+        time_agg_method = request.data.get("temporalAggregation")
         hm_agg_method = request.data.get("secondAgg")
 
         formatted_start = format_datetime_string(start_datetime)
@@ -432,8 +432,8 @@ def findTime_deprecated(request):
         west = round(float(request.data.get("west")), 3)
         start_datetime = request.data.get("startDateTime")
         end_datetime = request.data.get("endDateTime")
-        temporalLevel = request.data.get("temporalLevel")
-        time_agg_method = request.data.get("aggLevel")
+        temporalResolution = request.data.get("temporalResolution")
+        time_agg_method = request.data.get("temporalAggregation")
         ts_agg_method = request.data.get("secondAgg")
         filter_predicate = request.data.get("filterPredicate")
         filter_value = request.data.get("filterValue")
@@ -449,7 +449,7 @@ def findTime_deprecated(request):
             variable=variable,
             start_datetime=formatted_start,
             end_datetime=formatted_end,
-            time_resolution=temporalLevel,
+            time_resolution=temporalResolution,
             time_agg_method=time_agg_method,
             max_lat=north,
             min_lat=south,
@@ -498,8 +498,8 @@ def findTime(request):
         west = round(float(request.data.get("west")), 3)
         start_datetime = request.data.get("startDateTime")
         end_datetime = request.data.get("endDateTime")
-        temporalLevel = request.data.get("temporalLevel")
-        time_agg_method = request.data.get("aggLevel")
+        temporalResolution = request.data.get("temporalResolution")
+        time_agg_method = request.data.get("temporalAggregation")
         ts_agg_method = request.data.get("secondAgg")
         filter_predicate = request.data.get("filterPredicate")
         filter_value = request.data.get("filterValue")
@@ -520,7 +520,7 @@ def findTime(request):
             max_lat=north,
             min_lon=west,
             max_lon=east,
-            temporal_resolution=temporalLevel,
+            temporal_resolution=temporalResolution,
             temporal_aggregation=time_agg_method,
             time_series_aggregation_method=ts_agg_method,
             filter_predicate=filter_predicate,
@@ -567,8 +567,8 @@ def findArea_deprecated(request):
         west = round(float(request.data.get("west")), 3)
         startDateTime = request.data.get("startDateTime")
         endDateTime = request.data.get("endDateTime")
-        temporalLevel = request.data.get("temporalLevel")
-        time_agg_method = request.data.get("aggLevel")
+        temporalResolution = request.data.get("temporalResolution")
+        time_agg_method = request.data.get("temporalAggregation")
         fa_agg_method = request.data.get("secondAgg")
         filter_predicate = request.data.get("filterPredicate")
         filter_value = request.data.get("filterValue")
@@ -681,8 +681,8 @@ def findArea(request):
         west = round(float(request.data.get("west")), 3)
         startDateTime = request.data.get("startDateTime")
         endDateTime = request.data.get("endDateTime")
-        temporalLevel = request.data.get("temporalLevel")
-        time_agg_method = request.data.get("aggLevel")
+        temporalResolution = request.data.get("temporalResolution")
+        time_agg_method = request.data.get("temporalAggregation")
         fa_agg_method = request.data.get("secondAgg")
         filter_predicate = request.data.get("filterPredicate")
         filter_value = request.data.get("filterValue")
