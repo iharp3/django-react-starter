@@ -49,18 +49,18 @@ class Query(models.Model):
 
     requestType = models.CharField(max_length=15, choices=REQUEST_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
-    variable = models.CharField(max_length=50, choices=VARIABLE_CHOICES, default="2m_temperature")
+    variable = models.CharField(max_length=50, choices=VARIABLE_CHOICES)
     startDateTime = models.DateTimeField()
     endDateTime = models.DateTimeField()
-    temporalResolution = models.CharField(max_length=10, choices=TEMPORAL_CHOICES, default="day")
-    temporalAggregation = models.CharField(max_length=10, choices=AGG_CHOICES, default="mean")
+    temporalResolution = models.CharField(max_length=10, choices=TEMPORAL_CHOICES)
+    temporalAggregation = models.CharField(max_length=10, choices=AGG_CHOICES)
     north = models.DecimalField(max_digits=10, decimal_places=7)
     east = models.DecimalField(max_digits=10, decimal_places=7)
     south = models.DecimalField(max_digits=10, decimal_places=7)
     west = models.DecimalField(max_digits=10, decimal_places=7)
-    secondAgg = models.CharField(max_length=25, choices=AGG_CHOICES, default="min")
-    filterPredicate = models.CharField(max_length=2, choices=FILTER_PREDICATE_CHOICES, default="=")
-    filterValue = models.FloatField(default=255.0)
+    secondAgg = models.CharField(max_length=25, choices=AGG_CHOICES, null=True)
+    filterPredicate = models.CharField(max_length=2, choices=FILTER_PREDICATE_CHOICES, null=True)
+    filterValue = models.FloatField(null=True)
 
     def __str__(self):
         return self.title
