@@ -37,6 +37,8 @@ function App() {
     south: 59,
     east: -10,
     west: -74,
+    spatialResolution: 0.25,
+    spatialAggregation: "none",
     // downloadOption: "",
     // secondAgg: secondAgg,
     // filterValue: comparisonVal,

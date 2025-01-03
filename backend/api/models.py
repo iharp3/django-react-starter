@@ -14,6 +14,7 @@ class Query(models.Model):
         ("min", "min"),
         ("max", "max"),
         ("mean", "mean"),
+        ("none", "none"),
     ]
 
     REQUEST_CHOICES = [

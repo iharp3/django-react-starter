@@ -55,6 +55,20 @@ const Sidebar = ({
                     setVal={handleChange}
                     subLabel="temporalAggregation"
                     defaultValue={"mean"} />
+                <RadioButtons
+                    label="Spatial Resolution"
+                    options={[0.25, 0.5, 1]}
+                    var={formData.spatialResolution}
+                    setVal={handleChange}
+                    subLabel="spatialResolution"
+                    defaultValue={0.25} />
+                <RadioButtons
+                    label="Spatial Aggregation"
+                    options={["min", "max", "mean"]}
+                    var={formData.spatialAggregation}
+                    setVal={handleChange}
+                    subLabel="spatialAggregation"
+                    defaultValue={"mean"} />
                 <div className="hr" />
                 <CardinalDirections formData={formData} handleChange={handleChange} />
                 <div className="hr" />
