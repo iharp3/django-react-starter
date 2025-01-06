@@ -159,6 +159,8 @@ def download_query(request):
         south = round(float(request.data.get("south")), 3)
         east = round(float(request.data.get("east")), 3)
         west = round(float(request.data.get("west")), 3)
+        spatial_resolution = float(request.data.get("spatialResolution"))
+        spatial_aggregation = request.data.get("spatialAggregation")
         rid = serializer.data["id"]
 
         formatted_start = format_datetime_string(start_datetime)
@@ -179,13 +181,17 @@ def download_query(request):
             # max_lon=max_lon,
             temporal_resolution=time_resolution,
             temporal_aggregation=time_agg_method,
-            spatial_resolution=0.25,
-            spatial_aggregation=None,
+            spatial_resolution=spatial_resolution,
+            spatial_aggregation=spatial_aggregation,
         )
         ds = qe.execute()
 
+        tmp_dir = "tmp/data"
+        if not os.path.exists(tmp_dir):
+            os.makedirs(tmp_dir)
+
         file_name = f"iHARPV_{rid}.nc"
-        file_path = f"tmp/data/{file_name}"
+        file_path = f"{tmp_dir}/{file_name}"
         ds.to_netcdf(file_path)
 
         if os.path.exists(file_path):
