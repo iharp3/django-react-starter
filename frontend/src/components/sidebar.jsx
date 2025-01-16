@@ -5,6 +5,7 @@ import RadioButtons from './Radio';
 import PropTypes from 'prop-types';
 import { Button } from '@mui/material'
 import '../styles/sidebar.css'
+import '../styles/loading.css'
 
 // Once the date is changed the tempRes and temporalAggregation get reset in formdata back to their useState initial values
 const Sidebar = ({
@@ -16,7 +17,8 @@ const Sidebar = ({
     setEndDate,
     formData,
     handleChange,
-    queryData, }) => {
+    queryData,
+    isLoading, }) => {
 
     return (
         <>
@@ -72,7 +74,17 @@ const Sidebar = ({
                 <div className="hr" />
                 <CardinalDirections formData={formData} handleChange={handleChange} />
                 <div className="hr" />
-                <Button onClick={() => queryData()} variant="outlined" sx={{ marginBottom: "48px", marginTop: "auto" }}>Query</Button>
+                <Button 
+                    onClick={() => queryData()} 
+                    variant="outlined" 
+                    disabled={isLoading}
+                    sx={{ marginBottom: "48px", marginTop: "auto" }}
+                >
+                    <div className="button-content">
+                        {isLoading && <div className="loading-spinner" />}
+                        Query
+                    </div>
+                </Button>
             </div>
         </>
     )
@@ -88,6 +100,7 @@ Sidebar.propTypes = {
     formData: PropTypes.object,
     handleChange: PropTypes.func,
     queryData: PropTypes.func,
+    isLoading: PropTypes.bool,
 };
 
 export default Sidebar;

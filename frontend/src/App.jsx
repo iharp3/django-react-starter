@@ -21,6 +21,7 @@ function App() {
   const [heatMapImage, setHeatMap] = useState({});
   const [findTimeImage, setFindTime] = useState({});
   const [findAreaImage, setFindArea] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const { drawnShapeBounds, setDrawnShapeBounds } = useContext(BoundsContext);
 
@@ -133,6 +134,7 @@ function App() {
   };
 
   const queryData = async () => {
+    setIsLoading(true);
     try {
       const response = await fetch("/api/query/", {
         method: "POST",
@@ -157,6 +159,8 @@ function App() {
       }
     } catch (error) {
       console.error("Error fetching data", error)
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -534,7 +538,8 @@ function App() {
           setEndDate={setEndDate}
           formData={formData}
           handleChange={handleChange}
-          queryData={queryData} />
+          queryData={queryData}
+          isLoading={isLoading} />
         <div className="main_content">
           <MyMap />
           <Tabs
