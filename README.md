@@ -23,7 +23,7 @@ npm run dev
 # Build
 npm run build
 
-copy /home/huan1531/django-react-starter/frontend/dist to /home/huan1531/django-react-starter/backend/frontend/dist
+    # then copy /home/huan1531/django-react-starter/frontend/dist to /home/huan1531/django-react-starter/backend/frontend/dist
 
 rm -rf /home/huan1531/django-react-starter/backend/frontend/dist
 
