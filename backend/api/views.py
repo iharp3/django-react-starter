@@ -254,7 +254,7 @@ def timeseries_deprecated(request):
         )
 
         short_variable = get_variable_short_name(variable)
-        fig = go.Figure([go.Scatter(x=ts["time"], y=ts[short_variable])])
+        fig = go.Figure([go.Scatter(x=ts["valid_time"], y=ts[short_variable])])
 
         json_fig = fig.to_json()
         json_data = json.loads(json_fig)
@@ -313,7 +313,7 @@ def timeseries(request):
         ts = qe.execute()
 
         short_variable = get_variable_short_name(variable)
-        fig = go.Figure([go.Scatter(x=ts["time"], y=ts[short_variable])])
+        fig = go.Figure([go.Scatter(x=ts["valid_time"], y=ts[short_variable])])
 
         json_fig = fig.to_json()
         json_data = json.loads(json_fig)
@@ -478,7 +478,7 @@ def findTime_deprecated(request):
         fig = go.Figure(
             [
                 go.Scatter(
-                    x=ft["time"],
+                    x=ft["valid_time"],
                     y=ft["t2m"],
                     mode="lines+markers",
                     marker=dict(size=12, color=[color_map[i] for i in ft["t2m"].values]),
@@ -550,7 +550,7 @@ def findTime(request):
         fig = go.Figure(
             [
                 go.Scatter(
-                    x=ft["time"],
+                    x=ft["valid_time"],
                     y=ft["t2m"],
                     mode="lines+markers",
                     marker=dict(size=12, color=[color_map[i] for i in ft["t2m"].values]),

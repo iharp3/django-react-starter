@@ -12,7 +12,7 @@ function App() {
 
   const [variable, setVariable] = useState("2m_temperature");
   const [startDate, setStartDate] = useState(dayjs("2023-01-01T00:00Z"));
-  const [endDate, setEndDate] = useState(dayjs("2023-01-31T23:00Z"));
+  const [endDate, setEndDate] = useState(dayjs("2023-12-31T23:00Z"));
   const [secondAgg, setSecondAggMethod] = useState("mean");
   const [comparisonVal, setComparisonVal] = useState(285);
   const [predicate, setPredicate] = useState("<");
@@ -31,13 +31,13 @@ function App() {
     variable: variable,
     startDateTime: startDate,
     endDateTime: endDate,
-    temporalResolution: "day",
+    temporalResolution: "year",
     temporalAggregation: "mean",
     north: 84,
     south: 59,
     east: -10,
     west: -74,
-    spatialResolution: 0.25,
+    spatialResolution: 1,
     spatialAggregation: "mean",
     // downloadOption: "",
     // secondAgg: secondAgg,

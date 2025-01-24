@@ -49,7 +49,7 @@ const Sidebar = ({
                     var={formData.temporalResolution}
                     setVal={handleChange}
                     subLabel="temporalResolution"
-                    defaultValue={"day"} />
+                    defaultValue={"year"} />
                 <RadioButtons
                     label="Temporal Aggregation"
                     options={["min", "max", "mean"]}
@@ -63,7 +63,7 @@ const Sidebar = ({
                     var={formData.spatialResolution}
                     setVal={handleChange}
                     subLabel="spatialResolution"
-                    defaultValue={0.25} />
+                    defaultValue={1} />
                 <RadioButtons
                     label="Spatial Aggregation"
                     options={["min", "max", "mean"]}
