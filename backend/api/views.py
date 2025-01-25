@@ -28,6 +28,7 @@ from .iharp_query_executor import (
     HeatmapExecutor,
     FindTimeExecutor,
     FindAreaExecutor,
+    long_short_name_dict,
 )
 
 logger = logging.getLogger(__name__)
@@ -49,6 +50,10 @@ def format_datetime_string(dt_input):
         dt = make_naive(dt)
     dt_formatted = dt.strftime("%Y-%m-%d %H:%M:%S") if dt else None
     return dt_formatted
+
+
+def get_variable_short_name(variable):
+    return long_short_name_dict.get(variable, variable)
 
 
 @api_view(["POST"])
@@ -347,6 +352,7 @@ def heatmap_deprecated(request):
         time_agg_method = request.data.get("temporalAggregation")
         hm_agg_method = request.data.get("secondAgg")
 
+        var_short_name = get_variable_short_name(variable)
         formatted_start = format_datetime_string(start_datetime)
         formatted_end = format_datetime_string(end_datetime)
 
@@ -360,7 +366,7 @@ def heatmap_deprecated(request):
             max_lon=east,
             heatmap_aggregation_method=hm_agg_method,
         )
-        fig = go.Figure(data=go.Heatmap(x=hm["longitude"], y=hm["latitude"], z=hm["t2m"], colorscale="RdBu_r"))
+        fig = go.Figure(data=go.Heatmap(x=hm["longitude"], y=hm["latitude"], z=hm[var_short_name], colorscale="RdBu_r"))
         fig.update_layout(yaxis=dict(scaleanchor="x", scaleratio=1), xaxis=dict(constrain="domain"))
         json_fig = fig.to_json()
         json_data = json.loads(json_fig)
@@ -396,6 +402,7 @@ def heatmap(request):
         spatial_resolution = float(request.data.get("spatialResolution"))
         spatial_aggregation = request.data.get("spatialAggregation")
 
+        var_short_name = get_variable_short_name(variable)
         formatted_start = format_datetime_string(start_datetime)
         formatted_end = format_datetime_string(end_datetime)
 
@@ -418,7 +425,7 @@ def heatmap(request):
         )
         hm = qe.execute()
 
-        fig = go.Figure(data=go.Heatmap(x=hm["longitude"], y=hm["latitude"], z=hm["t2m"], colorscale="RdBu_r"))
+        fig = go.Figure(data=go.Heatmap(x=hm["longitude"], y=hm["latitude"], z=hm[var_short_name], colorscale="RdBu_r"))
         fig.update_layout(yaxis=dict(scaleanchor="x", scaleratio=1), xaxis=dict(constrain="domain"))
         json_fig = fig.to_json()
         json_data = json.loads(json_fig)
@@ -452,6 +459,7 @@ def findTime_deprecated(request):
         filter_predicate = request.data.get("filterPredicate")
         filter_value = request.data.get("filterValue")
 
+        var_short_name = get_variable_short_name(variable)
         formatted_start = format_datetime_string(start_datetime)
         formatted_end = format_datetime_string(end_datetime)
 
@@ -479,9 +487,9 @@ def findTime_deprecated(request):
             [
                 go.Scatter(
                     x=ft["valid_time"],
-                    y=ft["t2m"],
+                    y=ft[var_short_name],
                     mode="lines+markers",
-                    marker=dict(size=12, color=[color_map[i] for i in ft["t2m"].values]),
+                    marker=dict(size=12, color=[color_map[i] for i in ft[var_short_name].values]),
                     line=dict(color="lightgray"),
                 )
             ]
@@ -520,6 +528,7 @@ def findTime(request):
         spatial_resolution = float(request.data.get("spatialResolution"))
         spatial_aggregation = request.data.get("spatialAggregation")
 
+        var_short_name = get_variable_short_name(variable)
         formatted_start = format_datetime_string(start_datetime)
         formatted_end = format_datetime_string(end_datetime)
 
@@ -551,9 +560,9 @@ def findTime(request):
             [
                 go.Scatter(
                     x=ft["valid_time"],
-                    y=ft["t2m"],
+                    y=ft[var_short_name],
                     mode="lines+markers",
-                    marker=dict(size=12, color=[color_map[i] for i in ft["t2m"].values]),
+                    marker=dict(size=12, color=[color_map[i] for i in ft[var_short_name].values]),
                     line=dict(color="lightgray"),
                 )
             ]
@@ -603,6 +612,8 @@ def findArea_deprecated(request):
         formatted_start = start_dt.strftime("%Y-%m-%d %H:%M:%S") if start_dt else None
         formatted_end = end_dt.strftime("%Y-%m-%d %H:%M:%S") if end_dt else None
 
+        var_short_name = get_variable_short_name(variable)
+
         # TODO: Replace temporary static variables below
 
         fa = find_area_baseline(
@@ -637,8 +648,8 @@ def findArea_deprecated(request):
             gdf,
             geojson=gdf.geometry,
             locations=gdf.index,
-            hover_data={"t2m": True, "latitude": True, "longitude": True},
-            color="t2m",
+            hover_data={var_short_name: True, "latitude": True, "longitude": True},
+            color=var_short_name,
             center={"lat": gdf["latitude"].mean(), "lon": gdf["longitude"].mean()},
             opacity=0.3,
             zoom=1,
@@ -719,6 +730,8 @@ def findArea(request):
         formatted_start = start_dt.strftime("%Y-%m-%d %H:%M:%S") if start_dt else None
         formatted_end = end_dt.strftime("%Y-%m-%d %H:%M:%S") if end_dt else None
 
+        var_short_name = get_variable_short_name(variable)
+
         # TODO: Replace temporary static variables below
 
         qe = FindAreaExecutor(
@@ -758,8 +771,8 @@ def findArea(request):
             gdf,
             geojson=gdf.geometry,
             locations=gdf.index,
-            hover_data={"t2m": True, "latitude": True, "longitude": True},
-            color="t2m",
+            hover_data={var_short_name: True, "latitude": True, "longitude": True},
+            color=var_short_name,
             center={"lat": gdf["latitude"].mean(), "lon": gdf["longitude"].mean()},
             opacity=0.3,
             zoom=1,
