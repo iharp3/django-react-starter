@@ -426,6 +426,7 @@ def heatmap(request):
         hm = qe.execute()
 
         fig = go.Figure(data=go.Heatmap(x=hm["longitude"], y=hm["latitude"], z=hm[var_short_name], colorscale="RdBu_r"))
+        fig.update_traces(hovertemplate=f"lon: %{{x}}<br>lat: %{{y}}<br>{var_short_name}: %{{z}}<extra></extra>")
         fig.update_layout(yaxis=dict(scaleanchor="x", scaleratio=1), xaxis=dict(constrain="domain"))
         json_fig = fig.to_json()
         json_data = json.loads(json_fig)
@@ -765,7 +766,7 @@ def findArea(request):
                 for x, y, x2, y2 in zip(df["longitude"], df["latitude"], df["longitude2"], df["latitude2"])
             ],
         )
-
+        print(gdf.head())
         color_mapping = {True: "blue", False: "red"}
         fig = px.choropleth_mapbox(
             gdf,
