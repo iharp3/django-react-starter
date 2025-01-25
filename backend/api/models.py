@@ -30,7 +30,8 @@ class Query(models.Model):
 
     VARIABLE_CHOICES = [
         ("2m_temperature", "2m_temperature"),
-        ("Surface Pressure", "surface_pressure"),
+        ("surface_pressure", "surface_pressure"),
+        ("sea_surface_temperature", "sea_surface_temperature"),
         ("Total Precipitation", "total_precipitation"),
     ]
 

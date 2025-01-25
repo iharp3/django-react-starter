@@ -29,6 +29,8 @@ const Sidebar = ({
                     setVal={setVariable}
                     label={"Variable"}
                     options={["2m_temperature",
+                        "surface_pressure",
+                        "sea_surface_temperature",
                         //"Surface Pressure",
                         //Total Precipitation",
                     ]}
@@ -74,9 +76,9 @@ const Sidebar = ({
                 <div className="hr" />
                 <CardinalDirections formData={formData} handleChange={handleChange} />
                 <div className="hr" />
-                <Button 
-                    onClick={() => queryData()} 
-                    variant="outlined" 
+                <Button
+                    onClick={() => queryData()}
+                    variant="outlined"
                     disabled={isLoading}
                     sx={{ marginBottom: "48px", marginTop: "auto" }}
                 >

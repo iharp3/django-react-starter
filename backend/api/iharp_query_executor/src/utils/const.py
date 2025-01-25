@@ -3,6 +3,8 @@ import xarray as xr
 
 long_short_name_dict = {
     "2m_temperature": "t2m",
+    "surface_pressure": "sp",
+    "sea_surface_temperature": "sst",
 }
 
 ds_raw = xr.Dataset()
