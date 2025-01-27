@@ -3,9 +3,20 @@ import { Button } from '@mui/material';
 import Plot from 'react-plotly.js';
 import Input from './input';
 import "../styles/heatmap.css";
+import { useState } from 'react';
 
 // TODO,bug with areas where the height is a bit larger than the width.
 const HeatMap = ({ handleHeatMap, heatMapImage, formData, handleChange }) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleClick = async () => {
+    setIsLoading(true);
+    try {
+      await handleHeatMap();
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const heatmapLayout = {
     autosize: true,
@@ -58,7 +69,17 @@ const HeatMap = ({ handleHeatMap, heatMapImage, formData, handleChange }) => {
           options={["min", "max", "mean"]}
           sx={{ width: "80%" }}
           size={"small"}/>
-        <Button onClick={() => handleHeatMap()} variant="outlined" sx={{marginBottom: "48px", marginTop: "auto"}}>Query</Button>
+        <Button 
+          onClick={handleClick} 
+          variant="outlined" 
+          disabled={isLoading}
+          sx={{marginBottom: "48px", marginTop: "auto"}}
+        >
+          <div className="button-content">
+            {isLoading && <div className="loading-spinner" />}
+            Query
+          </div>
+        </Button>
       </div>
       <div className="hline"></div>
       { heatMapImage && Object.keys(heatMapImage).length > 0 ? (

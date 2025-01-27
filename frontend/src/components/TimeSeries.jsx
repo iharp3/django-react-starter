@@ -3,8 +3,10 @@ import Input from './input';
 import PropTypes from "prop-types";
 import Plot from 'react-plotly.js';
 import "../styles/timeseries.css"
+import { useState } from 'react';
 
 const TimeSeries = ({ handleTimeSeries, timeSeriesImage, formData, handleChange }) => {
+  const [isLoading, setIsLoading] = useState(false);
 
   const defaultLayout = {
     ...timeSeriesImage.layout,
@@ -35,6 +37,15 @@ const TimeSeries = ({ handleTimeSeries, timeSeriesImage, formData, handleChange 
     }
   };
 
+  const handleClick = async () => {
+    setIsLoading(true);
+    try {
+      await handleTimeSeries();
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // TODO: Add warning if temporal res is less than date start/end differences
   return (
     <div className="time_series">
@@ -47,7 +58,17 @@ const TimeSeries = ({ handleTimeSeries, timeSeriesImage, formData, handleChange 
           options={["min", "max", "mean"]}
           sx={{ width: "80%" }}
           size={"small"} />
-        <Button onClick={() => handleTimeSeries()} variant="outlined" sx={{ marginBottom: "48px", marginTop: "auto" }}>Query</Button>
+        <Button
+          onClick={handleClick}
+          variant="outlined"
+          disabled={isLoading}
+          sx={{ marginBottom: "48px", marginTop: "auto" }}
+        >
+          <div className="button-content">
+            {isLoading && <div className="loading-spinner" />}
+            Query
+          </div>
+        </Button>
       </div>
       <div className="hline"></div>
       {timeSeriesImage && Object.keys(timeSeriesImage).length > 0 ? (
