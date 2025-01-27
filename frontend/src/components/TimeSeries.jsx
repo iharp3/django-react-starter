@@ -46,7 +46,7 @@ const TimeSeries = ({ handleTimeSeries, timeSeriesImage, formData, handleChange 
           label={"Select Aggregation Method"}
           options={["min", "max", "mean"]}
           sx={{ width: "80%" }}
-          size={"small"}/>
+          size={"small"} />
         <Button onClick={() => handleTimeSeries()} variant="outlined" sx={{ marginBottom: "48px", marginTop: "auto" }}>Query</Button>
       </div>
       <div className="hline"></div>
@@ -66,7 +66,7 @@ const TimeSeries = ({ handleTimeSeries, timeSeriesImage, formData, handleChange 
   )
 }
 
-TimeSeries.propTypes = {  
+TimeSeries.propTypes = {
   handleTimeSeries: PropTypes.func,
   timeSeriesImage: PropTypes.object,
   formData: PropTypes.object,

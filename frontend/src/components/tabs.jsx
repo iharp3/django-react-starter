@@ -7,6 +7,7 @@ import HeatMap from "./HeatMap";
 import FindTime from "./FindTime";
 import FindArea from "./FindArea";
 import '../styles/tabs.css';
+import '../styles/loading.css'
 import { Button } from '@mui/material';
 
 function CustomTabPanel(props) {
@@ -40,28 +41,30 @@ function a11yProps(index) {
   };
 }
 
-const Tabs = ({ 
-    formData, 
-    htmlString, 
-    handleTimeSeries, 
-    timeSeriesImage, 
-    handleHeatMap, 
-    heatMapImage, 
-    handleFindTime, 
-    findTimeImage, 
-    findAreaImage, 
-    handleFindArea, 
-    setSecondAggMethod,
-    setComparisonVal, 
-    setPredicate, }) => {
+const Tabs = ({
+  formData,
+  htmlString,
+  handleTimeSeries,
+  timeSeriesImage,
+  handleHeatMap,
+  heatMapImage,
+  handleFindTime,
+  findTimeImage,
+  findAreaImage,
+  handleFindArea,
+  setSecondAggMethod,
+  setComparisonVal,
+  setPredicate, }) => {
 
   const [tabNum, setTab] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleTabChange = (event, newValue) => {
     setTab(newValue);
   };
 
   const handleDownload = async () => {
+    setIsLoading(true);
     try {
       const response = await fetch('/api/download_raster/', {
         method: "POST",
@@ -70,7 +73,7 @@ const Tabs = ({
         },
         body: JSON.stringify(formData),
       });
-  
+
       if (response.ok) {
         const blob = await response.blob();
         const fileName = "iHARPV_download.nc";
@@ -78,8 +81,8 @@ const Tabs = ({
         const a = document.createElement("a");
         a.href = url;
         a.download = fileName;
-        document.body.appendChild(a); 
-        a.click(); 
+        document.body.appendChild(a);
+        a.click();
         a.remove();
         window.URL.revokeObjectURL(url);
       } else {
@@ -87,14 +90,16 @@ const Tabs = ({
       }
     } catch (error) {
       console.error('Error downloading file:', error);
+    } finally {
+      setIsLoading(false);
     }
-  };  
+  };
 
   return (
     <>
       <div className="tabs_wrapper">
-        <Box sx={{ width: '100%'}}>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider'}}>
+        <Box sx={{ width: '100%' }}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <TabMui value={tabNum} onChange={handleTabChange} aria-label="Navigation">
               <Tab label="Raster Info" />
               <Tab label="Time Series" />
@@ -112,7 +117,17 @@ const Tabs = ({
                   <div className="raster_info">
                     <div className="download_btn">
                       {/* Consider: StreamingHttpResponse or maybe Celery task queue? */}
-                      <Button onClick={handleDownload} variant="outlined" sx={{ marginBottom: "48px", marginTop: "auto", textWrap: "noWrap"}}>Download</Button>
+                      <Button
+                        onClick={handleDownload}
+                        variant="outlined"
+                        disabled={isLoading}
+                        sx={{ marginBottom: "48px", marginTop: "auto", textWrap: "noWrap" }}
+                      >
+                        <div className="button-content">
+                          {isLoading && <div className="loading-spinner" />}
+                          Download
+                        </div>
+                      </Button>
                     </div>
                     <div className="hline"></div>
                     <pre className="raster_content">{`${htmlString}`}</pre>
@@ -120,37 +135,37 @@ const Tabs = ({
                 )}
               </div>
             </CustomTabPanel>
-            <CustomTabPanel sx={{ width: "100%", height: "255px"}} value={tabNum} index={1} {...a11yProps(1)}>
-              <TimeSeries 
-                  handleTimeSeries={handleTimeSeries} 
-                  timeSeriesImage={timeSeriesImage} 
-                  handleChange={setSecondAggMethod}
-                  formData={formData}/>
+            <CustomTabPanel sx={{ width: "100%", height: "255px" }} value={tabNum} index={1} {...a11yProps(1)}>
+              <TimeSeries
+                handleTimeSeries={handleTimeSeries}
+                timeSeriesImage={timeSeriesImage}
+                handleChange={setSecondAggMethod}
+                formData={formData} />
             </CustomTabPanel>
             <CustomTabPanel sx={{ width: "100%", height: "255px" }} value={tabNum} index={2} {...a11yProps(2)}>
-              <HeatMap 
-                  handleHeatMap={handleHeatMap} 
-                  heatMapImage={heatMapImage}
-                  formData={formData}
-                  handleChange={setSecondAggMethod} />
+              <HeatMap
+                handleHeatMap={handleHeatMap}
+                heatMapImage={heatMapImage}
+                formData={formData}
+                handleChange={setSecondAggMethod} />
             </CustomTabPanel>
             <CustomTabPanel value={tabNum} index={3} {...a11yProps(3)}>
-              <FindTime 
-                handleFindTime={handleFindTime} 
-                findTimeImage={findTimeImage} 
-                formData={formData} 
+              <FindTime
+                handleFindTime={handleFindTime}
+                findTimeImage={findTimeImage}
+                formData={formData}
                 setComparisonVal={setComparisonVal}
-                setPredicate={setPredicate} 
-                handleChange={setSecondAggMethod}/>
+                setPredicate={setPredicate}
+                handleChange={setSecondAggMethod} />
             </CustomTabPanel>
             <CustomTabPanel value={tabNum} index={4} {...a11yProps(4)}>
-              <FindArea 
-                findAreaImage={findAreaImage} 
-                handleFindArea={handleFindArea} 
-                formData={formData} 
+              <FindArea
+                findAreaImage={findAreaImage}
+                handleFindArea={handleFindArea}
+                formData={formData}
                 setComparisonVal={setComparisonVal}
-                setPredicate={setPredicate} 
-                handleChange={setSecondAggMethod}/>
+                setPredicate={setPredicate}
+                handleChange={setSecondAggMethod} />
             </CustomTabPanel>
           </div>
         </Box>
