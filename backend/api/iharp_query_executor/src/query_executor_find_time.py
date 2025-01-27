@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import xarray as xr
 
@@ -111,13 +112,14 @@ class FindTimeExecutor(QueryExecutor):
         )
 
         if years:
+            print("Check years: ", years)
             year_range = time_array_to_range(years, "year")
             year_min, year_max = self._get_range_min_max(year_range, "year")
             for year in years:
                 year_determined = False
                 year_datetime = f"{year}-12-31 00:00:00"
-                curr_year_min = year_min.sel(valid_time=year_datetime)[self.variable_short_name].values.min()
-                curr_year_max = year_max.sel(valid_time=year_datetime)[self.variable_short_name].values.max()
+                curr_year_min = np.nanmin(year_min.sel(valid_time=year_datetime)[self.variable_short_name].values)
+                curr_year_max = np.nanmax(year_max.sel(valid_time=year_datetime)[self.variable_short_name].values)
                 if self.filter_predicate == ">":
                     if curr_year_min > self.filter_value:
                         print(f"{year}: min > filter, True")
@@ -146,14 +148,15 @@ class FindTimeExecutor(QueryExecutor):
                     months = months + [f"{year}-{month:02d}" for month in range(1, 13)]
 
         if months:
+            print("Check months: ", months)
             # update month_range
             month_range = time_array_to_range(months, "month")
             month_min, month_max = self._get_range_min_max(month_range, "month")
             for month in months:
                 month_determined = False
                 month_datetime = f"{month}-{get_last_date_of_month(pd.Timestamp(month))} 00:00:00"
-                curr_month_min = month_min.sel(valid_time=month_datetime)[self.variable_short_name].values.min()
-                curr_month_max = month_max.sel(valid_time=month_datetime)[self.variable_short_name].values.max()
+                curr_month_min = np.nanmin(month_min.sel(valid_time=month_datetime)[self.variable_short_name].values)
+                curr_month_max = np.nanmax(month_max.sel(valid_time=month_datetime)[self.variable_short_name].values)
                 if self.filter_predicate == ">":
                     if curr_month_min > self.filter_value:
                         print(f"{month}: min > filter, True")
@@ -184,12 +187,13 @@ class FindTimeExecutor(QueryExecutor):
                     ]
 
         if days:
+            print("Check days: ", days)
             day_range = time_array_to_range(days, "day")
             day_min, day_max = self._get_range_min_max(day_range, "day")
             for day in days:
                 day_datetime = f"{day} 00:00:00"
-                curr_day_min = day_min.sel(valid_time=day_datetime)[self.variable_short_name].values.min()
-                curr_day_max = day_max.sel(valid_time=day_datetime)[self.variable_short_name].values.max()
+                curr_day_min = np.nanmin(day_min.sel(valid_time=day_datetime)[self.variable_short_name].values)
+                curr_day_max = np.nanmax(day_max.sel(valid_time=day_datetime)[self.variable_short_name].values)
                 if self.filter_predicate == ">":
                     if curr_day_min > self.filter_value:
                         print(f"{day}: min > filter, True")
@@ -233,6 +237,8 @@ class FindTimeExecutor(QueryExecutor):
                 max_lat=self.max_lat,
                 min_lon=self.min_lon,
                 max_lon=self.max_lon,
+                spatial_resolution=self.spatial_resolution,
+                spatial_aggregation=self.spatial_aggregation,
                 temporal_resolution=temporal_res,
                 temporal_aggregation="min",
                 metadata=self.metadata.f_path,
@@ -245,6 +251,8 @@ class FindTimeExecutor(QueryExecutor):
                 max_lat=self.max_lat,
                 min_lon=self.min_lon,
                 max_lon=self.max_lon,
+                spatial_resolution=self.spatial_resolution,
+                spatial_aggregation=self.spatial_aggregation,
                 temporal_resolution=temporal_res,
                 temporal_aggregation="max",
                 metadata=self.metadata.f_path,
