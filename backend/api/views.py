@@ -433,13 +433,23 @@ def findArea(request):
             gdf,
             geojson=gdf.geometry,
             locations=gdf.index,
-            hover_data={var_short_name: True, "latitude": True, "longitude": True},
+            hover_data={var_short_name: ":.2f", "latitude": ":.3f", "longitude": ":.3f"},
             color=var_short_name,
             center={"lat": gdf["latitude"].mean(), "lon": gdf["longitude"].mean()},
             opacity=0.3,
             zoom=1,
             color_discrete_map=color_mapping,
         )
+
+        fig.update_traces(
+            hovertemplate=(
+                "Lat: %{customdata[1]:.3f}<br>"
+                + "Lon: %{customdata[2]:.3f}<br>"
+                + f"{var_short_name}: %{{customdata[0]}}<br>"
+                + "<extra></extra>"
+            )
+        )
+
         fig.update_traces(marker_line_width=0)
         fig.update_layout(
             mapbox_style="white-bg",
