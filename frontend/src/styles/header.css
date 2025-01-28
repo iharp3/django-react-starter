@@ -1,13 +1,94 @@
 .header_wrapper {
-    background-color: black;
-    height: 10vh;
+    width: 100%;
     display: flex;
-    flex-direction: column;
     justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    background-color: rgb(255, 222, 122);
+}
+
+.title-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.info-button {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #666;
     color: white;
-    font-family: "Playfair_Display", serif;
-    font-size: xx-large;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-style: italic;
+    transition: background-color 0.3s;
+}
+
+.info-button:hover {
+    background-color: #888;
+}
+
+.info-popup {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    z-index: 1000;
+    margin-top: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.info-popup::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 12px;
+    height: 12px;
+    background-color: #333;
+}
+
+.info-table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 800px;
+}
+
+.info-table th,
+.info-table td {
+    border: 1px solid #555;
+    padding: 8px;
+    text-align: left;
+}
+
+.info-table th {
+    background-color: #444;
+    font-weight: bold;
+}
+
+.info-table tr:nth-child(even) {
+    background-color: #3a3a3a;
+}
+
+.info-table tr:hover {
+    background-color: #484848;
 }
