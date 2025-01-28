@@ -427,7 +427,6 @@ def findArea(request):
                 for x, y, x2, y2 in zip(df["longitude"], df["latitude"], df["longitude2"], df["latitude2"])
             ],
         )
-        print(gdf.head())
         color_mapping = {True: "blue", False: "red"}
         fig = px.choropleth_mapbox(
             gdf,
