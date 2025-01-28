@@ -33,5 +33,13 @@ start backend with : python manage.py runserver 0.0.0.0:8000
 
 tmux new -d -s django "python manage.py runserver 0.0.0.0:8000"
 
+nohup python -u manage.py runserver 0.0.0.0:8000 > ../output.txt &
+
+pgrep -a python
+
+62932 python manage.py runserver 0.0.0.0:8000
+
+kill 62932
+
 # TODO
 Deny request with large API calls

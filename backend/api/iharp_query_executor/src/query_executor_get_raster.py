@@ -106,8 +106,8 @@ class GetRasterExecutor(QueryExecutor):
                 "area": [leftover_max_lat, leftover_min_lon, leftover_min_lat, leftover_max_lon],
             }
             api_calls.append((dataset, request))
-        print("local files:", local_files)
-        print("api:", api_calls)
+        print("local files:", local_files, flush=True)
+        print("api:", api_calls, flush=True)
         return local_files, api_calls
 
     def execute(self):
