@@ -1,5 +1,7 @@
 import '../styles/header.css'
 import { useState } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faGithub } from '@fortawesome/free-brands-svg-icons'
 
 const Header = () => {
     const [showInfo, setShowInfo] = useState(false);
@@ -69,54 +71,54 @@ const Header = () => {
             temporalResolution: "Yearly"
         },
         "Temperature (Northern Region)": {
-        variable: "2m Temperature",
-        spatialRegion: "90,40,180,-180",
-        spatialResolution: "1°",
-        temporalRange: "1940-1994",
-        temporalResolution: "Yearly"
-    },
-    "Temperature (Southern Region)": {
-        variable: "2m Temperature",
-        spatialRegion: "-70,-90,180,-180",
-        spatialResolution: "1°",
-        temporalRange: "1940-1994",
-        temporalResolution: "Yearly"
-    },
-    "pressure_2024": {
-        variable: "Surface Pressure",
-        spatialRegion: "90,60,-10,-80",
-        spatialResolution: "0.25°",
-        temporalRange: "2024",
-        temporalResolution: "Hourly"
-    },
-    "pressure_2015_2023": {
-        variable: "Surface Pressure",
-        spatialRegion: "90,50,180,-180",
-        spatialResolution: "0.5°",
-        temporalRange: "2015-2023",
-        temporalResolution: "Daily"
-    },
-    "pressure_2010_2014_west": {
-        variable: "Surface Pressure",
-        spatialRegion: "90,50,0,-80",
-        spatialResolution: "0.5°",
-        temporalRange: "2010-2014",
-        temporalResolution: "Daily"
-    },
-    "pressure_2010_2014_east": {
-        variable: "Surface Pressure",
-        spatialRegion: "90,50,180,0",
-        spatialResolution: "0.5°",
-        temporalRange: "2010-2014",
-        temporalResolution: "Monthly"
-    }
+            variable: "2m Temperature",
+            spatialRegion: "90,40,180,-180",
+            spatialResolution: "1°",
+            temporalRange: "1940-1994",
+            temporalResolution: "Yearly"
+        },
+        "Temperature (Southern Region)": {
+            variable: "2m Temperature",
+            spatialRegion: "-70,-90,180,-180",
+            spatialResolution: "1°",
+            temporalRange: "1940-1994",
+            temporalResolution: "Yearly"
+        },
+        "pressure_2024": {
+            variable: "Surface Pressure",
+            spatialRegion: "90,60,-10,-80",
+            spatialResolution: "0.25°",
+            temporalRange: "2024",
+            temporalResolution: "Hourly"
+        },
+        "pressure_2015_2023": {
+            variable: "Surface Pressure",
+            spatialRegion: "90,50,180,-180",
+            spatialResolution: "0.5°",
+            temporalRange: "2015-2023",
+            temporalResolution: "Daily"
+        },
+        "pressure_2010_2014_west": {
+            variable: "Surface Pressure",
+            spatialRegion: "90,50,0,-80",
+            spatialResolution: "0.5°",
+            temporalRange: "2010-2014",
+            temporalResolution: "Daily"
+        },
+        "pressure_2010_2014_east": {
+            variable: "Surface Pressure",
+            spatialRegion: "90,50,180,0",
+            spatialResolution: "0.5°",
+            temporalRange: "2010-2014",
+            temporalResolution: "Monthly"
+        }
     };
 
     return (
         <>
             <div className="header_wrapper">
                 <div className="title-container">
-                    <p className='title'>iHARPV</p>
+                    <p className='title'>POLARIS</p>
                     <button
                         className="info-button"
                         onClick={() => setShowInfo(!showInfo)}
@@ -150,6 +152,9 @@ const Header = () => {
                         </div>
                     )}
                 </div>
+                <a href="https://github.com/iharp3/iharp-query-executor" >
+                    <FontAwesomeIcon icon={faGithub} />
+                </a>
             </div>
         </>
     )
