@@ -7,111 +7,17 @@ const Header = () => {
     const [showInfo, setShowInfo] = useState(false);
 
     const tableData = {
-        "Sea Surface Temperature1": {
-            variable: "Sea Surface Temperature",
-            spatialRegion: "90,60,180,-180",
-            spatialResolution: "0.25°",
-            temporalRange: "2024",
-            temporalResolution: "Hourly"
-        },
-        "Sea Surface Temperature2": {
-            variable: "Sea Surface Temperature",
-            spatialRegion: "90,50,-70,-180",
-            spatialResolution: "0.5°",
-            temporalRange: "2020-2023",
-            temporalResolution: "Daily"
-        },
-        "Sea Surface Temperature3": {
-            variable: "Sea Surface Temperature",
-            spatialRegion: "90,50,10,-70",
-            spatialResolution: "0.25°",
-            temporalRange: "2020-2023",
-            temporalResolution: "Daily"
-        },
-        "Sea Surface Temperature4": {
-            variable: "Sea Surface Temperature",
-            spatialRegion: "90,50,180,10",
-            spatialResolution: "0.5°",
-            temporalRange: "2020-2023",
-            temporalResolution: "Daily"
-        },
-        "Sea Surface Temperature5": {
-            variable: "Sea Surface Temperature",
-            spatialRegion: "90,60,180,-180",
-            spatialResolution: "1°",
-            temporalRange: "2015-2019",
-            temporalResolution: "Yearly"
-        },
-        "Sea Surface Temperature6": {
-            variable: "Sea Surface Temperature",
-            spatialRegion: "80,70,-50,-80",
-            spatialResolution: "0.25°",
-            temporalRange: "2010-2014",
-            temporalResolution: "Hourly"
-        },
-        "Sea Surface Temperature7": {
-            variable: "Sea Surface Temperature",
-            spatialRegion: "90,60,180,-180",
-            spatialResolution: "1°",
-            temporalRange: "2010-2014",
-            temporalResolution: "Daily"
-        },
-        "Sea Surface Temperature8": {
-            variable: "Sea Surface Temperature",
-            spatialRegion: "90,60,180,-180",
-            spatialResolution: "1°",
-            temporalRange: "2006-2009",
-            temporalResolution: "Monthly"
-        },
-        "Sea Surface Temperature9": {
-            variable: "Sea Surface Temperature",
-            spatialRegion: "90,60,180,-180",
-            spatialResolution: "1°",
-            temporalRange: "2001-2005",
-            temporalResolution: "Yearly"
-        },
-        "Temperature (Northern Region)": {
+        "Temperature (Greenland)": {
             variable: "2m Temperature",
-            spatialRegion: "90,40,180,-180",
-            spatialResolution: "1°",
-            temporalRange: "1940-1994",
-            temporalResolution: "Yearly"
+            spatialRegion: "Greenland",
+            North: 84,
+            South: 58,
+            West: -75,
+            East: -10,
+            spatialResolution: "0.25°, 0.5°, 1°",
+            temporalRange: "2015-2024",
+            temporalResolution: "hour, day, month, year"
         },
-        "Temperature (Southern Region)": {
-            variable: "2m Temperature",
-            spatialRegion: "-70,-90,180,-180",
-            spatialResolution: "1°",
-            temporalRange: "1940-1994",
-            temporalResolution: "Yearly"
-        },
-        "pressure_2024": {
-            variable: "Surface Pressure",
-            spatialRegion: "90,60,-10,-80",
-            spatialResolution: "0.25°",
-            temporalRange: "2024",
-            temporalResolution: "Hourly"
-        },
-        "pressure_2015_2023": {
-            variable: "Surface Pressure",
-            spatialRegion: "90,50,180,-180",
-            spatialResolution: "0.5°",
-            temporalRange: "2015-2023",
-            temporalResolution: "Daily"
-        },
-        "pressure_2010_2014_west": {
-            variable: "Surface Pressure",
-            spatialRegion: "90,50,0,-80",
-            spatialResolution: "0.5°",
-            temporalRange: "2010-2014",
-            temporalResolution: "Daily"
-        },
-        "pressure_2010_2014_east": {
-            variable: "Surface Pressure",
-            spatialRegion: "90,50,180,0",
-            spatialResolution: "0.5°",
-            temporalRange: "2010-2014",
-            temporalResolution: "Monthly"
-        }
     };
 
     return (
@@ -120,18 +26,23 @@ const Header = () => {
                 <div className="title-container">
                     <p className='title'>POLARIS</p>
                     <button
-                        className="info-button"
+                        // className="info-button"
                         onClick={() => setShowInfo(!showInfo)}
                     >
-                        i
+                        Click To See Current Available Data
                     </button>
                     {showInfo && (
                         <div className="info-popup">
+                            <h5>Available Data (by 03/07)</h5>
                             <table className="info-table">
                                 <thead>
                                     <tr>
                                         <th>Variable</th>
                                         <th>Spatial Region</th>
+                                        <th>North</th>
+                                        <th>South</th>
+                                        <th>West</th>
+                                        <th>East</th>
                                         <th>Spatial Resolution</th>
                                         <th>Temporal Range</th>
                                         <th>Temporal Resolution</th>
@@ -142,6 +53,10 @@ const Header = () => {
                                         <tr key={index}>
                                             <td>{row.variable}</td>
                                             <td>{row.spatialRegion}</td>
+                                            <td>{row.North}</td>
+                                            <td>{row.South}</td>
+                                            <td>{row.West}</td>
+                                            <td>{row.East}</td>
                                             <td>{row.spatialResolution}</td>
                                             <td>{row.temporalRange}</td>
                                             <td>{row.temporalResolution}</td>
@@ -153,7 +68,7 @@ const Header = () => {
                     )}
                 </div>
                 <a href="https://github.com/iharp3/iharp-query-executor" >
-                    <FontAwesomeIcon icon={faGithub} />
+                    [Github]
                 </a>
             </div>
         </>
