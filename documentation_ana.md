@@ -54,3 +54,37 @@ Terminal 2:
         source venv/bin/activate
         cd django-react-starter/frontend
         npm run dev
+
+# Editing the interface
+
+* App.jsx is the parent
+* components are the children that pass information to the parent
+
+
+Adding different plots to the tabs:
+In three_plots.jsx
+* import `NewPlot` (the name of the new plot) from the file you define it it: `./NewPlot`.
+* add functions `handleNewPlot`, and `newPlotImage` inside `const Tabs = ({})`.
+
+Inside each of the three panels: 
+*  add a new tab inside the `<TabMui> </TabMui>` object.
+
+                <Tab label="Plot Name" />
+
+* add a custom tab panel that displays the plot inside the `</Box> </Box>` object.
+
+                <CustomTabPanel value={tabNum[panel number]} index={[unique index=j]} {...a11yProps(j)}>
+                <NewPlot
+                    handleNewPlot={handleNewPlot} 
+                    newPlotImage={newPlotImage} 
+                    handleChange={setSecondAggMethod} <-- only if necessary
+                    formData={formData} />
+              </CustomTabPanel>
+
+* add a property type for the `handleNewPlot` and `NewPlotImage` you added.
+
+                handleNewPlot: PropTypes.func,
+                newPlotImage: PropTypes.object,
+
+
+
