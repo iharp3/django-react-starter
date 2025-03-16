@@ -6,19 +6,42 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons'
 const Header = () => {
     const [showInfo, setShowInfo] = useState(false);
 
-    const tableData = {
-        "Temperature (Greenland)": {
-            variable: "2m Temperature",
-            spatialRegion: "Greenland",
-            North: 84,
-            South: 58,
-            West: -75,
-            East: -10,
-            spatialResolution: "0.25°, 0.5°, 1°",
-            temporalRange: "2015-2024",
-            temporalResolution: "hour, day, month, year"
-        },
-    };
+    const variables = [
+        "2m_temperature",
+        "total_precipitation",
+        "surface_pressure",
+        "snow_depth",
+        "snowfall",
+        "snowmelt",
+        "temperature_of_snow_layer",
+        "ice_temperature_layer_1",
+        "ice_temperature_layer_2",
+        "ice_temperature_layer_3",
+        "ice_temperature_layer_4",
+    ]
+    const regions = {
+        "Greenland": { North: 84, South: 58, West: -75, East: -10 },
+        "Alaska": { North: 72, South: 50, West: -170, East: -130 },
+        "Antarctica": { North: -60, South: -90, West: -180, East: 180 }
+    }
+
+    const tableData = {}
+    Object.keys(regions).forEach(region => {
+        variables.forEach(variable => {
+            tableData[`${variable} (${region})`] = {
+                variable: variable,
+                spatialRegion: region,
+                North: regions[region].North,
+                South: regions[region].South,
+                West: regions[region].West,
+                East: regions[region].East,
+                spatialResolution: "0.25°, 0.5°, 1°",
+                temporalRange: "2015-2024",
+                temporalResolution: "hour, day, month, year"
+            }
+        })
+    })
+
 
     return (
         <>
@@ -33,7 +56,7 @@ const Header = () => {
                     </button>
                     {showInfo && (
                         <div className="info-popup">
-                            <h5>Available Data (by 03/07)</h5>
+                            <h5>Available Data (by 03/16).</h5>
                             <table className="info-table">
                                 <thead>
                                     <tr>

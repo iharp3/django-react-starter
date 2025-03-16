@@ -28,11 +28,18 @@ const Sidebar = ({
                     val={variable}
                     setVal={setVariable}
                     label={"Variable"}
-                    options={["2m_temperature",
+                    options={[
+                        "2m_temperature",
+                        "total_precipitation",
                         "surface_pressure",
-                        "sea_surface_temperature",
-                        //"Surface Pressure",
-                        //Total Precipitation",
+                        "snow_depth",
+                        "snowfall",
+                        "snowmelt",
+                        "temperature_of_snow_layer",
+                        "ice_temperature_layer_1",
+                        "ice_temperature_layer_2",
+                        "ice_temperature_layer_3",
+                        "ice_temperature_layer_4",
                     ]}
                     sx={{ width: "65%" }}
                     size={"small"}

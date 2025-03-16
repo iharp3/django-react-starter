@@ -30,9 +30,17 @@ class Query(models.Model):
 
     VARIABLE_CHOICES = [
         ("2m_temperature", "2m_temperature"),
+        ("snow_depth", "snow_depth"),
+        ("snowfall", "snowfall"),
+        ("snowmelt", "snowmelt"),
         ("surface_pressure", "surface_pressure"),
         ("sea_surface_temperature", "sea_surface_temperature"),
-        ("Total Precipitation", "total_precipitation"),
+        ("total_precipitation", "total_precipitation"),
+        ("temperature_of_snow_layer", "temperature_of_snow_layer"),
+        ("ice_temperature_layer_1", "ice_temperature_layer_1"),
+        ("ice_temperature_layer_2", "ice_temperature_layer_2"),
+        ("ice_temperature_layer_3", "ice_temperature_layer_3"),
+        ("ice_temperature_layer_4", "ice_temperature_layer_4"),
     ]
 
     FILTER_PREDICATE_CHOICES = [

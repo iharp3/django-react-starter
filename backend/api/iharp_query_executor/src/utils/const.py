@@ -3,8 +3,17 @@ import xarray as xr
 
 long_short_name_dict = {
     "2m_temperature": "t2m",
+    "snow_depth": "sd",
+    "snowfall": "sf",
+    "snowmelt": "smlt",
     "surface_pressure": "sp",
     "sea_surface_temperature": "sst",
+    "temperature_of_snow_layer": "tsn",
+    "total_precipitation": "tp",
+    "ice_temperature_layer_1": "istl1",
+    "ice_temperature_layer_2": "istl2",
+    "ice_temperature_layer_3": "istl3",
+    "ice_temperature_layer_4": "istl4",
 }
 
 ds_raw = xr.Dataset()

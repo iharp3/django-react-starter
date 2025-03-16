@@ -525,9 +525,9 @@ function App() {
     }
   }
 
-  useEffect(() => {
-    alert('[2025/03/05]: Click OK to close this alert and open the website. No data in the backend right now for querying. Data will be added by 03/07. \n\nThank you. ')
-  }, [])
+  // useEffect(() => {
+  //   alert('[2025/03/05]: Click OK to close this alert and open the website. No data in the backend right now for querying. Data will be added by 03/07. \n\nThank you. ')
+  // }, [])
 
   return (
     <>
