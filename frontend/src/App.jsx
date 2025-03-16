@@ -3,7 +3,9 @@ import { BoundsContext } from './util/context/BoundsContext'
 import Header from './components/header'
 import Sidebar from './components/sidebar'
 import MyMap from "./components/map"
-import Tabs from './components/tabs'
+// import Tabs from './components/tabs'
+// import Tabs from "./components/bottom_panel"
+import Tabs from "./components/three_plots"
 import dayjs from 'dayjs'
 import './App.css'
 
