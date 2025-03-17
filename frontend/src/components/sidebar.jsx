@@ -60,13 +60,6 @@ const Sidebar = ({
                     subLabel="temporalResolution"
                     defaultValue={"year"} />
                 <RadioButtons
-                    label="Temporal Aggregation"
-                    options={["min", "max", "mean"]}
-                    var={formData.temporalAggregation}
-                    setVal={handleChange}
-                    subLabel="temporalAggregation"
-                    defaultValue={"mean"} />
-                <RadioButtons
                     label="Spatial Resolution"
                     options={[0.25, 0.5, 1]}
                     var={formData.spatialResolution}
@@ -74,11 +67,11 @@ const Sidebar = ({
                     subLabel="spatialResolution"
                     defaultValue={1} />
                 <RadioButtons
-                    label="Spatial Aggregation"
+                    label="Spatio-Temporal Aggregation"
                     options={["min", "max", "mean"]}
-                    var={formData.spatialAggregation}
+                    var={formData.aggregation}
                     setVal={handleChange}
-                    subLabel="spatialAggregation"
+                    subLabel="aggregation"
                     defaultValue={"mean"} />
                 <div className="hr" />
                 <CardinalDirections formData={formData} handleChange={handleChange} />

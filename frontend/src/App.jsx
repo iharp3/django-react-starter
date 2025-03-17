@@ -11,8 +11,8 @@ import './App.css'
 function App() {
 
   const [variable, setVariable] = useState("2m_temperature");
-  const [startDate, setStartDate] = useState(dayjs("2023-01-01T00:00Z"));
-  const [endDate, setEndDate] = useState(dayjs("2023-12-31T23:00Z"));
+  const [startDate, setStartDate] = useState(dayjs("2020-01-01T00:00Z"));
+  const [endDate, setEndDate] = useState(dayjs("2024-12-31T23:00Z"));
   const [secondAgg, setSecondAggMethod] = useState("mean");
   const [comparisonVal, setComparisonVal] = useState(285);
   const [predicate, setPredicate] = useState("<");
@@ -38,7 +38,7 @@ function App() {
     east: -10,
     west: -74,
     spatialResolution: 1,
-    spatialAggregation: "mean",
+    aggregation: "mean",
     // downloadOption: "",
     // secondAgg: secondAgg,
     // filterValue: comparisonVal,
