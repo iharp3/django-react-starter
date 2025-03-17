@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from .models import Query
+from .models import *
 
 
 class GetRasterSeriazlier(serializers.ModelSerializer):
     class Meta:
-        model = Query
+        model = GetRasterQueryModel
         fields = [
             "id",
             "created_at",
@@ -23,7 +23,7 @@ class GetRasterSeriazlier(serializers.ModelSerializer):
 
 class HeatmapSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Query
+        model = HeatmapQueryModel
         fields = [
             "id",
             "created_at",
@@ -41,7 +41,7 @@ class HeatmapSerializer(serializers.ModelSerializer):
 
 class TimeSeriesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Query
+        model = TimeseriesQueryModel
         fields = [
             "id",
             "created_at",
@@ -59,7 +59,7 @@ class TimeSeriesSerializer(serializers.ModelSerializer):
 
 class FindTimeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Query
+        model = FindTimeModel
         fields = [
             "id",
             "created_at",
@@ -79,7 +79,7 @@ class FindTimeSerializer(serializers.ModelSerializer):
 
 class FindAreaSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Query
+        model = FindAreaModel
         fields = [
             "id",
             "created_at",
