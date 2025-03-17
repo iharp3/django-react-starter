@@ -23,9 +23,6 @@ class Query(models.Model):
         ("heatmap", "heatmap"),
         ("find_time", "find_time"),
         ("find_area", "find_area"),
-        # ("Time Series", "Time Series"),
-        # ("Heat Map", "Heat Map"),
-        # ("Data Download", "Data Download"),
     ]
 
     VARIABLE_CHOICES = [
