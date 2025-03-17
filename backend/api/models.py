@@ -14,7 +14,6 @@ class Query(models.Model):
         ("min", "min"),
         ("max", "max"),
         ("mean", "mean"),
-        ("none", "none"),
     ]
 
     REQUEST_CHOICES = [
@@ -55,14 +54,13 @@ class Query(models.Model):
     startDateTime = models.DateTimeField()
     endDateTime = models.DateTimeField()
     temporalResolution = models.CharField(max_length=10, choices=TEMPORAL_CHOICES)
-    temporalAggregation = models.CharField(max_length=10, choices=AGG_CHOICES)
     north = models.DecimalField(max_digits=25, decimal_places=20)
     east = models.DecimalField(max_digits=25, decimal_places=20)
     south = models.DecimalField(max_digits=25, decimal_places=20)
     west = models.DecimalField(max_digits=25, decimal_places=20)
     spatialResolution = models.DecimalField(max_digits=3, decimal_places=2)
-    spatialAggregation = models.CharField(max_length=10, choices=AGG_CHOICES)
-    secondAgg = models.CharField(max_length=25, choices=AGG_CHOICES, null=True)
+    aggregation = models.CharField(max_length=10, choices=AGG_CHOICES)
+    secondAgg = models.CharField(max_length=10, choices=AGG_CHOICES, null=True)
     filterPredicate = models.CharField(max_length=2, choices=FILTER_PREDICATE_CHOICES, null=True)
     filterValue = models.FloatField(null=True)
 
