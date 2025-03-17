@@ -55,7 +55,9 @@ Terminal 2:
         cd django-react-starter/frontend
         npm run dev
 
-# Editing the interface
+<!-- # Editing the interface
+
+Need to change for dropdown menu 
 
 * App.jsx is the parent
 * components are the children that pass information to the parent
@@ -84,7 +86,13 @@ Inside each of the three panels:
 * add a property type for the `handleNewPlot` and `NewPlotImage` you added.
 
                 handleNewPlot: PropTypes.func,
-                newPlotImage: PropTypes.object,
+                newPlotImage: PropTypes.object, -->
+
+
+# Thoughts on changing interface
+
+* move the setSecondAggMethod, setComparisonVal, setPredicate objects to sidebar
+* in App.jsx, change `formData.secondAgg = secondAgg;` to `handleChange={setSecondAggMethod} `(?) maybe???
 
 
 

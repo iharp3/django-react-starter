@@ -73,24 +73,23 @@ const Tabs = ({
             
             {/* Panel 1 */}
             <div style={{ flex: 1 }}>
-
               <FormControl fullWidth>
                 <InputLabel id="tab-select-label">Select View</InputLabel>
-              <Select
-                labelId="tab-select-label"
-                value={tabNum1}
-                onChange={(event) => setTab1(event.target.value)}
-              >
-                <MenuItem value={0}>Raster Info</MenuItem>
-                <MenuItem value={1}>Time Series</MenuItem>
-                <MenuItem value={2}>Heatmap</MenuItem>
-                <MenuItem value={3}>Find Time</MenuItem>
-                <MenuItem value={4}>Find Area</MenuItem>
-              </Select>
+                <Select
+                  labelId="tab-select-label"
+                  value={tabNum1}
+                  onChange={(event) => setTab1(event.target.value)}
+                >
+                  <MenuItem value={2}>Raster Info</MenuItem>
+                  <MenuItem value={1}>Time Series</MenuItem>
+                  <MenuItem value={0}>Heatmap</MenuItem>
+                  <MenuItem value={3}>Find Time</MenuItem>
+                  <MenuItem value={4}>Find Area</MenuItem>
+                </Select>
               </FormControl>
-              <CustomTabPanel value={tabNum1} index={0} {...a11yProps(0)}>
+              <CustomTabPanel value={tabNum1} index={2} {...a11yProps(2)}>
                 <div className="raster_data">
-                  {!htmlString ? <div className="no_content">No Content</div> : <pre className="raster_content">{htmlString}</pre>}     {/* This part is different from original code */}
+                  {!htmlString ? <div className="no_content">No Content</div> : <pre className="raster_content">{htmlString}</pre>} 
                 </div>
               </CustomTabPanel>
               <CustomTabPanel value={tabNum1} index={1} {...a11yProps(1)}>
@@ -100,7 +99,7 @@ const Tabs = ({
                     handleChange={setSecondAggMethod} 
                     formData={formData} />
               </CustomTabPanel>
-              <CustomTabPanel value={tabNum1} index={2} {...a11yProps(2)}>
+              <CustomTabPanel value={tabNum1} index={0} {...a11yProps(0)}>
                 <HeatMap 
                     handleHeatMap={handleHeatMap} 
                     heatMapImage={heatMapImage} 
@@ -129,104 +128,112 @@ const Tabs = ({
   
             {/* Panel 2 */}
             <div style={{ flex: 1 }}>
-              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <TabMui value={tabNum2} onChange={handleTabChange2} aria-label="Panel 2 Tabs">
-                  <Tab label="Raster Info" />
-                  <Tab label="Time Series" />
-                  <Tab label="Heatmap" />
-                  <Tab label="Find Time" />
-                  <Tab label="Find Area"/>
-                  {/* add more tabs here */}
-                </TabMui>
-              </Box>
-              <CustomTabPanel value={tabNum2} index={0} {...a11yProps(0)}>
-                <div className="raster_data">
-                  {!htmlString ? <div className="no_content">No Content</div> : <pre className="raster_content">{htmlString}</pre>}     {/* This part is different from original code */}
-                </div>
-              </CustomTabPanel>
-              <CustomTabPanel value={tabNum2} index={1} {...a11yProps(1)}>
-                <TimeSeries 
-                    handleTimeSeries={handleTimeSeries} 
-                    timeSeriesImage={timeSeriesImage} 
-                    handleChange={setSecondAggMethod} 
-                    formData={formData} />
-              </CustomTabPanel>
-              <CustomTabPanel value={tabNum2} index={2} {...a11yProps(2)}>
-                <HeatMap 
-                    handleHeatMap={handleHeatMap} 
-                    heatMapImage={heatMapImage} 
-                    formData={formData} 
-                    handleChange={setSecondAggMethod} />
-              </CustomTabPanel>
-              <CustomTabPanel value={tabNum2} index={3} {...a11yProps(3)}>
-                <FindTime
-                    handleFindTime={handleFindTime}
-                    findTimeImage={findTimeImage}
-                    formData={formData}
-                    setComparisonVal={setComparisonVal}
-                    setPredicate={setPredicate}
-                    handleChange={setSecondAggMethod} />
-              </CustomTabPanel>
-              <CustomTabPanel value={tabNum2} index={4} {...a11yProps(4)}>
-                <FindArea
-                    findAreaImage={findAreaImage}
-                    handleFindArea={handleFindArea}
-                    formData={formData}
-                    setComparisonVal={setComparisonVal}
-                    setPredicate={setPredicate}
-                    handleChange={setSecondAggMethod} />
-              </CustomTabPanel>
+              <FormControl fullWidth>
+                  <InputLabel id="tab-select-label">Select View</InputLabel>
+                  <Select
+                    labelId="tab-select-label"
+                    value={tabNum2}
+                    onChange={(event) => setTab2(event.target.value)}
+                  >
+                    <MenuItem value={1}>Raster Info</MenuItem>
+                    <MenuItem value={0}>Time Series</MenuItem>
+                    <MenuItem value={2}>Heatmap</MenuItem>
+                    <MenuItem value={3}>Find Time</MenuItem>
+                    <MenuItem value={4}>Find Area</MenuItem>
+                  </Select>
+                </FormControl>
+                <CustomTabPanel value={tabNum2} index={1} {...a11yProps(1)}>
+                  <div className="raster_data">
+                    {!htmlString ? <div className="no_content">No Content</div> : <pre className="raster_content">{htmlString}</pre>} 
+                  </div>
+                </CustomTabPanel>
+                <CustomTabPanel value={tabNum2} index={0} {...a11yProps(0)}>
+                  <TimeSeries 
+                      handleTimeSeries={handleTimeSeries} 
+                      timeSeriesImage={timeSeriesImage} 
+                      handleChange={setSecondAggMethod} 
+                      formData={formData} />
+                </CustomTabPanel>
+                <CustomTabPanel value={tabNum2} index={2} {...a11yProps(2)}>
+                  <HeatMap 
+                      handleHeatMap={handleHeatMap} 
+                      heatMapImage={heatMapImage} 
+                      formData={formData} 
+                      handleChange={setSecondAggMethod} />
+                </CustomTabPanel>
+                <CustomTabPanel value={tabNum2} index={3} {...a11yProps(3)}>
+                  <FindTime
+                      handleFindTime={handleFindTime}
+                      findTimeImage={findTimeImage}
+                      formData={formData}
+                      setComparisonVal={setComparisonVal}
+                      setPredicate={setPredicate}
+                      handleChange={setSecondAggMethod} />
+                </CustomTabPanel>
+                <CustomTabPanel value={tabNum2} index={4} {...a11yProps(4)}>
+                  <FindArea
+                      findAreaImage={findAreaImage}
+                      handleFindArea={handleFindArea}
+                      formData={formData}
+                      setComparisonVal={setComparisonVal}
+                      setPredicate={setPredicate}
+                      handleChange={setSecondAggMethod} />
+                </CustomTabPanel>
             </div>
   
             {/* Panel 3 */}
             <div style={{ flex: 1 }}>
-              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <TabMui value={tabNum3} onChange={handleTabChange3} aria-label="Panel 3 Tabs">
-                  <Tab label="Raster Info" />
-                  <Tab label="Time Series" />
-                  <Tab label="Heatmap" />
-                  <Tab label="Find Time" />
-                  <Tab label="Find Area"/>
-                  {/* add more tabs here */}
-                </TabMui>
-              </Box>
-              <CustomTabPanel value={tabNum3} index={0} {...a11yProps(0)}>
-                <div className="raster_data">
-                  {!htmlString ? <div className="no_content">No Content</div> : <pre className="raster_content">{htmlString}</pre>}     {/* This part is different from original code */}
-                </div>
-              </CustomTabPanel>
-              <CustomTabPanel value={tabNum3} index={1} {...a11yProps(1)}>
-                <TimeSeries 
-                    handleTimeSeries={handleTimeSeries} 
-                    timeSeriesImage={timeSeriesImage} 
-                    handleChange={setSecondAggMethod} 
-                    formData={formData} />
-              </CustomTabPanel>
-              <CustomTabPanel value={tabNum3} index={2} {...a11yProps(2)}>
-                <HeatMap 
-                    handleHeatMap={handleHeatMap} 
-                    heatMapImage={heatMapImage} 
-                    formData={formData} 
-                    handleChange={setSecondAggMethod} />
-              </CustomTabPanel>
-              <CustomTabPanel value={tabNum3} index={3} {...a11yProps(3)}>
-                <FindTime
-                    handleFindTime={handleFindTime}
-                    findTimeImage={findTimeImage}
-                    formData={formData}
-                    setComparisonVal={setComparisonVal}
-                    setPredicate={setPredicate}
-                    handleChange={setSecondAggMethod} />
-              </CustomTabPanel>
-              <CustomTabPanel value={tabNum3} index={4} {...a11yProps(4)}>
-                <FindArea
-                    findAreaImage={findAreaImage}
-                    handleFindArea={handleFindArea}
-                    formData={formData}
-                    setComparisonVal={setComparisonVal}
-                    setPredicate={setPredicate}
-                    handleChange={setSecondAggMethod} />
-              </CustomTabPanel>
+              <FormControl fullWidth>
+                  <InputLabel id="tab-select-label">Select View</InputLabel>
+                  <Select
+                    labelId="tab-select-label"
+                    value={tabNum3}
+                    onChange={(event) => setTab3(event.target.value)}
+                  >
+                    <MenuItem value={3}>Raster Info</MenuItem>
+                    <MenuItem value={1}>Time Series</MenuItem>
+                    <MenuItem value={2}>Heatmap</MenuItem>
+                    <MenuItem value={0}>Find Time</MenuItem>
+                    <MenuItem value={4}>Find Area</MenuItem>
+                  </Select>
+                </FormControl>
+                <CustomTabPanel value={tabNum3} index={3} {...a11yProps(3)}>
+                  <div className="raster_data">
+                    {!htmlString ? <div className="no_content">No Content</div> : <pre className="raster_content">{htmlString}</pre>}   
+                  </div>
+                </CustomTabPanel>
+                <CustomTabPanel value={tabNum3} index={1} {...a11yProps(1)}>
+                  <TimeSeries 
+                      handleTimeSeries={handleTimeSeries} 
+                      timeSeriesImage={timeSeriesImage} 
+                      handleChange={setSecondAggMethod} 
+                      formData={formData} />
+                </CustomTabPanel>
+                <CustomTabPanel value={tabNum3} index={2} {...a11yProps(2)}>
+                  <HeatMap 
+                      handleHeatMap={handleHeatMap} 
+                      heatMapImage={heatMapImage} 
+                      formData={formData} 
+                      handleChange={setSecondAggMethod} />
+                </CustomTabPanel>
+                <CustomTabPanel value={tabNum3} index={0} {...a11yProps(0)}>
+                  <FindTime
+                      handleFindTime={handleFindTime}
+                      findTimeImage={findTimeImage}
+                      formData={formData}
+                      setComparisonVal={setComparisonVal}
+                      setPredicate={setPredicate}
+                      handleChange={setSecondAggMethod} />
+                </CustomTabPanel>
+                <CustomTabPanel value={tabNum3} index={4} {...a11yProps(4)}>
+                  <FindArea
+                      findAreaImage={findAreaImage}
+                      handleFindArea={handleFindArea}
+                      formData={formData}
+                      setComparisonVal={setComparisonVal}
+                      setPredicate={setPredicate}
+                      handleChange={setSecondAggMethod} />
+                </CustomTabPanel>
             </div>
   
           </Box>
