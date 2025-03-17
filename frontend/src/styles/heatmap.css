@@ -1,12 +1,12 @@
 .heat_map {
-  width: 100%; 
-  height: 100%;   
-  display: flex; 
-  flex-direction: row; 
-  justify-content: space-evenly;    
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
   align-items: center;
   align-content: center;
-  margin-top: 4px;  
+  margin-top: 4px;
   flex-basis: auto;
 }
 
@@ -24,7 +24,7 @@
 }
 
 .hm_plotly {
-  width: 100%; 
+  width: 100%;
   height: 240px;
   max-width: 90%;
 }

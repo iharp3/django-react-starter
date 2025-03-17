@@ -14,5 +14,5 @@ export const BoundsProvider = ({ children }) => {
 };
 
 BoundsProvider.propTypes = {
-  children: PropTypes.any, 
+  children: PropTypes.any,
 };

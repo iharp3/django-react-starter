@@ -2,8 +2,8 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
-@font-face{
+@font-face {
   font-family: "Playfair_Display";
-  src:local("PlayfairDisplay-Regular"),
-  url('./assets/fonts/Rubik_Scribble/static/PlayfairDisplay-Regular.ttf') 
+  src: local("PlayfairDisplay-Regular"),
+    url('./assets/fonts/Rubik_Scribble/static/PlayfairDisplay-Regular.ttf')
 }

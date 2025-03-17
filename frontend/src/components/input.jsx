@@ -21,7 +21,7 @@ const Input = ({ val, setVal, label, options, sx, size, name }) => {
                     id="demo-simple-select"
                     value={!val ? options[0] : val}
                     label={label}
-                    onChange={handleChange} 
+                    onChange={handleChange}
                     name={name}>
                     {options.map((option) => (
                         <MenuItem key={option} value={option}>
