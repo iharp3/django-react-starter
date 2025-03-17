@@ -50,14 +50,6 @@ const TimeSeries = ({ handleTimeSeries, timeSeriesImage, formData, handleChange 
   return (
     <div className="time_series">
       <div className="ts_inputs">
-        <Input
-          val={formData.secondAgg}
-          setVal={handleChange}
-          name="ts_agg_method"
-          label={"Select Aggregation Method"}
-          options={["min", "max", "mean"]}
-          sx={{ width: "80%" }}
-          size={"small"} />
         <Button
           onClick={handleClick}
           variant="outlined"
@@ -92,7 +84,6 @@ TimeSeries.propTypes = {
   timeSeriesImage: PropTypes.object,
   formData: PropTypes.object,
   handleChange: PropTypes.func,
-  aggMethod: PropTypes.string,
 }
 
 export default TimeSeries

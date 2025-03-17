@@ -22,28 +22,28 @@ const HeatMap = ({ handleHeatMap, heatMapImage, formData, handleChange }) => {
     autosize: true,
     margin: { l: 50, r: 20, b: 40, t: 20 },
     xaxis: {
-        title: { text: 'Longitude' },
-        automargin: true,
-        constrain: 'domain',
-        showgrid: false
+      title: { text: 'Longitude' },
+      automargin: true,
+      constrain: 'domain',
+      showgrid: false
     },
     yaxis: {
-        title: { text: 'Latitude' },
-        automargin: true,
-        scaleanchor: "x", 
-        scaleratio: 1,
-        showgrid: false
+      title: { text: 'Latitude' },
+      automargin: true,
+      scaleanchor: "x",
+      scaleratio: 1,
+      showgrid: false
     },
     coloraxis: {
-        colorscale: 'RdBu', 
-        colorbar: {
-            title: 'Temperature (°K)',
-            ticksuffix: '°K',
-            outlinewidth: 1
-        }
+      colorscale: 'RdBu',
+      colorbar: {
+        title: 'Temperature (°K)',
+        ticksuffix: '°K',
+        outlinewidth: 1
+      }
     },
     hovermode: 'closest',
-    showlegend: false 
+    showlegend: false
   };
 
   const heatmapConfig = {
@@ -52,8 +52,8 @@ const HeatMap = ({ handleHeatMap, heatMapImage, formData, handleChange }) => {
     displaylogo: false,
     scrollZoom: true,
     toImageButtonOptions: {
-        format: 'png',
-        filename: 'heatmap_image'
+      format: 'png',
+      filename: 'heatmap_image'
     },
     modeBarButtonsToRemove: ['zoomOut2d', 'zoomIn2d'],
   };
@@ -61,19 +61,11 @@ const HeatMap = ({ handleHeatMap, heatMapImage, formData, handleChange }) => {
   return (
     <div className="heat_map">
       <div className="hm_inputs">
-        <Input
-          val={formData.secondAgg}
-          setVal={handleChange}
-          name="hm_agg_method"
-          label={"Select Aggregation Method"}
-          options={["min", "max", "mean"]}
-          sx={{ width: "80%" }}
-          size={"small"}/>
-        <Button 
-          onClick={handleClick} 
-          variant="outlined" 
+        <Button
+          onClick={handleClick}
+          variant="outlined"
           disabled={isLoading}
-          sx={{marginBottom: "48px", marginTop: "auto"}}
+          sx={{ marginBottom: "48px", marginTop: "auto" }}
         >
           <div className="button-content">
             {isLoading && <div className="loading-spinner" />}
@@ -82,15 +74,15 @@ const HeatMap = ({ handleHeatMap, heatMapImage, formData, handleChange }) => {
         </Button>
       </div>
       <div className="hline"></div>
-      { heatMapImage && Object.keys(heatMapImage).length > 0 ? (
-      <div className="hm_plot">
-        <Plot
+      {heatMapImage && Object.keys(heatMapImage).length > 0 ? (
+        <div className="hm_plot">
+          <Plot
             className="hm_plotly"
             data={heatMapImage.data}
             layout={heatmapLayout}
             frames={heatMapImage.frames}
-            config={heatmapConfig}/>
-      </div>
+            config={heatmapConfig} />
+        </div>
       ) : (
         <div className="hm_plot">
           No Heat Map Data
@@ -103,6 +95,6 @@ const HeatMap = ({ handleHeatMap, heatMapImage, formData, handleChange }) => {
 HeatMap.propTypes = {
   handleHeatMap: PropTypes.func,
   heatMapImage: PropTypes.object,
-}  
+}
 
 export default HeatMap;
