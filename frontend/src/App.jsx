@@ -5,7 +5,7 @@ import Sidebar from './components/sidebar'
 import MyMap from "./components/map"
 // import Tabs from './components/tabs'
 // import Tabs from "./components/bottom_panel"
-import Tabs from "./components/three_plots"
+import Tabs from "./components/bottom_panel"
 import dayjs from 'dayjs'
 import './App.css'
 
