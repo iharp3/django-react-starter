@@ -23,7 +23,7 @@ def gen_empty_xarray(
     lon_start = lon_range.searchsorted(min_lon, side="left")
     lon_end = lon_range.searchsorted(max_lon, side="right")
     ds_empty = xr.Dataset()
-    ds_empty["valid_time"] = pd.date_range(
+    ds_empty["time"] = pd.date_range(
         start=start_datetime,
         end=end_datetime,
         freq=time_resolution_to_freq(temporal_resolution),
@@ -58,7 +58,7 @@ class Metadata:
     @staticmethod
     def _mask_query_with_meta(ds_query, ds_meta):
         return (
-            ds_query["valid_time"].isin(ds_meta["valid_time"])
+            ds_query["time"].isin(ds_meta["time"])
             & ds_query["latitude"].isin(ds_meta["latitude"])
             & ds_query["longitude"].isin(ds_meta["longitude"])
         )
@@ -73,24 +73,9 @@ class Metadata:
         min_lon,
         max_lon,
         temporal_resolution,
-        temporal_aggregation,
         spatial_resolution,
-        spatial_aggregation,
+        aggregation,
     ):
-        # if temporal_aggregation is None:
-        #     temporal_aggregation = "none"
-        # if spatial_aggregation is None:
-        #     spatial_aggregation = "none"
-        
-        if temporal_aggregation is None and spatial_aggregation is None:
-            aggregation = "none"
-        else:
-            if temporal_aggregation is not None:
-                aggregation = temporal_aggregation
-            else:
-                aggregation = spatial_aggregation
-        
-
         df_overlap = self.df_meta[
             (self.df_meta["variable"] == variable)
             & (self.df_meta["min_lat"] <= max_lat)
@@ -102,7 +87,6 @@ class Metadata:
             & (self.df_meta["temporal_resolution"] == temporal_resolution)
             & (self.df_meta["spatial_resolution"] == spatial_resolution)
             & (self.df_meta["aggregation"] == aggregation)
-            # & (self.df_meta["spatial_aggregation"] == spatial_aggregation)
         ]
 
         ds_query = gen_empty_xarray(
@@ -119,18 +103,18 @@ class Metadata:
         false_mask = xr.DataArray(
             data=np.zeros(
                 (
-                    ds_query.sizes["valid_time"],
+                    ds_query.sizes["time"],
                     ds_query.sizes["latitude"],
                     ds_query.sizes["longitude"],
                 ),
                 dtype=bool,
             ),
             coords={
-                "valid_time": ds_query["valid_time"],
+                "time": ds_query["time"],
                 "latitude": ds_query["latitude"],
                 "longitude": ds_query["longitude"],
             },
-            dims=["valid_time", "latitude", "longitude"],
+            dims=["time", "latitude", "longitude"],
         )
 
         for row in df_overlap.itertuples():

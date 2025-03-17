@@ -18,10 +18,9 @@ class GetRasterExecutor(QueryExecutor):
         max_lat: float,
         min_lon: float,
         max_lon: float,
-        temporal_resolution="hour",  # e.g., "hour", "day", "month", "year"
-        temporal_aggregation=None,  # e.g., "mean", "max", "min"
-        spatial_resolution=0.25,  # e.g., 0.25, 0.5, 1.0
-        spatial_aggregation=None,  # e.g., "mean", "max", "min"
+        temporal_resolution: str,  # e.g., "hour", "day", "month", "year"
+        spatial_resolution: float,  # e.g., 0.25, 0.5, 1.0
+        aggregation,  # e.g., "mean", "max", "min"
         metadata=None,  # metadata file path
     ):
         super().__init__(
@@ -33,15 +32,10 @@ class GetRasterExecutor(QueryExecutor):
             min_lon,
             max_lon,
             temporal_resolution,
-            temporal_aggregation,
             spatial_resolution,
-            spatial_aggregation,
+            aggregation,
             metadata=metadata,
         )
-
-    def _gen_download_file_name(self):
-        dt = datetime.now().strftime("%Y%m%d_%H%M%S")
-        return f"download_{dt}.nc"
 
     def _check_metadata(self):
         """
@@ -56,10 +50,10 @@ class GetRasterExecutor(QueryExecutor):
             self.min_lon,
             self.max_lon,
             self.temporal_resolution,
-            self.temporal_aggregation,
             self.spatial_resolution,
-            self.spatial_aggregation,
+            self.aggregation,
         )
+        assert leftover is None, "Should not have leftover in experiment"
 
         local_files = df_overlap["file_path"].tolist()
         api_calls = []
@@ -68,8 +62,8 @@ class GetRasterExecutor(QueryExecutor):
             leftover_max_lat = math.ceil(leftover.latitude.max().item())
             leftover_min_lon = math.floor(leftover.longitude.min().item())
             leftover_max_lon = math.ceil(leftover.longitude.max().item())
-            leftover_start_datetime = pd.Timestamp(leftover.valid_time.min().item())
-            leftover_end_datetime = pd.Timestamp(leftover.valid_time.max().item())
+            leftover_start_datetime = pd.Timestamp(leftover.time.min().item())
+            leftover_end_datetime = pd.Timestamp(leftover.time.max().item())
             leftover_start_year, leftover_start_month, leftover_start_day = (
                 leftover_start_datetime.year,
                 leftover_start_datetime.month,
@@ -106,9 +100,14 @@ class GetRasterExecutor(QueryExecutor):
                 "area": [leftover_max_lat, leftover_min_lon, leftover_min_lat, leftover_max_lon],
             }
             api_calls.append((dataset, request))
-        print("local files:", local_files, flush=True)
-        print("api:", api_calls, flush=True)
+        local_files = sorted(local_files)
+        print("local files:", local_files)
+        print("api:", api_calls)
         return local_files, api_calls
+
+    def _gen_download_file_name(self):
+        dt = datetime.now().strftime("%Y%m%d_%H%M%S")
+        return f"download_{dt}.nc"
 
     def execute(self):
         # 1. check metadata
@@ -128,12 +127,11 @@ class GetRasterExecutor(QueryExecutor):
         # 3.1 read downloaded files
         for file in download_file_list:
             ds = xr.open_dataset(file, engine="netcdf4")
-            # if "valid_time" in ds.coords:
-            #     ds = ds.rename({"valid_time": "time"})
-            if "number" in ds.coords:
-                ds = ds.drop_vars("number")
-            if "expver" in ds.coords:
-                ds = ds.drop_vars("expver")
+            # drop unused variables
+            # if "number" in ds.coords:
+            #     ds = ds.drop_vars("number")
+            # if "expver" in ds.coords:
+            #     ds = ds.drop_vars("expver")
             ds = ds.sel(
                 valid_time=slice(self.start_datetime, self.end_datetime),
                 latitude=slice(self.max_lat, self.min_lat),
@@ -142,11 +140,11 @@ class GetRasterExecutor(QueryExecutor):
             # temporal resample
             if self.temporal_resolution != "hour":
                 resampled = ds.resample(valid_time=time_resolution_to_freq(self.temporal_resolution))
-                if self.temporal_aggregation == "mean":
+                if self.aggregation == "mean":
                     ds = resampled.mean()
-                elif self.temporal_aggregation == "max":
+                elif self.aggregation == "max":
                     ds = resampled.max()
-                elif self.temporal_aggregation == "min":
+                elif self.aggregation == "min":
                     ds = resampled.min()
                 else:
                     raise ValueError("Invalid temporal_aggregation")
@@ -154,20 +152,20 @@ class GetRasterExecutor(QueryExecutor):
             if self.spatial_resolution > 0.25:
                 c_f = int(self.spatial_resolution / 0.25)
                 coarsened = ds.coarsen(latitude=c_f, longitude=c_f, boundary="trim")
-                if self.spatial_aggregation == "mean":
+                if self.aggregation == "mean":
                     ds = coarsened.mean()
-                elif self.spatial_aggregation == "max":
+                elif self.aggregation == "max":
                     ds = coarsened.max()
-                elif self.spatial_aggregation == "min":
+                elif self.aggregation == "min":
                     ds = coarsened.min()
                 else:
                     raise ValueError("Invalid spatial_aggregation")
             ds_list.append(ds)
 
         # 3.2 read local files
+        ds_list = []
         for file in file_list:
-            ds = xr.open_dataset(file, engine="netcdf4")
-            ds = ds.sel(
+            ds = xr.open_dataset(file, engine="netcdf4").sel(
                 valid_time=slice(self.start_datetime, self.end_datetime),
                 latitude=slice(self.max_lat, self.min_lat),
                 longitude=slice(self.min_lon, self.max_lon),
@@ -175,6 +173,7 @@ class GetRasterExecutor(QueryExecutor):
             ds_list.append(ds)
 
         # 3.3 assemble result
+        # ds = xr.concat([i.chunk() for i in ds_list], dim="valid_time")
         # compat="override" is a temporal walkaround as pre-aggregation value conflicts with downloaded data
         # future solution: use new encoding when write pre-aggregated data
         try:
@@ -182,4 +181,5 @@ class GetRasterExecutor(QueryExecutor):
         except ValueError:
             print("WARNING: conflict in merging data, use override")
             ds = xr.merge([i.chunk() for i in ds_list], compat="override")
-        return ds
+
+        return ds.compute()

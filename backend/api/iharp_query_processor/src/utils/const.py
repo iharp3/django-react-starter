@@ -16,6 +16,8 @@ long_short_name_dict = {
     "ice_temperature_layer_4": "istl4",
 }
 
+NO_AGG_LIT = "none"
+
 ds_raw = xr.Dataset()
 ds_raw["latitude"] = np.arange(-90, 90.1, 0.25)
 ds_raw["longitude"] = np.arange(-180, 180.1, 0.25)

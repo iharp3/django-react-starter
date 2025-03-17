@@ -1,5 +1,5 @@
-from .query_executor import QueryExecutor
-from .query_executor_heatmap import HeatmapExecutor
+from query_executor import QueryExecutor
+from query_executor_heatmap import HeatmapExecutor
 
 
 class FindAreaExecutor(QueryExecutor):
@@ -12,23 +12,24 @@ class FindAreaExecutor(QueryExecutor):
         max_lat: float,
         min_lon: float,
         max_lon: float,
+        spatial_resolution: float,  # e.g., 0.25, 0.5, 1.0
+        aggregation,  # e.g., "mean", "max", "min"
         heatmap_aggregation_method: str,  # e.g., "mean", "max", "min"
         filter_predicate: str,  # e.g., ">", "<", "==", "!=", ">=", "<="
         filter_value: float,
-        spatial_resolution=0.25,  # e.g., 0.25, 0.5, 1.0
-        spatial_aggregation=None,  # e.g., "mean", "max", "min"
         metadata=None,  # metadata file path
     ):
         super().__init__(
-            variable,
-            start_datetime,
-            end_datetime,
-            min_lat,
-            max_lat,
-            min_lon,
-            max_lon,
+            variable=variable,
+            start_datetime=start_datetime,
+            end_datetime=end_datetime,
+            min_lat=min_lat,
+            max_lat=max_lat,
+            min_lon=min_lon,
+            max_lon=max_lon,
+            temporal_resolution="hour",
             spatial_resolution=spatial_resolution,
-            spatial_aggregation=spatial_aggregation,
+            aggregation=aggregation,
             metadata=metadata,
         )
         self.heatmap_aggregation_method = heatmap_aggregation_method
@@ -47,9 +48,9 @@ class FindAreaExecutor(QueryExecutor):
             self.max_lat,
             self.min_lon,
             self.max_lon,
-            self.heatmap_aggregation_method,
             self.spatial_resolution,
-            self.spatial_aggregation,
+            self.aggregation,
+            self.heatmap_aggregation_method,
             metadata=self.metadata.f_path,
         )
         hm = heatmap_executor.execute()

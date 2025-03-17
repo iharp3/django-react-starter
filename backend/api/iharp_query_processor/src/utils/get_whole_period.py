@@ -218,6 +218,11 @@ def time_array_to_range(time_array, resolution):
     """
     Range: [[pd.Timestamp(start), pd.Timestamp(end)], ...]
     """
+    # quick fix for single year
+    if resolution == "year" and len(time_array) == 1:
+        single_year = time_array[0]
+        return [[pd.Timestamp(f"{single_year}-01-01 00:00:00"), pd.Timestamp(f"{single_year}-12-31 23:00:00")]]
+
     if len(time_array) == 0:
         return []
 
@@ -241,19 +246,18 @@ def time_array_to_range(time_array, resolution):
             time_range.append([start_dt, end_dt])
             start_dt = pd.Timestamp(time)
         end_dt = pd.Timestamp(time)
-
-    # Always append the last range
-    time_range.append([start_dt, end_dt])
+    if start_dt != end_dt:
+        time_range.append([start_dt, end_dt])
 
     # post processing
     if resolution == "year":
         for r in time_range:
-            r[1] = pd.Timestamp(f"{r[1].year}-12-31 23:59:59")
+            r[1] = pd.Timestamp(f"{r[1].year}-12-31 23:00:00")
     elif resolution == "month":
         for r in time_range:
-            r[1] = pd.Timestamp(f"{r[1].year}-{r[1].month}-{get_last_date_of_month(r[1])} 23:59:59")
+            r[1] = pd.Timestamp(f"{r[1].year}-{r[1].month}-{get_last_date_of_month(r[1])} 23:00:00")
     elif resolution == "day":
         for r in time_range:
-            r[1] = pd.Timestamp(f"{r[1].year}-{r[1].month}-{r[1].day} 23:59:59")
+            r[1] = pd.Timestamp(f"{r[1].year}-{r[1].month}-{r[1].day} 23:00:00")
 
     return time_range

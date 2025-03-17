@@ -1,1 +1,0 @@
-# iharp-query-executor

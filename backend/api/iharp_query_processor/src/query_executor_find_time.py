@@ -1,9 +1,7 @@
-import numpy as np
 import pandas as pd
 import xarray as xr
 
 from .query_executor import QueryExecutor
-from .query_executor_get_raster import GetRasterExecutor
 from .query_executor_timeseries import TimeseriesExecutor
 from .utils.get_whole_period import get_whole_period_between, get_last_date_of_month, time_array_to_range
 
@@ -19,26 +17,23 @@ class FindTimeExecutor(QueryExecutor):
         min_lon: float,
         max_lon: float,
         temporal_resolution: str,  # e.g., "hour", "day", "month", "year"
-        temporal_aggregation: str,  # e.g., "mean", "max", "min"
+        aggregation,  # e.g., "mean", "max", "min"
         time_series_aggregation_method: str,  # e.g., "mean", "max", "min"
         filter_predicate: str,  # e.g., ">", "<", "==", "!=", ">=", "<="
         filter_value: float,
-        spatial_resolution=1.0,  # e.g., 0.25, 0.5, 1.0
-        spatial_aggregation="mean",  # e.g., "mean", "max", "min"
         metadata=None,  # metadata file path
     ):
         super().__init__(
-            variable,
-            start_datetime,
-            end_datetime,
-            min_lat,
-            max_lat,
-            min_lon,
-            max_lon,
-            temporal_resolution,
-            temporal_aggregation,
-            spatial_resolution=spatial_resolution,
-            spatial_aggregation=spatial_aggregation,
+            variable=variable,
+            start_datetime=start_datetime,
+            end_datetime=end_datetime,
+            min_lat=min_lat,
+            max_lat=max_lat,
+            min_lon=min_lon,
+            max_lon=max_lon,
+            temporal_resolution=temporal_resolution,
+            spatial_resolution=0.25,
+            aggregation=aggregation,
             metadata=metadata,
         )
         self.time_series_aggregation_method = time_series_aggregation_method
@@ -48,29 +43,20 @@ class FindTimeExecutor(QueryExecutor):
     def execute(self):
         if self.temporal_resolution == "hour" and self.filter_predicate != "!=":
             return self._execute_pyramid_hour()
-        return self._execute_baseline()
+        return self._execute_baseline(self.start_datetime, self.end_datetime)
 
-    def execute_baseline(self):
-        return self._execute_baseline()
-
-    def _execute_baseline(self, start_datetime=None, end_datetime=None):
-        if start_datetime is None:
-            start_datetime = self.start_datetime
-        if end_datetime is None:
-            end_datetime = self.end_datetime
+    def _execute_baseline(self, start_datetime, end_datetime):
         timeseries_executor = TimeseriesExecutor(
-            self.variable,
-            start_datetime,
-            end_datetime,
-            self.temporal_resolution,
-            self.temporal_aggregation,
-            self.min_lat,
-            self.max_lat,
-            self.min_lon,
-            self.max_lon,
-            self.time_series_aggregation_method,
-            spatial_resolution=self.spatial_resolution,
-            spatial_aggregation=self.spatial_aggregation,
+            variable=self.variable,
+            start_datetime=start_datetime,
+            end_datetime=end_datetime,
+            min_lat=self.min_lat,
+            max_lat=self.max_lat,
+            min_lon=self.min_lon,
+            max_lon=self.max_lon,
+            temporal_resolution=self.temporal_resolution,
+            aggregation=self.aggregation,
+            time_series_aggregation_method=self.time_series_aggregation_method,
             metadata=self.metadata.f_path,
         )
         ts = timeseries_executor.execute()
@@ -102,9 +88,6 @@ class FindTimeExecutor(QueryExecutor):
             - find hour <= x: if year-min >  x, return False; if year-max <= x, return True
         """
         years, months, days, hours = get_whole_period_between(self.start_datetime, self.end_datetime)
-        # year_range, month_range, day_range, hour_range = get_whole_ranges_between(
-        #     self.start_datetime, self.end_datetime
-        # )
         time_points = pd.date_range(start=self.start_datetime, end=self.end_datetime, freq="h")
         result = xr.Dataset(
             data_vars={self.variable_short_name: (["valid_time"], [None] * len(time_points))},
@@ -112,14 +95,15 @@ class FindTimeExecutor(QueryExecutor):
         )
 
         if years:
-            print("Check years: ", years)
+            print("checking years")
             year_range = time_array_to_range(years, "year")
-            year_min, year_max = self._get_range_min_max(year_range, "year")
+            year_min, year_max = self._get_min_max_time_series(year_range, "year")
             for year in years:
                 year_determined = False
                 year_datetime = f"{year}-12-31 00:00:00"
-                curr_year_min = np.nanmin(year_min.sel(valid_time=year_datetime)[self.variable_short_name].values)
-                curr_year_max = np.nanmax(year_max.sel(valid_time=year_datetime)[self.variable_short_name].values)
+                curr_year_min = year_min[self.variable_short_name].sel(valid_time=year_datetime).values.item()
+                curr_year_max = year_max[self.variable_short_name].sel(valid_time=year_datetime).values.item()
+                print(f"year: {year}, min: {curr_year_min}, max: {curr_year_max}")
                 if self.filter_predicate == ">":
                     if curr_year_min > self.filter_value:
                         print(f"{year}: min > filter, True")
@@ -148,15 +132,14 @@ class FindTimeExecutor(QueryExecutor):
                     months = months + [f"{year}-{month:02d}" for month in range(1, 13)]
 
         if months:
-            print("Check months: ", months)
-            # update month_range
+            print("checking months")
             month_range = time_array_to_range(months, "month")
-            month_min, month_max = self._get_range_min_max(month_range, "month")
+            month_min, month_max = self._get_min_max_time_series(month_range, "month")
             for month in months:
                 month_determined = False
                 month_datetime = f"{month}-{get_last_date_of_month(pd.Timestamp(month))} 00:00:00"
-                curr_month_min = np.nanmin(month_min.sel(valid_time=month_datetime)[self.variable_short_name].values)
-                curr_month_max = np.nanmax(month_max.sel(valid_time=month_datetime)[self.variable_short_name].values)
+                curr_month_min = month_min[self.variable_short_name].sel(valid_time=month_datetime).values.item()
+                curr_month_max = month_max[self.variable_short_name].sel(valid_time=month_datetime).values.item()
                 if self.filter_predicate == ">":
                     if curr_month_min > self.filter_value:
                         print(f"{month}: min > filter, True")
@@ -187,80 +170,82 @@ class FindTimeExecutor(QueryExecutor):
                     ]
 
         if days:
-            print("Check days: ", days)
+            print("checking days")
             day_range = time_array_to_range(days, "day")
-            day_min, day_max = self._get_range_min_max(day_range, "day")
+            day_min, day_max = self._get_min_max_time_series(day_range, "day")
             for day in days:
+                day_determined = False
                 day_datetime = f"{day} 00:00:00"
-                curr_day_min = np.nanmin(day_min.sel(valid_time=day_datetime)[self.variable_short_name].values)
-                curr_day_max = np.nanmax(day_max.sel(valid_time=day_datetime)[self.variable_short_name].values)
+                curr_day_min = day_min[self.variable_short_name].sel(valid_time=day_datetime).values.item()
+                curr_day_max = day_max[self.variable_short_name].sel(valid_time=day_datetime).values.item()
                 if self.filter_predicate == ">":
                     if curr_day_min > self.filter_value:
                         print(f"{day}: min > filter, True")
+                        day_determined = True
                         result[self.variable_short_name].loc[day:day] = True
                     elif curr_day_max <= self.filter_value:
                         print(f"{day}: max <= filter, False")
+                        day_determined = True
                         result[self.variable_short_name].loc[day:day] = False
                 elif self.filter_predicate == "<":
                     if curr_day_min >= self.filter_value:
                         print(f"{day}: min >= filter, False")
+                        day_determined = True
                         result[self.variable_short_name].loc[day:day] = False
                     elif curr_day_max < self.filter_value:
                         print(f"{day}: max < filter, True")
+                        day_determined = True
                         result[self.variable_short_name].loc[day:day] = True
                 elif self.filter_predicate == "==":
                     if curr_day_min > self.filter_value or curr_day_max < self.filter_value:
                         print(f"{day}: min > filter or max < filter, False")
+                        day_determined = True
                         result[self.variable_short_name].loc[day:day] = False
+                if not day_determined:
+                    # add hours to hours
+                    hours = hours + [f"{day} {hour:02d}:00:00" for hour in range(24)]
 
         result_undetermined = result["valid_time"].where(result[self.variable_short_name].isnull(), drop=True)
         if result_undetermined.size > 0:
             hour_range = time_array_to_range(result_undetermined.values, "hour")
-            for start, end in hour_range:
-                start = start.strftime("%Y-%m-%d %H:%M:%S")
-                end = end.strftime("%Y-%m-%d %H:%M:%S")
-                print("Check hour: ", start, end)
-                rest = self._execute_baseline(start_datetime=start, end_datetime=end)
-                result[self.variable_short_name].loc[f"{start}":f"{end}"] = rest[self.variable_short_name]
+            first_hour = hour_range[0][0]
+            last_hour = hour_range[-1][1]
+            start = first_hour.strftime("%Y-%m-%d %H:%M:%S")
+            end = last_hour.strftime("%Y-%m-%d %H:%M:%S")
+            rest = self._execute_baseline(start_datetime=start, end_datetime=end)
+            result[self.variable_short_name].loc[f"{start}":f"{end}"] = rest[self.variable_short_name]
         result[self.variable_short_name] = result[self.variable_short_name].astype(bool)
         return result
 
-    def _get_range_min_max(self, _range, temporal_res):
-        ds_min = []
-        ds_max = []
-        for start, end in _range:
-            get_min_executor = GetRasterExecutor(
-                variable=self.variable,
-                start_datetime=start,
-                end_datetime=end,
-                min_lat=self.min_lat,
-                max_lat=self.max_lat,
-                min_lon=self.min_lon,
-                max_lon=self.max_lon,
-                spatial_resolution=self.spatial_resolution,
-                spatial_aggregation=self.spatial_aggregation,
-                temporal_resolution=temporal_res,
-                temporal_aggregation="min",
-                metadata=self.metadata.f_path,
-            )
-            get_max_executor = GetRasterExecutor(
-                variable=self.variable,
-                start_datetime=start,
-                end_datetime=end,
-                min_lat=self.min_lat,
-                max_lat=self.max_lat,
-                min_lon=self.min_lon,
-                max_lon=self.max_lon,
-                spatial_resolution=self.spatial_resolution,
-                spatial_aggregation=self.spatial_aggregation,
-                temporal_resolution=temporal_res,
-                temporal_aggregation="max",
-                metadata=self.metadata.f_path,
-            )
-            range_min = get_min_executor.execute()
-            range_max = get_max_executor.execute()
-            ds_min.append(range_min)
-            ds_max.append(range_max)
-        ds_min_concat = xr.concat(ds_min, dim="valid_time")
-        ds_max_concat = xr.concat(ds_max, dim="valid_time")
-        return ds_min_concat.compute(), ds_max_concat.compute()
+    def _get_min_max_time_series(self, _range, temporal_res):
+        total_start = _range[0][0]
+        total_end = _range[-1][1]
+        min_exec = TimeseriesExecutor(
+            variable=self.variable,
+            start_datetime=total_start,
+            end_datetime=total_end,
+            min_lat=self.min_lat,
+            max_lat=self.max_lat,
+            min_lon=self.min_lon,
+            max_lon=self.max_lon,
+            temporal_resolution=temporal_res,
+            aggregation="min",
+            time_series_aggregation_method="min",
+            metadata=self.metadata.f_path,
+        )
+        max_exec = TimeseriesExecutor(
+            variable=self.variable,
+            start_datetime=total_start,
+            end_datetime=total_end,
+            min_lat=self.min_lat,
+            max_lat=self.max_lat,
+            min_lon=self.min_lon,
+            max_lon=self.max_lon,
+            temporal_resolution=temporal_res,
+            aggregation="max",
+            time_series_aggregation_method="max",
+            metadata=self.metadata.f_path,
+        )
+        min_ts = min_exec.execute()
+        max_ts = max_exec.execute()
+        return min_ts, max_ts
