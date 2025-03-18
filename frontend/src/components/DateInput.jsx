@@ -11,7 +11,7 @@ const DateInput = ({ date, setDate, label, sx }) => {
 
     dayjs.extend(utc);
     const maxDate = dayjs("2024-12-31T23:00Z");
-    const minDate = dayjs("1940-01-01T00:00Z");
+    const minDate = dayjs("2015-01-01T00:00Z");
 
     return (
         <Box sx={sx}>

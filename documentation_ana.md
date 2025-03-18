@@ -93,6 +93,7 @@ Inside each of the three panels:
 
 * move the setSecondAggMethod, setComparisonVal, setPredicate objects to sidebar
 * in App.jsx, change `formData.secondAgg = secondAgg;` to `handleChange={setSecondAggMethod} `(?) maybe???
-
+* plot scripts (e.g. `FindArea.jsx`) have the inputs that need to be in the sidebar instead
+* need to add the buttons to the sidebar and send them to App, then send the info to the bottom panel that will then send it to FindArea?
 
 

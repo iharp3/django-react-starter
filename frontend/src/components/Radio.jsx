@@ -7,6 +7,27 @@ import FormLabel from '@mui/material/FormLabel';
 
 const RadioButtons = ({label, options, val, setVal, subLabel, defaultValue}) => {
 
+//     return (
+//         <FormControl>
+//             <Box sx={{ display: "flex", alignItems: "center"}}>
+//                 <FormLabel id={label} sx={{ }}>{label}:</FormLabel>
+//                 <RadioGroup
+//                     defaultValue={defaultValue}
+//                     row
+//                     aria-labelledby={label}
+//                     name={subLabel}
+//                     sx={{ scale: "65%" }}
+//                     value={val}
+//                     onChange={setVal}
+//                 >
+//                     {options.map((option) => (
+//                         <FormControlLabel key={option} value={option} control={<Radio />} label={option} />
+//                     ))}
+//                 </RadioGroup>
+//             </Box>
+//         </FormControl>
+//     );
+// }
     return (
         <FormControl sx={{}}>
             <FormLabel id={label}>{label}</FormLabel>

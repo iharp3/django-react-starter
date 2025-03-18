@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { Button } from '@mui/material'
 import '../styles/sidebar.css'
 import '../styles/loading.css'
+import '../styles/header.css'
 
 // Once the date is changed the tempRes and temporalAggregation get reset in formdata back to their useState initial values
 const Sidebar = ({
@@ -22,29 +23,48 @@ const Sidebar = ({
 
     return (
         <>
-            <div className="sidebar_wrapper">
+            <div className="sidebar_wrapper" style={{ width: "300px" }}>
                 <div className="padding" />
+                    <div className="header_wrapper">
+                        <div className="title-container">
+                            <p className='title'>POLARIS</p>
+                        </div>
+                    <a href="https://github.com/iharp3/iharp-query-executor" >
+                        [Github]
+                    </a>
+                    </div>
                 <Input
                     val={variable}
                     setVal={setVariable}
                     label={"Variable"}
-                    options={["2m_temperature",
-                        "surface_pressure",
-                        "sea_surface_temperature",
-                        //"Surface Pressure",
-                        //Total Precipitation",
+                    options={["2 meter temperature",
+                        "Surface Pressure",
+                        "Sea Surface Temperature",
+                        "Total Precipitation",
+                        "Ice Temperature - Layer 1",
+                        "Ice Temperature - Layer 2",
+                        "Ice Temperature - Layer 3",
+                        "Ice Temperature - Layer 4",
+                        "Snow Depth",
+                        "Snowfall",
+                        "Snowmelt",
+                        "Temperature of Snow Layer"
                     ]}
-                    sx={{ width: "65%" }}
+                    sx={{ width: "95%" }}
                     size={"small"}
                     varLabel={"variable"} />
-                <DateInput
-                    date={startDate}
-                    setDate={setStartDate}
-                    label="Start Date & Time" />
-                <DateInput
-                    date={endDate}
-                    setDate={setEndDate}
-                    label="End Date & Time" />
+                <div className="time_range" style={{display: "flex"}}>
+                    <DateInput
+                        sx={{marginRight: "-4px"}}
+                        date={startDate}
+                        setDate={setStartDate}
+                        label="Start Date & Time" />
+                    <DateInput
+                        sx={{marginLeft: "-4px"}}
+                        date={endDate}
+                        setDate={setEndDate}
+                        label="End Date & Time" />
+                </div>
                 <RadioButtons
                     label="Temporal Resolution"
                     options={["hour", "day", "month", "year"]}
