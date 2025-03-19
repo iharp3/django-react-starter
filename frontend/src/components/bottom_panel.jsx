@@ -101,7 +101,7 @@ const Tabs = ({
                 <TimeSeries 
                     handleTimeSeries={handleTimeSeries} 
                     timeSeriesImage={timeSeriesImage} 
-                    handleChange={setSecondAggMethod} 
+                    // handleChange={setSecondAggMethod} 
                     formData={formData} />
               </CustomTabPanel>
               <CustomTabPanel value={tabNum1} index={0} {...a11yProps(0)}>
@@ -109,7 +109,8 @@ const Tabs = ({
                     handleHeatMap={handleHeatMap} 
                     heatMapImage={heatMapImage} 
                     formData={formData} 
-                    handleChange={setSecondAggMethod} />
+                    handleChange={setSecondAggMethod}
+                     />
               </CustomTabPanel>
               <CustomTabPanel value={tabNum1} index={3} {...a11yProps(3)}>
                 <FindTime

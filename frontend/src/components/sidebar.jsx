@@ -114,6 +114,8 @@ const Sidebar = ({
                         Query
                     </div>
                 </Button>
+
+                {/* Additional controls */}
             </div>
         </>
     )

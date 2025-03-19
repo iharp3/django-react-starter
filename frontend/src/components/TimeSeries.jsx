@@ -49,16 +49,17 @@ const TimeSeries = ({ handleTimeSeries, timeSeriesImage, formData, handleChange 
   // TODO: Add warning if temporal res is less than date start/end differences
   return (
     <div className="time_series">
-      <div className="ts_inputs">
-        <Input
+      
+      {/* <div className="ts_inputs"> */}
+        {/* <Input
           val={formData.secondAgg}
           setVal={handleChange}
           name="ts_agg_method"
           label={"Select Aggregation Method"}
           options={["min", "max", "mean"]}
           sx={{ width: "80%" }}
-          size={"small"} />
-        <Button
+          size={"small"} /> */}
+        {/* <Button
           onClick={handleClick}
           variant="outlined"
           disabled={isLoading}
@@ -68,9 +69,10 @@ const TimeSeries = ({ handleTimeSeries, timeSeriesImage, formData, handleChange 
             {isLoading && <div className="loading-spinner" />}
             Query
           </div>
-        </Button>
-      </div>
-      <div className="hline"></div>
+        </Button> */}
+      {/* </div> */}
+
+      {/* <div className="hline"></div> */}
       {timeSeriesImage && Object.keys(timeSeriesImage).length > 0 ? (
         <div className='ts_plot'>
           <Plot
