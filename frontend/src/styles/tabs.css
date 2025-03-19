@@ -1,13 +1,14 @@
-.tabs_wrapper {
+.tabs_wrapper { /* whole panel component */
   width: 100%;
   height: 50%;
   background-color: white;
+  /* border: 1px solid red; */
   color: black;
   position: relative; 
 }
 
 .page_wrapper {
-  height: 85%;
+  height: 100%;
   width: 100%;
   overflow: auto;
   position: absolute;
@@ -29,6 +30,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  /* border: 1px solid red; */
 }
 
 .no_content {

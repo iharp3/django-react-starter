@@ -72,9 +72,14 @@ const Tabs = ({
           <Box sx={{ width: '100%', display: "flex", height: "100%" }}>
             
             {/* Panel 1 */}
-            <div style={{ flex: 1 }}>
-              <FormControl fullWidth>
-                <InputLabel id="tab-select-label">Select View</InputLabel>
+            <div style={{ flex: 1 , 
+                          border: "0.5px solid  rgb(183, 183, 183)",
+                          display: "flex",
+                          flexDirection: "column", 
+                          width: "100%", 
+                          minHeight: "120%" }}>
+              <FormControl variant="filled" fullWidth>
+                <InputLabel id="tab-select-label">Select Plot</InputLabel>
                 <Select
                   labelId="tab-select-label"
                   value={tabNum1}
@@ -127,9 +132,14 @@ const Tabs = ({
             </div>
   
             {/* Panel 2 */}
-            <div style={{ flex: 1 }}>
-              <FormControl fullWidth>
-                  <InputLabel id="tab-select-label">Select View</InputLabel>
+            <div style={{ flex: 1 , 
+                          border: "0.5px solid  rgb(183, 183, 183)",
+                          display: "flex",
+                          flexDirection: "column", 
+                          width: "100%", 
+                          minHeight: "120%" }}>
+              <FormControl variant="filled" fullWidth>
+                  <InputLabel id="tab-select-label">Select Plot</InputLabel>
                   <Select
                     labelId="tab-select-label"
                     value={tabNum2}
@@ -182,9 +192,14 @@ const Tabs = ({
             </div>
   
             {/* Panel 3 */}
-            <div style={{ flex: 1 }}>
-              <FormControl fullWidth>
-                  <InputLabel id="tab-select-label">Select View</InputLabel>
+            <div style={{ flex: 1 , 
+                          border: "0.5px solid  rgb(183, 183, 183)",
+                          display: "flex",
+                          flexDirection: "column", 
+                          width: "100%", 
+                          minHeight: "120%" }}>
+              <FormControl variant="filled" fullWidth>
+                  <InputLabel id="tab-select-label">Select Plot</InputLabel>
                   <Select
                     labelId="tab-select-label"
                     value={tabNum3}
