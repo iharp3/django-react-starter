@@ -1,7 +1,7 @@
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import PropTypes from 'prop-types';
 import { Box } from '@mui/material';
 import utc from "dayjs/plugin/utc";
@@ -16,9 +16,9 @@ const DateInput = ({ date, setDate, label, sx }) => {
     return (
         <Box sx={sx}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={['DateTimePicker']}>
-                    <DateTimePicker
-                        sx={{ scale: 0.9 }}
+                <Box components={['DateTimePicker']}>
+                    <MobileDateTimePicker
+                        fullWidth
                         views={['year', 'day', 'hours']}
                         label={label}
                         disableFuture
@@ -31,7 +31,7 @@ const DateInput = ({ date, setDate, label, sx }) => {
                         minDateTime={minDate}
                         onChange={(newDate) => setDate(newDate)}
                     />
-                </DemoContainer>
+                </Box>
             </LocalizationProvider>
         </Box>
     );

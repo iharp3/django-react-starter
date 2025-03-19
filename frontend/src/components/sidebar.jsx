@@ -3,7 +3,7 @@ import DateInput from './DateInput';
 import CardinalDirections from './CardinalDirections';
 import RadioButtons from './Radio';
 import PropTypes from 'prop-types';
-import { Button } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import '../styles/sidebar.css'
 import '../styles/loading.css'
 import '../styles/header.css'
@@ -51,16 +51,18 @@ const Sidebar = ({
                         "Temperature of Snow Layer"
                     ]}
                     sx={{ width: "95%" }}
-                    size={"small"}
+                    size={"medium"}
                     varLabel={"variable"} />
                 <div className="time_range" style={{display: "flex"}}>
                     <DateInput
-                        sx={{marginRight: "-4px"}}
+                        sx={{width: "50%", minWidth:"0"}}
+                        size={"x-small"}
                         date={startDate}
                         setDate={setStartDate}
                         label="Start Date & Time" />
                     <DateInput
-                        sx={{marginLeft: "-4px"}}
+                        sx={{width: "50%", minWidth:"0"}}
+                        size={"x-small"}
                         date={endDate}
                         setDate={setEndDate}
                         label="End Date & Time" />
