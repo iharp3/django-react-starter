@@ -14,27 +14,27 @@
 
 [Backend]
 
-        cd django-react-starter/backend
+        cd backend
         python manage.py makemigrations
         python manage.py migrate
 
 [Frontend]
 
-        cd django-react-starter/frontend
+        cd ../frontend
         npm install --legacy-peer-deps
 
 This next code will start a development server, which you can quit with CONTROL-C. Thus, you can run the code segment in a `tmux` session to keep your terminal window usable. If you start a `tmux` session, make sure you activate the virtual environment with `source venv/bin/activate`.
 
 [Backend]
 
-        cd django-react-starter/backend
+        cd ../backend
         python manage.py runserver
     
 Coming back to your terminal from your `tmux` session or in a dufferent terminal:
 
 [Frontend]
 
-        cd django-react-starter/frontend
+        cd frontend
         npm run dev
     
 This will give you a localhost domain/url that you can use to see the current website.

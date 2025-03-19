@@ -101,7 +101,7 @@ const Tabs = ({
                 <TimeSeries 
                     handleTimeSeries={handleTimeSeries} 
                     timeSeriesImage={timeSeriesImage} 
-                    // handleChange={setSecondAggMethod} 
+                    handleChange={setSecondAggMethod} 
                     formData={formData} />
               </CustomTabPanel>
               <CustomTabPanel value={tabNum1} index={0} {...a11yProps(0)}>
