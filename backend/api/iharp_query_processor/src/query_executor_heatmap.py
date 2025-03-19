@@ -12,6 +12,7 @@ from .utils.get_whole_period import (
     number_of_hours_inclusive,
     get_total_hours_between,
 )
+from .utils.const import TIME_DIMENSION_LIT
 
 
 class HeatmapExecutor(QueryExecutor):
@@ -131,7 +132,7 @@ class HeatmapExecutor(QueryExecutor):
             ds_hour.append(get_raster_hour.execute())
             hour_hours += [1 for _ in range(number_of_hours_inclusive(start_hour, end_hour))]
 
-        xrds_concat = xr.concat(ds_year + ds_month + ds_day + ds_hour, dim="valid_time")
+        xrds_concat = xr.concat(ds_year + ds_month + ds_day + ds_hour, dim=TIME_DIMENSION_LIT)
         nd_array = xrds_concat[self.variable_short_name].to_numpy()
         weights = np.array(year_hours + month_hours + day_hours + hour_hours)
         total_hours = get_total_hours_between(self.start_datetime, self.end_datetime)
@@ -212,7 +213,7 @@ class HeatmapExecutor(QueryExecutor):
             )
             ds_hour.append(get_raster_hour.execute())
 
-        return xr.concat(ds_year + ds_month + ds_day + ds_hour, dim="valid_time").max(dim="valid_time")
+        return xr.concat(ds_year + ds_month + ds_day + ds_hour, dim=TIME_DIMENSION_LIT).max(dim=TIME_DIMENSION_LIT)
 
     def _get_min_heatmap(self):
         year_range, month_range, day_range, hour_range = get_whole_ranges_between(
@@ -284,4 +285,4 @@ class HeatmapExecutor(QueryExecutor):
             ds_hour.append(get_raster_hour.execute())
 
         # get min heatmap from ds_year, ds_month, ds_day, ds_hour
-        return xr.concat(ds_year + ds_month + ds_day + ds_hour, dim="valid_time").min(dim="valid_time")
+        return xr.concat(ds_year + ds_month + ds_day + ds_hour, dim=TIME_DIMENSION_LIT).min(dim=TIME_DIMENSION_LIT)

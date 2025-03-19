@@ -17,6 +17,7 @@ long_short_name_dict = {
 }
 
 NO_AGG_LIT = "none"
+TIME_DIMENSION_LIT = "time"
 
 ds_raw = xr.Dataset()
 ds_raw["latitude"] = np.arange(-90, 90.1, 0.25)

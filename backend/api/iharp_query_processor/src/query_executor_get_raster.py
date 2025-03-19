@@ -5,7 +5,7 @@ import pandas as pd
 import xarray as xr
 
 from .query_executor import QueryExecutor
-from .utils.const import time_resolution_to_freq
+from .utils.const import time_resolution_to_freq, TIME_DIMENSION_LIT
 
 
 class GetRasterExecutor(QueryExecutor):
@@ -132,13 +132,13 @@ class GetRasterExecutor(QueryExecutor):
             # if "expver" in ds.coords:
             #     ds = ds.drop_vars("expver")
             ds = ds.sel(
-                valid_time=slice(self.start_datetime, self.end_datetime),
+                TIME_DIMENSION_LIT=slice(self.start_datetime, self.end_datetime),
                 latitude=slice(self.max_lat, self.min_lat),
                 longitude=slice(self.min_lon, self.max_lon),
             )
             # temporal resample
             if self.temporal_resolution != "hour":
-                resampled = ds.resample(valid_time=time_resolution_to_freq(self.temporal_resolution))
+                resampled = ds.resample(TIME_DIMENSION_LIT=time_resolution_to_freq(self.temporal_resolution))
                 if self.aggregation == "mean":
                     ds = resampled.mean()
                 elif self.aggregation == "max":
@@ -165,14 +165,14 @@ class GetRasterExecutor(QueryExecutor):
         ds_list = []
         for file in file_list:
             ds = xr.open_dataset(file, engine="netcdf4").sel(
-                valid_time=slice(self.start_datetime, self.end_datetime),
+                time=slice(self.start_datetime, self.end_datetime),
                 latitude=slice(self.max_lat, self.min_lat),
                 longitude=slice(self.min_lon, self.max_lon),
             )
             ds_list.append(ds)
 
         # 3.3 assemble result
-        # ds = xr.concat([i.chunk() for i in ds_list], dim="valid_time")
+        # ds = xr.concat([i.chunk() for i in ds_list], dim=TIME_DIMENSION_LIT)
         # compat="override" is a temporal walkaround as pre-aggregation value conflicts with downloaded data
         # future solution: use new encoding when write pre-aggregated data
         try:

@@ -19,6 +19,7 @@ const Sidebar = ({
     formData,
     handleChange,
     queryData,
+    handleHeatMap,
     isLoading, }) => {
 
     return (
@@ -85,7 +86,7 @@ const Sidebar = ({
                     var={formData.temporalResolution}
                     setVal={handleChange}
                     subLabel="temporalResolution"
-                    defaultValue={"Day"} />
+                    defaultValue={"day"} />
                 <RadioButtons
                     label="Spatial Resolution"
                     options={[0.25, 0.5, 1]}
@@ -95,7 +96,7 @@ const Sidebar = ({
                     defaultValue={1} />
                 <RadioButtons
                     label="Aggregation"
-                    options={["Min", "mean", "Max"]}
+                    options={["min", "mean", "max"]}
                     var={formData.tsAggregation}
                     setVal={handleChange}
                     subLabel="tslAggregation"
@@ -104,7 +105,10 @@ const Sidebar = ({
                 <CardinalDirections formData={formData} handleChange={handleChange} />
                 <div className="hr" />
                 <Button
-                    onClick={() => queryData()}
+                    onClick={() => {
+                        queryData();
+                        handleHeatMap();
+                    }}
                     variant="outlined"
                     disabled={isLoading}
                     sx={{ }}

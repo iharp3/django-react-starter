@@ -53,7 +53,7 @@ const Tabs = ({
     findTimeImage,
     handleFindArea,
     findAreaImage,
-    setSecondAggMethod,
+    // setSecondAggMethod,
     setComparisonVal,
     setPredicate,
   }) => {
@@ -61,10 +61,12 @@ const Tabs = ({
     const [tabNum1, setTab1] = useState(0);
     const [tabNum2, setTab2] = useState(1);
     const [tabNum3, setTab3] = useState(2);
+
+    const [isLoading, setIsLoading] = useState(false);
   
-    const handleTabChange1 = (event, newValue) => setTab1(newValue);
-    const handleTabChange2 = (event, newValue) => setTab2(newValue);
-    const handleTabChange3 = (event, newValue) => setTab3(newValue);
+    const handleTabChange1 = (event, newValue) => {setTab1(newValue);};
+    const handleTabChange2 = (event, newValue) => {setTab2(newValue);};
+    const handleTabChange3 = (event, newValue) => {setTab3(newValue);};
   
     return (
       <>
@@ -101,7 +103,7 @@ const Tabs = ({
                 <TimeSeries 
                     handleTimeSeries={handleTimeSeries} 
                     timeSeriesImage={timeSeriesImage} 
-                    handleChange={setSecondAggMethod} 
+                    // handleChange={setSecondAggMethod} 
                     formData={formData} />
               </CustomTabPanel>
               <CustomTabPanel value={tabNum1} index={0} {...a11yProps(0)}>
@@ -109,7 +111,7 @@ const Tabs = ({
                     handleHeatMap={handleHeatMap} 
                     heatMapImage={heatMapImage} 
                     formData={formData} 
-                    handleChange={setSecondAggMethod}
+                    // handleChange={setSecondAggMethod}
                      />
               </CustomTabPanel>
               <CustomTabPanel value={tabNum1} index={3} {...a11yProps(3)}>
@@ -119,7 +121,8 @@ const Tabs = ({
                     formData={formData}
                     setComparisonVal={setComparisonVal}
                     setPredicate={setPredicate}
-                    handleChange={setSecondAggMethod} />
+                    // handleChange={setSecondAggMethod} 
+                    />
               </CustomTabPanel>
               <CustomTabPanel value={tabNum1} index={4} {...a11yProps(4)}>
                 <FindArea
@@ -128,7 +131,8 @@ const Tabs = ({
                     formData={formData}
                     setComparisonVal={setComparisonVal}
                     setPredicate={setPredicate}
-                    handleChange={setSecondAggMethod} />
+                    // handleChange={setSecondAggMethod} 
+                    />
               </CustomTabPanel>
             </div>
   
@@ -162,7 +166,7 @@ const Tabs = ({
                   <TimeSeries 
                       handleTimeSeries={handleTimeSeries} 
                       timeSeriesImage={timeSeriesImage} 
-                      handleChange={setSecondAggMethod} 
+                      // handleChange={setSecondAggMethod} 
                       formData={formData} />
                 </CustomTabPanel>
                 <CustomTabPanel value={tabNum2} index={2} {...a11yProps(2)}>
@@ -170,7 +174,8 @@ const Tabs = ({
                       handleHeatMap={handleHeatMap} 
                       heatMapImage={heatMapImage} 
                       formData={formData} 
-                      handleChange={setSecondAggMethod} />
+                      // handleChange={setSecondAggMethod} 
+                      />
                 </CustomTabPanel>
                 <CustomTabPanel value={tabNum2} index={3} {...a11yProps(3)}>
                   <FindTime
@@ -179,7 +184,8 @@ const Tabs = ({
                       formData={formData}
                       setComparisonVal={setComparisonVal}
                       setPredicate={setPredicate}
-                      handleChange={setSecondAggMethod} />
+                      // handleChange={setSecondAggMethod} 
+                      />
                 </CustomTabPanel>
                 <CustomTabPanel value={tabNum2} index={4} {...a11yProps(4)}>
                   <FindArea
@@ -188,7 +194,8 @@ const Tabs = ({
                       formData={formData}
                       setComparisonVal={setComparisonVal}
                       setPredicate={setPredicate}
-                      handleChange={setSecondAggMethod} />
+                      // handleChange={setSecondAggMethod} 
+                      />
                 </CustomTabPanel>
             </div>
   
@@ -222,7 +229,7 @@ const Tabs = ({
                   <TimeSeries 
                       handleTimeSeries={handleTimeSeries} 
                       timeSeriesImage={timeSeriesImage} 
-                      handleChange={setSecondAggMethod} 
+                      // handleChange={setSecondAggMethod} 
                       formData={formData} />
                 </CustomTabPanel>
                 <CustomTabPanel value={tabNum3} index={2} {...a11yProps(2)}>
@@ -230,7 +237,8 @@ const Tabs = ({
                       handleHeatMap={handleHeatMap} 
                       heatMapImage={heatMapImage} 
                       formData={formData} 
-                      handleChange={setSecondAggMethod} />
+                      // handleChange={setSecondAggMethod} 
+                      />
                 </CustomTabPanel>
                 <CustomTabPanel value={tabNum3} index={0} {...a11yProps(0)}>
                   <FindTime
@@ -239,7 +247,8 @@ const Tabs = ({
                       formData={formData}
                       setComparisonVal={setComparisonVal}
                       setPredicate={setPredicate}
-                      handleChange={setSecondAggMethod} />
+                      // handleChange={setSecondAggMethod} 
+                      />
                 </CustomTabPanel>
                 <CustomTabPanel value={tabNum3} index={4} {...a11yProps(4)}>
                   <FindArea
@@ -248,7 +257,8 @@ const Tabs = ({
                       formData={formData}
                       setComparisonVal={setComparisonVal}
                       setPredicate={setPredicate}
-                      handleChange={setSecondAggMethod} />
+                      // handleChange={setSecondAggMethod} 
+                      />
                 </CustomTabPanel>
             </div>
   
@@ -261,7 +271,7 @@ const Tabs = ({
 
 Tabs.propTypes = {
   formData: PropTypes.object,
-  setSecondAggMethod: PropTypes.func,
+  // setSecondAggMethod: PropTypes.func,
   setPredicate: PropTypes.func,
   setComparisonVal: PropTypes.func,
   htmlString: PropTypes.string,

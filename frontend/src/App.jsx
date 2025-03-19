@@ -541,6 +541,7 @@ function App() {
           formData={formData}
           handleChange={handleChange}
           queryData={queryData}
+          handleHeatMap={handleHeatMap}
           isLoading={isLoading} />
         <div className="main_content">
           <MyMap />
