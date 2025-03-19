@@ -102,4 +102,6 @@ Inside each of the three panels:
 * need to change the temporalAggregation and spatialAggregation component names in App etc. to tsAggregation
 
 
+* figure out how to make each panel have a different starting default
+* add CDS variable descriptions
 

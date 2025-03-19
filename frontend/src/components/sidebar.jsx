@@ -37,18 +37,30 @@ const Sidebar = ({
                     val={variable}
                     setVal={setVariable}
                     label={"Variable"}
-                    options={["2 meter Temperature",
-                        "Surface Pressure",
-                        "Sea Surface Temperature",
-                        "Total Precipitation",
-                        "Ice Temperature - Layer 1",
-                        "Ice Temperature - Layer 2",
-                        "Ice Temperature - Layer 3",
-                        "Ice Temperature - Layer 4",
-                        "Snow Depth",
-                        "Snowfall",
-                        "Snowmelt",
-                        "Temperature of Snow Layer"
+                    options={[
+                        "2m_temperature",
+                        "total_precipitation",
+                        "surface_pressure",
+                        "snow_depth",
+                        "snowfall",
+                        "snowmelt",
+                        "temperature_of_snow_layer",
+                        "ice_temperature_layer_1",
+                        "ice_temperature_layer_2",
+                        "ice_temperature_layer_3",
+                        "ice_temperature_layer_4",
+                        // "2 meter Temperature",
+                        // "Surface Pressure",
+                        // "Sea Surface Temperature",
+                        // "Total Precipitation",
+                        // "Ice Temperature - Layer 1",
+                        // "Ice Temperature - Layer 2",
+                        // "Ice Temperature - Layer 3",
+                        // "Ice Temperature - Layer 4",
+                        // "Snow Depth",
+                        // "Snowfall",
+                        // "Snowmelt",
+                        // "Temperature of Snow Layer"
                     ]}
                     sx={{ width: "95%"}}
                     size={"large"}
@@ -69,7 +81,7 @@ const Sidebar = ({
                 </div>
                 <RadioButtons
                     label="Temporal Resolution"
-                    options={["Hour", "Day", "Month", "Year"]}
+                    options={["hour", "day", "month", "year"]}
                     var={formData.temporalResolution}
                     setVal={handleChange}
                     subLabel="temporalResolution"
@@ -83,11 +95,11 @@ const Sidebar = ({
                     defaultValue={1} />
                 <RadioButtons
                     label="Aggregation"
-                    options={["Min", "Avg", "Max"]}
+                    options={["Min", "mean", "Max"]}
                     var={formData.tsAggregation}
                     setVal={handleChange}
                     subLabel="tslAggregation"
-                    defaultValue={"Avg"} />
+                    defaultValue={"mean"} />
                 <div className="hr" />
                 <CardinalDirections formData={formData} handleChange={handleChange} />
                 <div className="hr" />
