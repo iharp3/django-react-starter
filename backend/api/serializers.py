@@ -1,13 +1,13 @@
 from rest_framework import serializers
-from .models import Query
+from .models import *
 
 
-class QuerySeriazlier(serializers.ModelSerializer):
+class GetRasterSeriazlier(serializers.ModelSerializer):
     class Meta:
-        model = Query
-        # fields = "__all__"
+        model = GetRasterQueryModel
         fields = [
             "id",
+            "created_at",
             "variable",
             "startDateTime",
             "endDateTime",
@@ -16,18 +16,35 @@ class QuerySeriazlier(serializers.ModelSerializer):
             "south",
             "east",
             "west",
-            "created_at",
-            "temporalAggregation",
             "spatialResolution",
-            "spatialAggregation",
+            "aggregation",
+        ]
+
+
+class HeatmapSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HeatmapQueryModel
+        fields = [
+            "id",
+            "created_at",
+            "variable",
+            "startDateTime",
+            "endDateTime",
+            "north",
+            "south",
+            "east",
+            "west",
+            "spatialResolution",
+            "aggregation",
         ]
 
 
 class TimeSeriesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Query
+        model = TimeseriesQueryModel
         fields = [
             "id",
+            "created_at",
             "variable",
             "startDateTime",
             "endDateTime",
@@ -36,19 +53,16 @@ class TimeSeriesSerializer(serializers.ModelSerializer):
             "south",
             "east",
             "west",
-            "created_at",
-            "temporalAggregation",
-            "secondAgg",
-            "spatialResolution",
-            "spatialAggregation",
+            "aggregation",
         ]
 
 
 class FindTimeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Query
+        model = FindTimeModel
         fields = [
             "id",
+            "created_at",
             "variable",
             "startDateTime",
             "endDateTime",
@@ -57,11 +71,27 @@ class FindTimeSerializer(serializers.ModelSerializer):
             "south",
             "east",
             "west",
-            "created_at",
-            "temporalAggregation",
-            "secondAgg",
+            "aggregation",
             "filterPredicate",
             "filterValue",
+        ]
+
+
+class FindAreaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FindAreaModel
+        fields = [
+            "id",
+            "created_at",
+            "variable",
+            "startDateTime",
+            "endDateTime",
+            "north",
+            "south",
+            "east",
+            "west",
             "spatialResolution",
-            "spatialAggregation",
+            "aggregation",
+            "filterPredicate",
+            "filterValue",
         ]
