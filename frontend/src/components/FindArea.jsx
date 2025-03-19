@@ -66,14 +66,14 @@ const findAreaConfig = {
   return (
     <div className="find_area">
       <div className="fa_inputs">
-        <Input
+        {/* <Input
           val={formData.secondAgg}
           setVal={handleChange}
           name="ts_agg_method"
           label={"Select Aggregation"}
           options={["min", "max", "mean"]}
           sx={{ width: "80%" }}
-          size={"small"}/>
+          size={"small"}/> */}
         <div className="fa_text_input_wrapper">
           <Input
             name="fa_predicate"
@@ -90,7 +90,7 @@ const findAreaConfig = {
             value={formData.filterValue}
             onChange={(e) => {setComparisonVal(e.target.value)}}/>
         </div>
-        <Button 
+        {/* <Button 
           onClick={handleClick} 
           variant="outlined" 
           disabled={isLoading}
@@ -100,9 +100,9 @@ const findAreaConfig = {
             {isLoading && <div className="loading-spinner" />}
             Query
           </div>
-        </Button>
+        </Button> */}
       </div>
-      <div className="hline"></div>
+      {/* <div className="hline"></div> */}
       { findAreaImage && Object.keys(findAreaImage).length > 0 ? (
       <div className="fa_plot">
         <Plot

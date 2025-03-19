@@ -60,16 +60,16 @@ const HeatMap = ({ handleHeatMap, heatMapImage, formData, handleChange }) => {
 
   return (
     <div className="heat_map">
-      <div className="hm_inputs">
-        <Input
+      {/* <div className="hm_inputs"> */}
+        {/* <Input
           val={formData.secondAgg}
           setVal={handleChange}
           name="hm_agg_method"
           label={"Select Aggregation Method"}
           options={["min", "max", "mean"]}
           sx={{ width: "80%" }}
-          size={"small"}/>
-        <Button 
+          size={"small"}/> */}
+        {/* <Button 
           onClick={handleClick} 
           variant="outlined" 
           disabled={isLoading}
@@ -79,9 +79,9 @@ const HeatMap = ({ handleHeatMap, heatMapImage, formData, handleChange }) => {
             {isLoading && <div className="loading-spinner" />}
             Query
           </div>
-        </Button>
-      </div>
-      <div className="hline"></div>
+        </Button> */}
+      {/* </div> */}
+      {/* <div className="hline"></div> */}
       { heatMapImage && Object.keys(heatMapImage).length > 0 ? (
       <div className="hm_plot">
         <Plot

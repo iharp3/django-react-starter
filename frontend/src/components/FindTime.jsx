@@ -44,14 +44,14 @@ const FindTime = ({ handleFindTime, findTimeImage, formData, setPredicate, setCo
   return (
     <div className="find_time">
       <div className="ft_inputs">
-        <Input
+        {/* <Input
           val={formData.secondAgg}
           setVal={handleChange}
           name="ts_agg_method"
           label={"Select Aggregation"}
           options={["min", "max", "mean"]}
           sx={{ width: "80%" }}
-          size={"small"} />
+          size={"small"} /> */}
         <div className="ft_text_input_wrapper">
           <Input
             name="ft_predicate"
@@ -68,7 +68,7 @@ const FindTime = ({ handleFindTime, findTimeImage, formData, setPredicate, setCo
             value={formData.filterValue}
             onChange={(e) => { setComparisonVal(e.target.value) }} />
         </div>
-        <Button 
+        {/* <Button 
           onClick={handleClick} 
           variant="outlined" 
           disabled={isLoading}
@@ -78,9 +78,9 @@ const FindTime = ({ handleFindTime, findTimeImage, formData, setPredicate, setCo
             {isLoading && <div className="loading-spinner" />}
             Query
           </div>
-        </Button>
+        </Button> */}
       </div>
-      <div className="hline"></div>
+      {/* <div className="hline"></div> */}
       {findTimeImage && Object.keys(findTimeImage).length > 0 ? (
         <div className="ft_plot">
           <Plot

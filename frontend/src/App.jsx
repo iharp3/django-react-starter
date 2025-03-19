@@ -13,9 +13,9 @@ import './App.css'
 function App() {
 
   const [variable, setVariable] = useState("2m_temperature");
-  const [startDate, setStartDate] = useState(dayjs("2023-01-01T00:00Z"));
+  const [startDate, setStartDate] = useState(dayjs("2020-01-01T00:00Z"));
   const [endDate, setEndDate] = useState(dayjs("2023-12-31T23:00Z"));
-  const [secondAgg, setSecondAggMethod] = useState("mean");
+  // const [secondAgg, setSecondAggMethod] = useState("mean");
   const [comparisonVal, setComparisonVal] = useState(285);
   const [predicate, setPredicate] = useState("<");
   const [htmlString, setHtml] = useState("");
@@ -40,7 +40,7 @@ function App() {
     east: -10,
     west: -74,
     spatialResolution: 1,
-    spatialAggregation: "mean",
+    aggregation: "mean",
     // downloadOption: "",
     // secondAgg: secondAgg,
     // filterValue: comparisonVal,
@@ -61,9 +61,10 @@ function App() {
       ...prev,
       filterValue: comparisonVal,
       filterPredicate: predicate,
-      secondAgg: secondAgg,
+      // secondAgg: secondAgg,
     }))
-  }, [secondAgg, comparisonVal, predicate])
+  // }, [secondAgg, comparisonVal, predicate])
+  }, [comparisonVal, predicate])
 
   const handleChange = (e) => {
     // console.log(e);
@@ -239,7 +240,7 @@ function App() {
     formData.requestType = "Time Series";
     formData.startDateTime = startDate;
     formData.endDateTime = endDate;
-    formData.secondAgg = secondAgg;
+    // formData.secondAgg = secondAgg;
     try {
 
       // console.log(formData);
@@ -324,7 +325,7 @@ function App() {
     formData.requestType = "Heap Map";
     formData.startDateTime = startDate;
     formData.endDateTime = endDate;
-    formData.secondAgg = secondAgg;
+    // formData.secondAgg = secondAgg;
     try {
 
       // console.log(formData);
@@ -409,7 +410,7 @@ function App() {
     formData.requestType = "Find Time";
     formData.startDateTime = startDate;
     formData.endDateTime = endDate;
-    formData.secondAgg = secondAgg;
+    // formData.secondAgg = secondAgg;
     try {
       // console.log(formData);
       // Send request to the backend to fetch both time series data and image data
@@ -493,7 +494,7 @@ function App() {
     formData.requestType = "Find Area";
     formData.startDateTime = startDate;
     formData.endDateTime = endDate;
-    formData.secondAgg = secondAgg;
+    // formData.secondAgg = secondAgg;
     try {
       // console.log(formData);
       // Send request to the backend to fetch both time series data and image data
@@ -545,7 +546,7 @@ function App() {
           <MyMap />
           <Tabs
             formData={formData}
-            setSecondAggMethod={setSecondAggMethod}
+            // setSecondAggMethod={setSecondAggMethod}
             htmlString={htmlString}
             handleTimeSeries={handleTimeSeries}
             timeSeriesImage={timeSeriesImage}

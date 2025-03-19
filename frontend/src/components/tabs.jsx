@@ -52,7 +52,7 @@ const Tabs = ({
   findTimeImage,
   findAreaImage,
   handleFindArea,
-  setSecondAggMethod,
+  // setSecondAggMethod,
   setComparisonVal,
   setPredicate, }) => {
 
@@ -139,7 +139,7 @@ const Tabs = ({
               <TimeSeries
                 handleTimeSeries={handleTimeSeries}
                 timeSeriesImage={timeSeriesImage}
-                handleChange={setSecondAggMethod}
+                // handleChange={setSecondAggMethod}
                 formData={formData} />
             </CustomTabPanel>
             <CustomTabPanel sx={{ width: "100%", height: "255px" }} value={tabNum} index={2} {...a11yProps(2)}>
@@ -147,7 +147,8 @@ const Tabs = ({
                 handleHeatMap={handleHeatMap}
                 heatMapImage={heatMapImage}
                 formData={formData}
-                handleChange={setSecondAggMethod} />
+                // handleChange={setSecondAggMethod}
+                 />
             </CustomTabPanel>
             <CustomTabPanel value={tabNum} index={3} {...a11yProps(3)}>
               <FindTime
@@ -156,7 +157,8 @@ const Tabs = ({
                 formData={formData}
                 setComparisonVal={setComparisonVal}
                 setPredicate={setPredicate}
-                handleChange={setSecondAggMethod} />
+                // handleChange={setSecondAggMethod} 
+                />
             </CustomTabPanel>
             <CustomTabPanel value={tabNum} index={4} {...a11yProps(4)}>
               <FindArea
@@ -165,7 +167,8 @@ const Tabs = ({
                 formData={formData}
                 setComparisonVal={setComparisonVal}
                 setPredicate={setPredicate}
-                handleChange={setSecondAggMethod} />
+                // handleChange={setSecondAggMethod} 
+                />
             </CustomTabPanel>
           </div>
         </Box>
@@ -176,7 +179,7 @@ const Tabs = ({
 
 Tabs.propTypes = {
   formData: PropTypes.object,
-  setSecondAggMethod: PropTypes.func,
+  // setSecondAggMethod: PropTypes.func,
   setPredicate: PropTypes.func,
   setComparisonVal: PropTypes.func,
   htmlString: PropTypes.string,
