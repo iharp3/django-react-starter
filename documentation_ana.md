@@ -96,4 +96,10 @@ Inside each of the three panels:
 * plot scripts (e.g. `FindArea.jsx`) have the inputs that need to be in the sidebar instead
 * need to add the buttons to the sidebar and send them to App, then send the info to the bottom panel that will then send it to FindArea?
 
+* need to change the variable names to the actual names
+* nedd to change the temporal resolution names to the lower case names
+* need to change the aggregation names to min mean max
+* need to change the temporalAggregation and spatialAggregation component names in App etc. to tsAggregation
+
+
 

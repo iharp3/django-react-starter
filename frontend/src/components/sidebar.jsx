@@ -50,37 +50,30 @@ const Sidebar = ({
                         "Snowmelt",
                         "Temperature of Snow Layer"
                     ]}
-                    sx={{ width: "95%" }}
-                    size={"medium"}
+                    sx={{ width: "95%"}}
+                    size={"large"}
                     varLabel={"variable"} />
                 <div className="time_range" style={{display: "flex"}}>
                     <DateInput
                         sx={{width: "50%", minWidth:"0"}}
-                        size={"x-small"}
+                        size={"small"}
                         date={startDate}
                         setDate={setStartDate}
                         label="Start Date & Time" />
                     <DateInput
                         sx={{width: "50%", minWidth:"0"}}
-                        size={"x-small"}
+                        size={"small"}
                         date={endDate}
                         setDate={setEndDate}
                         label="End Date & Time" />
                 </div>
                 <RadioButtons
                     label="Temporal Resolution"
-                    options={["hour", "day", "month", "year"]}
+                    options={["Hour", "Day", "Month", "Year"]}
                     var={formData.temporalResolution}
                     setVal={handleChange}
                     subLabel="temporalResolution"
-                    defaultValue={"year"} />
-                <RadioButtons
-                    label="Temporal Aggregation"
-                    options={["min", "max", "mean"]}
-                    var={formData.temporalAggregation}
-                    setVal={handleChange}
-                    subLabel="temporalAggregation"
-                    defaultValue={"mean"} />
+                    defaultValue={"Day"} />
                 <RadioButtons
                     label="Spatial Resolution"
                     options={[0.25, 0.5, 1]}
@@ -89,12 +82,12 @@ const Sidebar = ({
                     subLabel="spatialResolution"
                     defaultValue={1} />
                 <RadioButtons
-                    label="Spatial Aggregation"
-                    options={["min", "max", "mean"]}
-                    var={formData.spatialAggregation}
+                    label="Aggregation"
+                    options={["Min", "Avg", "Max"]}
+                    var={formData.tsAggregation}
                     setVal={handleChange}
-                    subLabel="spatialAggregation"
-                    defaultValue={"mean"} />
+                    subLabel="tslAggregation"
+                    defaultValue={"Avg"} />
                 <div className="hr" />
                 <CardinalDirections formData={formData} handleChange={handleChange} />
                 <div className="hr" />
@@ -102,7 +95,7 @@ const Sidebar = ({
                     onClick={() => queryData()}
                     variant="outlined"
                     disabled={isLoading}
-                    sx={{ marginBottom: "48px", marginTop: "auto" }}
+                    sx={{ }}
                 >
                     <div className="button-content">
                         {isLoading && <div className="loading-spinner" />}
