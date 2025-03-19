@@ -36,13 +36,17 @@ const RadioButtons = ({label, options, val, setVal, subLabel, defaultValue}) => 
             row
             aria-labelledby={label}
             name={subLabel} 
-            sx={{width: "400px", scale: "85%", justifyContent: "center"}}
+            sx={{width: "350px", scale: "85%", justifyContent: "center"}}
             value={val}
             onChange={setVal}
             >
                 {options.map((option) => {
                     return (
-                        <FormControlLabel key={option} value={option} control={<Radio/>} label={option}/>
+                        <FormControlLabel 
+                            key={option} 
+                            value={option} 
+                            control={<Radio/>} 
+                            label={option}/>
                     );
                 })}          
             </RadioGroup>

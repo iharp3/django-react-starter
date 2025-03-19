@@ -37,7 +37,7 @@ const Sidebar = ({
                     val={variable}
                     setVal={setVariable}
                     label={"Variable"}
-                    options={["2 meter temperature",
+                    options={["2 meter Temperature",
                         "Surface Pressure",
                         "Sea Surface Temperature",
                         "Total Precipitation",
