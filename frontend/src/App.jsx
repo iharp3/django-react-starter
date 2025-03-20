@@ -24,7 +24,6 @@ function App() {
 
   const { drawnShapeBounds, setDrawnShapeBounds } = useContext(BoundsContext);
 
-  const [activeTab, setActiveTab] = useState("");
 
   const [formData, setFormData] = useState({
     requestType: "",
@@ -130,21 +129,6 @@ function App() {
     }
     // settemporalResolutionSelected(value !== "");
   };
-
-  const handleQuery = () => {
-    if (activeTab === "HeatMap") {
-      handleHeatMap();
-    }
-    else if (activeTab === "TimeSeries") {
-      handleTimeSeries();
-    }
-    else if (activeTab === "FindTime") {
-      handleFindTime();
-    }
-    else if (activeTab === "FindArea") {
-      handleFindArea();
-    }
-  }; 
 
   const queryData = async () => {
     setIsLoading(true);
@@ -552,7 +536,6 @@ function App() {
           formData={formData}
           handleChange={handleChange}
           queryData={queryData}
-          handleQuery={handleQuery}
           isLoading={isLoading} />
         <div className="main_content">
           <MyMap />

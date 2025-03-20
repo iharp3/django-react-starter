@@ -18,7 +18,6 @@ const Sidebar = ({
     formData,
     handleChange,
     queryData,
-    handleQuery,
     isLoading, }) => {
 
     return (
@@ -77,9 +76,8 @@ const Sidebar = ({
                 <div className="hr" />
                 <CardinalDirections formData={formData} handleChange={handleChange} />
                 <div className="hr" />
-                {/* <Button onClick={onQuery}>Query</Button> */}
                 <Button
-                    onClick={() => handleQuery()}
+                    onClick={() => queryData()}
                     variant="outlined"
                     disabled={isLoading}
                     sx={{ marginBottom: "48px", marginTop: "auto" }}
