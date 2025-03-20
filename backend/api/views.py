@@ -191,7 +191,7 @@ def timeseries_query(request):
         ts = qe.execute()
 
         short_variable = get_variable_short_name(variable)
-        fig = go.Figure([go.Scatter(x=ts["valid_time"], y=ts[short_variable])])
+        fig = go.Figure([go.Scatter(x=ts["time"], y=ts[short_variable])])
         json_fig = fig.to_json()
         json_data = json.loads(json_fig)
         return JsonResponse(json_data, status=201)
@@ -294,7 +294,7 @@ def find_time_query(request):
         fig = go.Figure(
             [
                 go.Scatter(
-                    x=ft["valid_time"],
+                    x=ft["time"],
                     y=ft[var_short_name],
                     mode="lines+markers",
                     marker=dict(size=12, color=[color_map[i] for i in ft[var_short_name].values]),

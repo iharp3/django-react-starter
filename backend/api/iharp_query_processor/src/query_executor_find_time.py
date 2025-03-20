@@ -90,8 +90,8 @@ class FindTimeExecutor(QueryExecutor):
         years, months, days, hours = get_whole_period_between(self.start_datetime, self.end_datetime)
         time_points = pd.date_range(start=self.start_datetime, end=self.end_datetime, freq="h")
         result = xr.Dataset(
-            data_vars={self.variable_short_name: (["valid_time"], [None] * len(time_points))},
-            coords=dict(valid_time=time_points),
+            data_vars={self.variable_short_name: (["time"], [None] * len(time_points))},
+            coords=dict(time=time_points),
         )
 
         if years:
@@ -101,8 +101,8 @@ class FindTimeExecutor(QueryExecutor):
             for year in years:
                 year_determined = False
                 year_datetime = f"{year}-12-31 00:00:00"
-                curr_year_min = year_min[self.variable_short_name].sel(valid_time=year_datetime).values.item()
-                curr_year_max = year_max[self.variable_short_name].sel(valid_time=year_datetime).values.item()
+                curr_year_min = year_min[self.variable_short_name].sel(time=year_datetime).values.item()
+                curr_year_max = year_max[self.variable_short_name].sel(time=year_datetime).values.item()
                 print(f"year: {year}, min: {curr_year_min}, max: {curr_year_max}")
                 if self.filter_predicate == ">":
                     if curr_year_min > self.filter_value:
@@ -138,8 +138,8 @@ class FindTimeExecutor(QueryExecutor):
             for month in months:
                 month_determined = False
                 month_datetime = f"{month}-{get_last_date_of_month(pd.Timestamp(month))} 00:00:00"
-                curr_month_min = month_min[self.variable_short_name].sel(valid_time=month_datetime).values.item()
-                curr_month_max = month_max[self.variable_short_name].sel(valid_time=month_datetime).values.item()
+                curr_month_min = month_min[self.variable_short_name].sel(time=month_datetime).values.item()
+                curr_month_max = month_max[self.variable_short_name].sel(time=month_datetime).values.item()
                 if self.filter_predicate == ">":
                     if curr_month_min > self.filter_value:
                         print(f"{month}: min > filter, True")
@@ -176,8 +176,8 @@ class FindTimeExecutor(QueryExecutor):
             for day in days:
                 day_determined = False
                 day_datetime = f"{day} 00:00:00"
-                curr_day_min = day_min[self.variable_short_name].sel(valid_time=day_datetime).values.item()
-                curr_day_max = day_max[self.variable_short_name].sel(valid_time=day_datetime).values.item()
+                curr_day_min = day_min[self.variable_short_name].sel(time=day_datetime).values.item()
+                curr_day_max = day_max[self.variable_short_name].sel(time=day_datetime).values.item()
                 if self.filter_predicate == ">":
                     if curr_day_min > self.filter_value:
                         print(f"{day}: min > filter, True")
@@ -205,7 +205,7 @@ class FindTimeExecutor(QueryExecutor):
                     # add hours to hours
                     hours = hours + [f"{day} {hour:02d}:00:00" for hour in range(24)]
 
-        result_undetermined = result["valid_time"].where(result[self.variable_short_name].isnull(), drop=True)
+        result_undetermined = result["time"].where(result[self.variable_short_name].isnull(), drop=True)
         if result_undetermined.size > 0:
             hour_range = time_array_to_range(result_undetermined.values, "hour")
             first_hour = hour_range[0][0]
