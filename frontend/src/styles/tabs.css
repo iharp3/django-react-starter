@@ -1,4 +1,7 @@
 .tabs_wrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
   width: 100%;
   height: 50%;
   background-color: white;
@@ -6,17 +9,9 @@
   position: relative;
 }
 
-.page_wrapper {
-  height: 85%;
-  width: 100%;
-  overflow: auto;
-  position: absolute;
-  left: 0;
-  right: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: left;
+.panel-container {
+  flex: 1;
+  min-width: 30%;
 }
 
 .tabpanel {
@@ -41,12 +36,4 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.raster_info {
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-evenly;
 }

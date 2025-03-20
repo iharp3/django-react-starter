@@ -69,7 +69,7 @@ const Tabs = ({
 
   return (
     <div className="tabs_wrapper">
-      <Box sx={{ width: "100%" }}>
+      <Box sx={{ display: "flex", gap: 2, width: "100%" }}>
         {/* Render 3 Panels */}
         {["panel1", "panel2", "panel3"].map((panelId) => (
           <div key={panelId} className="panel-container">
