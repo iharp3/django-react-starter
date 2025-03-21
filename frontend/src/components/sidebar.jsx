@@ -3,12 +3,16 @@ import DateInput from './DateInput';
 import CardinalDirections from './CardinalDirections';
 import RadioButtons from './Radio';
 import PropTypes from 'prop-types';
-import { Button } from '@mui/material'
+import { Button, TextField } from '@mui/material'
 import '../styles/sidebar.css'
 import '../styles/loading.css'
 
 // Once the date is changed the tempRes and temporalAggregation get reset in formdata back to their useState initial values
 const Sidebar = ({
+
+    setComparisonVal, 
+    setPredicate,
+
     variable,
     setVariable,
     startDate,
@@ -76,6 +80,20 @@ const Sidebar = ({
                 <div className="hr" />
                 <CardinalDirections formData={formData} handleChange={handleChange} />
                 <div className="hr" />
+                <Input
+                    name="predicate"
+                    label={"Predicate"}
+                    options={["<", ">", "<=", ">=", "!="]}
+                    sx={{ width: "60%", ml: "1vw"}}
+                    size={"medium"}
+                    val={formData.filterPredicate}
+                    setVal={setPredicate} />
+                <TextField 
+                    type="number"
+                    name="comparison_val"
+                    className="comparison_val"
+                    value={formData.filterValue}
+                    onChange={(e) => { setComparisonVal(e.target.value) }} />
                 <Button
                     onClick={() => queryData()}
                     variant="outlined"

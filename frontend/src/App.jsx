@@ -547,6 +547,10 @@ function App() {
       <Header />
       <div className="main_wrapper">
         <Sidebar
+
+          setComparisonVal={setComparisonVal}
+          setPredicate={setPredicate}
+
           variable={formData.variable}
           setVariable={setVariable}
           startDate={startDate}
