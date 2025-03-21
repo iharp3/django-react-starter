@@ -570,16 +570,10 @@ function App() {
 
             formData={formData}
             htmlString={htmlString}
-            handleTimeSeries={handleTimeSeries}
             timeSeriesImage={timeSeriesImage}
-            handleHeatMap={handleHeatMap}
             heatMapImage={heatMapImage}
-            handleFindTime={handleFindTime}
             findTimeImage={findTimeImage}
-            handleFindArea={handleFindArea}
-            findAreaImage={findAreaImage}
-            setComparisonVal={setComparisonVal}
-            setPredicate={setPredicate} />
+            findAreaImage={findAreaImage} />
         </div>
       </div>
     </>

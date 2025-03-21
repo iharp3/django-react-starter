@@ -1,6 +1,4 @@
 import PropTypes from "prop-types";
-import { Button, TextField } from '@mui/material';
-import Input from "./input";
 import Plot from 'react-plotly.js';
 import "../styles/findarea.css";
 

@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
 import { Box, MenuItem, FormControl, InputLabel, Select } from "@mui/material";
 import TimeSeries from "./TimeSeries";
 import HeatMap from "./HeatMap";
@@ -36,16 +35,10 @@ const Tabs = ({
 
   formData,
   htmlString,
-  handleTimeSeries,
   timeSeriesImage,
-  handleHeatMap,
   heatMapImage,
-  handleFindTime,
   findTimeImage,
   findAreaImage,
-  handleFindArea,
-  setComparisonVal,
-  setPredicate,
 }) => {
 
   // Available tab options
@@ -106,16 +99,10 @@ const Tabs = ({
 
 Tabs.propTypes = {
   formData: PropTypes.object,
-  setPredicate: PropTypes.func,
-  setComparisonVal: PropTypes.func,
   htmlString: PropTypes.string,
-  handleTimeSeries: PropTypes.func,
   timeSeriesImage: PropTypes.object,
-  handleHeatMap: PropTypes.func,
   heatMapImage: PropTypes.object,
-  handleFindTime: PropTypes.func,
   findTimeImage: PropTypes.object,
-  handleFindArea: PropTypes.func,
   findAreaImage: PropTypes.object,
 };
 

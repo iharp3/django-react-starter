@@ -1,9 +1,6 @@
 import PropTypes from "prop-types";
-import { Button, TextField } from '@mui/material';
 import Plot from 'react-plotly.js';
-import Input from './input';
 import "../styles/findtime.css";
-import { useState } from 'react';
 
 const FindTime = ({ findTimeImage }) => {
 

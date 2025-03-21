@@ -111,6 +111,8 @@ const Sidebar = ({
 }
 
 Sidebar.propTypes = {
+    setComparisonVal: PropTypes.func, 
+    setPredicate: PropTypes.func,
     variable: PropTypes.any,
     setVariable: PropTypes.func,
     startDate: PropTypes.any,
