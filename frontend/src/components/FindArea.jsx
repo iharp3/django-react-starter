@@ -3,19 +3,8 @@ import { Button, TextField } from '@mui/material';
 import Input from "./input";
 import Plot from 'react-plotly.js';
 import "../styles/findarea.css";
-import { useState } from 'react';
 
 const FindArea = ({ findAreaImage, handleFindArea, formData, setComparisonVal, setPredicate, handleChange }) => {
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleClick = async () => {
-    setIsLoading(true);
-    try {
-      await handleFindArea();
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const bounds = [
     (formData.north + formData.south) / 2,
@@ -82,19 +71,7 @@ const FindArea = ({ findAreaImage, handleFindArea, formData, setComparisonVal, s
             value={formData.filterValue}
             onChange={(e) => { setComparisonVal(e.target.value) }} />
         </div>
-        <Button
-          onClick={handleClick}
-          variant="outlined"
-          disabled={isLoading}
-          sx={{ marginBottom: "48px", marginTop: "auto" }}
-        >
-          <div className="button-content">
-            {isLoading && <div className="loading-spinner" />}
-            Query
-          </div>
-        </Button>
       </div>
-      <div className="hline"></div>
       {findAreaImage && Object.keys(findAreaImage).length > 0 ? (
         <div className="fa_plot">
           <Plot

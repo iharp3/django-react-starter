@@ -6,8 +6,7 @@ import "../styles/timeseries.css"
 import { useState } from 'react';
 
 const TimeSeries = ({ handleTimeSeries, timeSeriesImage, formData, handleChange }) => {
-  const [isLoading, setIsLoading] = useState(false);
-
+  
   const defaultLayout = {
     ...timeSeriesImage.layout,
     autosize: true,
@@ -37,32 +36,11 @@ const TimeSeries = ({ handleTimeSeries, timeSeriesImage, formData, handleChange 
     }
   };
 
-  const handleClick = async () => {
-    setIsLoading(true);
-    try {
-      await handleTimeSeries();
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   // TODO: Add warning if temporal res is less than date start/end differences
   return (
     <div className="time_series">
       <div className="ts_inputs">
-        <Button
-          onClick={handleClick}
-          variant="outlined"
-          disabled={isLoading}
-          sx={{ marginBottom: "48px", marginTop: "auto" }}
-        >
-          <div className="button-content">
-            {isLoading && <div className="loading-spinner" />}
-            Query
-          </div>
-        </Button>
       </div>
-      <div className="hline"></div>
       {timeSeriesImage && Object.keys(timeSeriesImage).length > 0 ? (
         <div className='ts_plot'>
           <Plot

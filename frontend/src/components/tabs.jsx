@@ -81,7 +81,7 @@ const Tabs = ({
 
             {/* Custom Panels */}
             <CustomTabPanel value={activeTabs[panelId]} index={0}>
-              <HeatMap handleHeatMap={handleHeatMap} heatMapImage={heatMapImage} formData={formData} />
+              <HeatMap heatMapImage={heatMapImage} />
             </CustomTabPanel>
             <CustomTabPanel value={activeTabs[panelId]} index={1}>
               <TimeSeries handleTimeSeries={handleTimeSeries} timeSeriesImage={timeSeriesImage} formData={formData} />

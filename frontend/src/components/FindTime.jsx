@@ -6,16 +6,6 @@ import "../styles/findtime.css";
 import { useState } from 'react';
 
 const FindTime = ({ handleFindTime, findTimeImage, formData, setPredicate, setComparisonVal, handleChange }) => {
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleClick = async () => {
-    setIsLoading(true);
-    try {
-      await handleFindTime();
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const findTimeLayout = {
     title: "Time Series Plot",
@@ -60,19 +50,7 @@ const FindTime = ({ handleFindTime, findTimeImage, formData, setPredicate, setCo
             value={formData.filterValue}
             onChange={(e) => { setComparisonVal(e.target.value) }} />
         </div>
-        <Button
-          onClick={handleClick}
-          variant="outlined"
-          disabled={isLoading}
-          sx={{ marginBottom: "48px", marginTop: "auto" }}
-        >
-          <div className="button-content">
-            {isLoading && <div className="loading-spinner" />}
-            Query
-          </div>
-        </Button>
       </div>
-      <div className="hline"></div>
       {findTimeImage && Object.keys(findTimeImage).length > 0 ? (
         <div className="ft_plot">
           <Plot
