@@ -25,6 +25,16 @@ const Sidebar = ({
     return (
         <>
             <div className="sidebar_wrapper">
+            <div className="title-container">
+                <p className='title'>POLARIS</p>
+                {/* <button
+                    className="info-button"
+                    onClick={() => setShowInfo(!showInfo)}
+                >
+                Info
+                </button> */}
+            </div>
+            <div className="data_controls" >
                 <div className="padding" />
                 <Input
                     val={variable}
@@ -78,6 +88,9 @@ const Sidebar = ({
                 <div className="hr" />
                 <CardinalDirections formData={formData} handleChange={handleChange} />
                 <div className="hr" />
+            </div>
+            <div className="plot_controls">
+                <div className="padding" />
                 <Input
                     name="predicate"
                     label={"Predicate"}
@@ -103,6 +116,7 @@ const Sidebar = ({
                         Query
                     </div>
                 </Button>
+            </div>
             </div>
         </>
     )

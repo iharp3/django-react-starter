@@ -1,7 +1,36 @@
+.title-container {
+    background-color:  rgb(255, 222, 122);
+    width: 100%;
+    height:60px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
 .sidebar_wrapper {
-    background-color: rgb(241, 241, 241);
-    width: 20%;
+    background-color: rgb(223, 244, 246);
+    width: 25%;
     height: 100%;
+    color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+.data_controls {
+    background-color: rgb(223, 244, 246);
+    color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.plot_controls {
+    background-color: rgb(226, 246, 223);
+    width: 100%;
     color: black;
     display: flex;
     flex-direction: column;

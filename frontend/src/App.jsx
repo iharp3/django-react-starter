@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react'
 import { BoundsContext } from './util/context/BoundsContext'
-import Header from './components/header'
+// import Header from './components/header'
 import Sidebar from './components/sidebar'
 import MyMap from "./components/map"
 import Tabs from './components/tabs'
@@ -544,13 +544,10 @@ function App() {
 
   return (
     <>
-      <Header />
       <div className="main_wrapper">
         <Sidebar
-
           setComparisonVal={setComparisonVal}
           setPredicate={setPredicate}
-
           variable={formData.variable}
           setVariable={setVariable}
           startDate={startDate}
