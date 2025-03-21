@@ -9,10 +9,8 @@ import '../styles/loading.css'
 
 // Once the date is changed the tempRes and temporalAggregation get reset in formdata back to their useState initial values
 const Sidebar = ({
-
     setComparisonVal, 
     setPredicate,
-
     variable,
     setVariable,
     startDate,
