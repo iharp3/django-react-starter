@@ -159,7 +159,10 @@ function App() {
         const jsonData = await response.json();
         setHtml(jsonData);
 
-
+        await handleHeatMap();
+        await handleTimeSeries();
+        await handleFindArea();
+        await handleFindTime();
 
       }
       else {
