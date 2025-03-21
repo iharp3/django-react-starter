@@ -92,22 +92,10 @@ const Tabs = ({
               </div>
             </CustomTabPanel>
             <CustomTabPanel value={activeTabs[panelId]} index={3}>
-              <FindTime
-                handleFindTime={handleFindTime}
-                findTimeImage={findTimeImage}
-                formData={formData}
-                setComparisonVal={setComparisonVal}
-                setPredicate={setPredicate}
-              />
+              <FindTime findTimeImage={findTimeImage} />
             </CustomTabPanel>
             <CustomTabPanel value={activeTabs[panelId]} index={4}>
-              <FindArea
-                findAreaImage={findAreaImage}
-                handleFindArea={handleFindArea}
-                formData={formData}
-                setComparisonVal={setComparisonVal}
-                setPredicate={setPredicate}
-              />
+              <FindArea findAreaImage={findAreaImage} formData={formData} />
             </CustomTabPanel>
           </div>
         ))}

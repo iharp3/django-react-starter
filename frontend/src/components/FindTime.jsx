@@ -5,7 +5,7 @@ import Input from './input';
 import "../styles/findtime.css";
 import { useState } from 'react';
 
-const FindTime = ({ handleFindTime, findTimeImage, formData, setPredicate, setComparisonVal, handleChange }) => {
+const FindTime = ({ findTimeImage }) => {
 
   const findTimeLayout = {
     title: "Time Series Plot",
@@ -33,24 +33,6 @@ const FindTime = ({ handleFindTime, findTimeImage, formData, setPredicate, setCo
 
   return (
     <div className="find_time">
-      <div className="ft_inputs">
-        <div className="ft_text_input_wrapper">
-          <Input
-            name="ft_predicate"
-            label={"Predicate"}
-            options={["<", ">", "=", "<=", ">=", "!="]}
-            sx={{ width: "60%", ml: "1vw" }}
-            size={"small"}
-            val={formData.filterPredicate}
-            setVal={setPredicate} />
-          <TextField
-            type="number"
-            name="comparison_val"
-            className="comparison_val"
-            value={formData.filterValue}
-            onChange={(e) => { setComparisonVal(e.target.value) }} />
-        </div>
-      </div>
       {findTimeImage && Object.keys(findTimeImage).length > 0 ? (
         <div className="ft_plot">
           <Plot
@@ -70,11 +52,7 @@ const FindTime = ({ handleFindTime, findTimeImage, formData, setPredicate, setCo
 }
 
 FindTime.propTypes = {
-  handleFindTime: PropTypes.func,
   findTimeImage: PropTypes.object,
-  setPredicate: PropTypes.func,
-  setComparisonVal: PropTypes.func,
-  handleChange: PropTypes.func,
 }
 
 export default FindTime;

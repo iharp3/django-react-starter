@@ -4,7 +4,7 @@ import Input from "./input";
 import Plot from 'react-plotly.js';
 import "../styles/findarea.css";
 
-const FindArea = ({ findAreaImage, handleFindArea, formData, setComparisonVal, setPredicate, handleChange }) => {
+const FindArea = ({ findAreaImage, formData }) => {
 
   const bounds = [
     (formData.north + formData.south) / 2,
@@ -54,24 +54,6 @@ const FindArea = ({ findAreaImage, handleFindArea, formData, setComparisonVal, s
 
   return (
     <div className="find_area">
-      <div className="fa_inputs">
-        <div className="fa_text_input_wrapper">
-          <Input
-            name="fa_predicate"
-            label={"Predicate"}
-            options={["<", ">", "=", "<=", ">=", "!="]}
-            sx={{ width: "60%", ml: "1vw" }}
-            size={"small"}
-            val={formData.filterPredicate}
-            setVal={setPredicate} />
-          <TextField
-            type="number"
-            name="comparison_val"
-            className="comparison_val"
-            value={formData.filterValue}
-            onChange={(e) => { setComparisonVal(e.target.value) }} />
-        </div>
-      </div>
       {findAreaImage && Object.keys(findAreaImage).length > 0 ? (
         <div className="fa_plot">
           <Plot
@@ -92,10 +74,6 @@ const FindArea = ({ findAreaImage, handleFindArea, formData, setComparisonVal, s
 
 FindArea.propTypes = {
   findAreaImage: PropTypes.object,
-  handleFindArea: PropTypes.func,
-  setComparisonVal: PropTypes.func,
-  setPredicate: PropTypes.func,
-  handleChange: PropTypes.func,
 }
 
 export default FindArea
