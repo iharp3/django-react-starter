@@ -71,6 +71,7 @@ const Sidebar = ({
                             />
                         </div>
                     </LocalizationProvider>
+                    <div className="row_wrapper">
                     <RadioButtons
                         label="Temporal Resolution"
                         options={["hour", "day", "month", "year"]}
@@ -85,6 +86,7 @@ const Sidebar = ({
                         setVal={handleChange}
                         subLabel="spatialResolution"
                         defaultValue={1} />
+                    </div>
                     <RadioButtons
                         label="Spatio-Temporal Aggregation"
                         options={["min", "max", "mean"]}

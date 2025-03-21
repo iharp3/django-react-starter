@@ -1,6 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
 import { BoundsContext } from './util/context/BoundsContext'
-// import Header from './components/header'
 import Sidebar from './components/sidebar'
 import MyMap from "./components/map"
 import Tabs from './components/tabs'
@@ -52,9 +51,6 @@ function App() {
     west: -74,
     spatialResolution: 1,
     aggregation: "mean",
-    // downloadOption: "",
-    // filterValue: comparisonVal,
-    // filterPredicate: predicate,
   });
 
   useEffect(() => {
@@ -538,10 +534,6 @@ function App() {
     }
   }
 
-  // useEffect(() => {
-  //   alert('[2025/03/05]: Click OK to close this alert and open the website. No data in the backend right now for querying. Data will be added by 03/07. \n\nThank you. ')
-  // }, [])
-
   return (
     <>
       <div className="main_wrapper">
@@ -561,10 +553,8 @@ function App() {
         <div className="main_content">
           <MyMap />
           <Tabs
-
             activeTabs={activeTabs}
             handleTabChange={handleTabChange}
-
             formData={formData}
             htmlString={htmlString}
             timeSeriesImage={timeSeriesImage}

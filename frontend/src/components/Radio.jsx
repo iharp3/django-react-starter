@@ -12,10 +12,10 @@ const RadioButtons = ({ label, options, val, setVal, subLabel, defaultValue }) =
             <FormLabel id={label}>{label}</FormLabel>
             <RadioGroup
                 defaultValue={defaultValue}
-                row
+                column
                 aria-labelledby={label}
                 name={subLabel}
-                sx={{ width: "400px", scale: "85%", justifyContent: "center" }}
+                sx={{ width: "30%", scale: "95%", justifyContent: "center", border: "" }}
                 value={val}
                 onChange={setVal}
             >
