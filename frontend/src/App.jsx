@@ -24,6 +24,20 @@ function App() {
 
   const { drawnShapeBounds, setDrawnShapeBounds } = useContext(BoundsContext);
 
+  // Manage the active tab for multiple panels
+  const [activeTabs, setActiveTabs] = useState({
+    panel1: 0,
+    panel2: 0,
+    panel3: 0,
+  });
+
+  // Handles changing the active tab for a specific panel
+  const handleTabChange = (panelId, event) => {
+    setActiveTabs((prevTabs) => ({
+      ...prevTabs,
+      [panelId]: event.target.value, // Store the selected value for the panel
+    }));
+  };
 
   const [formData, setFormData] = useState({
     requestType: "",
@@ -144,6 +158,9 @@ function App() {
       if (response.ok) {
         const jsonData = await response.json();
         setHtml(jsonData);
+
+
+
       }
       else {
         const errorResponse = await response.json();
@@ -540,6 +557,10 @@ function App() {
         <div className="main_content">
           <MyMap />
           <Tabs
+
+            activeTabs={activeTabs}
+            handleTabChange={handleTabChange}
+
             formData={formData}
             htmlString={htmlString}
             handleTimeSeries={handleTimeSeries}

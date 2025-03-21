@@ -30,6 +30,10 @@ CustomTabPanel.propTypes = {
 };
 
 const Tabs = ({
+
+  activeTabs,
+  handleTabChange,
+
   formData,
   htmlString,
   handleTimeSeries,
@@ -43,20 +47,6 @@ const Tabs = ({
   setComparisonVal,
   setPredicate,
 }) => {
-  // Manage the active tab for multiple panels
-  const [activeTabs, setActiveTabs] = useState({
-    panel1: 0,
-    panel2: 0,
-    panel3: 0,
-  });
-
-  // Handles changing the active tab for a specific panel
-  const handleTabChange = (panelId, event) => {
-    setActiveTabs((prevTabs) => ({
-      ...prevTabs,
-      [panelId]: event.target.value, // Store the selected value for the panel
-    }));
-  };
 
   // Available tab options
   const tabOptions = [
