@@ -1,12 +1,9 @@
-import { Button } from '@mui/material';
-import Input from './input';
 import PropTypes from "prop-types";
 import Plot from 'react-plotly.js';
 import "../styles/timeseries.css"
-import { useState } from 'react';
 
-const TimeSeries = ({ handleTimeSeries, timeSeriesImage, formData, handleChange }) => {
-  
+const TimeSeries = ({ timeSeriesImage }) => {
+
   const defaultLayout = {
     ...timeSeriesImage.layout,
     autosize: true,
@@ -58,10 +55,7 @@ const TimeSeries = ({ handleTimeSeries, timeSeriesImage, formData, handleChange 
 }
 
 TimeSeries.propTypes = {
-  handleTimeSeries: PropTypes.func,
   timeSeriesImage: PropTypes.object,
-  formData: PropTypes.object,
-  handleChange: PropTypes.func,
 }
 
 export default TimeSeries

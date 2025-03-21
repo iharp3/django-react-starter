@@ -84,7 +84,7 @@ const Tabs = ({
               <HeatMap heatMapImage={heatMapImage} />
             </CustomTabPanel>
             <CustomTabPanel value={activeTabs[panelId]} index={1}>
-              <TimeSeries handleTimeSeries={handleTimeSeries} timeSeriesImage={timeSeriesImage} formData={formData} />
+              <TimeSeries timeSeriesImage={timeSeriesImage} />
             </CustomTabPanel>
             <CustomTabPanel value={activeTabs[panelId]} index={2}>
               <div className="raster_data">

@@ -1,9 +1,6 @@
 import PropTypes from "prop-types";
-import { Button } from '@mui/material';
 import Plot from 'react-plotly.js';
-import Input from './input';
 import "../styles/heatmap.css";
-import { useState } from 'react';
 
 // TODO,bug with areas where the height is a bit larger than the width.
 const HeatMap = ({ heatMapImage }) => {
