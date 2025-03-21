@@ -1,8 +1,6 @@
 import Input from './input';
-import DateInput from './DateInput';
 import CardinalDirections from './CardinalDirections';
 import RadioButtons from './Radio';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -54,35 +52,22 @@ const Sidebar = ({
                         size={"small"}
                         varLabel={"variable"}
                     />
+                    <div className="padding"/>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <div className="row_wrapper">
                             <DateTimePicker
-                                ampm={false} // 24-hour format, hides AM/PM
+                                label="Start Date Time"
+                                views={['year', 'day', 'hours']}
+                                ampm={false}
                                 value={startDate ? dayjs(startDate) : null}
                                 onChange={(newValue) => setStartDate(newValue ? newValue.format('YYYY-MM-DD HH:mm') : null)}
-                                renderInput={({ inputRef, inputProps, InputProps }) => (
-                                    <Button
-                                        variant="contained"
-                                        size="small"
-                                        className="date-button"
-                                        onClick={InputProps?.onClick}>
-                                        {startDate ? dayjs(startDate).format("MMM D, HH:mm") : "Start Date"}
-                                    </Button>
-                                )}
                             />
                             <DateTimePicker
-                                ampm={false} // 24-hour format, hides AM/PM
+                                label="End Date Time"
+                                views={['year', 'day', 'hours']}
+                                ampm={false}
                                 value={endDate ? dayjs(endDate) : null}
                                 onChange={(newValue) => setEndDate(newValue ? newValue.format('YYYY-MM-DD HH:mm') : null)}
-                                renderInput={({ inputRef, inputProps, InputProps }) => (
-                                    <Button
-                                        variant="contained"
-                                        size="small"
-                                        className="date-button"
-                                        onClick={InputProps?.onClick}>
-                                        {endDate ? dayjs(endDate).format("MMM D, HH:mm") : "End Date"}
-                                    </Button>
-                                )}
                             />
                         </div>
                     </LocalizationProvider>

@@ -6,19 +6,24 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    /* gap: 4px; */
 }
 
 .title_container {
     background-color:  rgb(255, 222, 122);
     width: 100%;
-    height:60px;
+    height:10%;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
+.title {
+    margin: 0;
+    font-size: larger;
+    font-weight: bold;
+}
 .row_wrapper {
     background-color: rgb(223, 244, 246);
     color: black;
@@ -28,27 +33,10 @@
     justify-content: space-between;
     gap: 4px;
     width: 95%;
-    padding: 4px;
 }
-
-.date-button {
-    width: 48%;
-    min-width: 80px;
-    font-size: 12px;
-    padding: 6px 8px;
-    text-transform: none;
-    font-family: "Roboto Condensed"; /* Change the font */
-}
-
 
 .padding {
     margin-top: 12px;
-}
-
-.title {
-    margin: 0;
-    font-size: 24px;
-    font-weight: bold;
 }
 
 .data_controls {
