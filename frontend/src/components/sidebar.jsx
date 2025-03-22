@@ -44,10 +44,47 @@ const Sidebar = ({
                 
                 <div className="control_section">
                     <p className="section_title">Spatial Controls</p>
-                    <CardinalDirections formData={formData} handleChange={handleChange} />
+                    <div className="pred_value" >
+                        <TextField
+                            id="outlined-number"
+                            label="North"
+                            type="number"
+                            value={formData.north}
+                            name="north"
+                            onChange={handleChange}
+                            max="90"
+                            min="-90" />
+                        <TextField
+                            id="outlined-number"
+                            label="South"
+                            type="number"
+                            max="90"
+                            min="-90"
+                            name="south"
+                            value={formData.south}
+                            onChange={handleChange} />
+                        <TextField
+                            id="outlined-number"
+                            label="East"
+                            type="number"
+                            max="180"
+                            min="-180"
+                            name="east"
+                            value={formData.east}
+                            onChange={handleChange} />
+                        <TextField
+                            id="outlined-number"
+                            label="West"
+                            max="180"
+                            min="-180"
+                            type="number"
+                            name="west"
+                            value={formData.west}
+                            onChange={handleChange} />
+                    </div>
                     <div className="padding"/>
                     <RadioButtonsRow 
-                        label="Spatial Resolution" 
+                        label="Coordinate Degree Resolution" 
                         options={[0.25, 0.5, 1]} 
                         var={formData.spatialResolution} 
                         setVal={handleChange} 
@@ -75,7 +112,7 @@ const Sidebar = ({
                         </div>
                     </LocalizationProvider>
                     <RadioButtonsCol 
-                        label="Temporal Resolution" 
+                        label="Resolution" 
                         options={["hour", "day", "month", "year"]} 
                         var={formData.temporalResolution} setVal={handleChange} 
                         subLabel="temporalResolution" 
@@ -84,9 +121,9 @@ const Sidebar = ({
                 </div>
 
                 <div className="control_section">
-                    <p className="section_title">Aggregation</p>
+                    <p className="section_title">Spatio-Temporal Aggregation</p>
                     <RadioButtonsRow 
-                        label="Spatio-Temporal Aggregation" 
+                        // label="Spatio-Temporal Aggregation" 
                         options={["min", "max", "mean"]} 
                         var={formData.aggregation} 
                         setVal={handleChange} 
@@ -114,11 +151,10 @@ const Sidebar = ({
                             onChange={(e) => { setComparisonVal(e.target.value) }} />
                     </div>
                 </div>
-                
-                <div className="padding"/>
                 <Button 
                     onClick={() => queryData()} 
-                    variant="outlined" 
+                    variant="contained" 
+                    color="success"
                     disabled={isLoading} 
                     className="query_button">
                 <div className="button-content">{isLoading && <div className="loading-spinner" />} Query</div>
