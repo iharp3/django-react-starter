@@ -7,7 +7,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
-import { Button, TextField, InputLabel } from '@mui/material'
+import { Button, TextField } from '@mui/material'
 import '../styles/sidebar.css'
 import '../styles/loading.css'
 
