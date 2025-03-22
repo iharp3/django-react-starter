@@ -7,9 +7,12 @@ const CardinalDirections = ({ formData, handleChange }) => {
         <>
             <div className="cardinal_container">
                 <div className="north_container">
-                    <p className="cardinal_title">North</p>
+                    {/* <p className="cardinal_title">North</p> */}
                     <TextField
+                        id="outlined-number"
+                        label="North"
                         type="number"
+                        // sx={{ width:""}}
                         className="cardinal_input"
                         value={formData.north}
                         name="north"
@@ -20,9 +23,12 @@ const CardinalDirections = ({ formData, handleChange }) => {
                 </div>
                 <div className="ew_container">
                     <div className="ew_sub_container">
-                        <p className="cardinal_title">West</p>
+                        {/* <p className="cardinal_title">West</p> */}
                         <TextField
+                            id="outlined-number"
+                            label="West"
                             type="number"
+                            // sx={{ width:""}}
                             max="180"
                             min="-180"
                             className="ew_input"
@@ -31,9 +37,12 @@ const CardinalDirections = ({ formData, handleChange }) => {
                             onChange={handleChange} />
                     </div>
                     <div className="ew_sub_container">
-                        <p className="cardinal_title">East</p>
+                        {/* <p className="cardinal_title">East</p> */}
                         <TextField
+                            id="outlined-number"
+                            label="East"
                             type="number"
+                            // sx={{ width:""}}
                             max="180"
                             min="-180"
                             name="east"
@@ -43,8 +52,10 @@ const CardinalDirections = ({ formData, handleChange }) => {
                     </div>
                 </div>
                 <div className="north_container">
-                    <p className="cardinal_title">South</p>
+                    {/* <p className="cardinal_title">South</p> */}
                     <TextField
+                        id="outlined-number"
+                        label="South"
                         max="90"
                         min="-90"
                         type="number"
