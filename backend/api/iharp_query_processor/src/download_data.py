@@ -16,7 +16,7 @@ from src.remote.driver import RequestRemoteData
 
 dataset = "carra"
 variables = ["temperature", "pressure"] # , "wind_direction", "wind_speed"]
-years = ["2020", "2021", "2022", "2023", "2024"]
+years = ["2021", "2022", "2023", "2024"]
 months = ["01", "02", "03","04", "05", "06","07", "08", "09","10", "11", "12"]
 days = ["01", "02", "03",
         "04", "05", "06",
@@ -30,8 +30,8 @@ days = ["01", "02", "03",
         "28", "29", "30",
         "31"]
 domains = ["east_domain", "west_domain"]
-height_levels = ["30_m"]#["15_m",
-                # "30_m",
+height_levels = ["15_m",
+                "30_m"]
                 # "50_m"]
                 # "75_m",
                 # "100_m",
@@ -49,12 +49,12 @@ max_lon = None
 all_files = []
 file_list = "/home/uribe055/django-react-starter/file_list.txt"
 
-for year in years:  # 5
-    for variable in variables:  # 10
+for year in years:  # 5 years (2020-2024)
+    for variable in variables:  # 2 vars -> 10 files
         print(f"Varable: {variable}")
-        for domain in domains:  # 20
+        for domain in domains:  # 2 domains -> 20 files
             print(f"\tDomain: {domain}")
-            for height_level in height_levels:  # 40
+            for height_level in height_levels:  # 2 levels -> 40 files, at 3.52 GB each = 140.8 GB (check pressure file size)
                 print(f"\t\tHeight levels: {height_level}")
                 params = {"dataset": dataset,
                         "variable": variable,
