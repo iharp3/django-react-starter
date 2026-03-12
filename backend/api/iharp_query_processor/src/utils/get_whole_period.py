@@ -136,7 +136,7 @@ def get_whole_period_between(start, end):
         print(h)
     return whole_years, whole_months, whole_days, whole_hours
 
-
+# TODO: Check if this is correct and also remove print statements
 def get_whole_ranges_between(start, end):
     year_range = []
     month_range = []

@@ -28,8 +28,9 @@ def _gen_empty_xarray(
     end_datetime,
     temporal_resolution,
     spatial_resolution,
+    dataset,
 ):
-    lat_range, lon_range, lat_range_reverse = get_lat_lon_range(spatial_resolution)
+    lat_range, lon_range, lat_range_reverse = get_lat_lon_range(spatial_resolution, dataset)
     lat_start = lat_range.searchsorted(min_lat, side="left")
     lat_end = lat_range.searchsorted(max_lat, side="right")
     lat_reverse_start = len(lat_range) - lat_end
@@ -60,6 +61,7 @@ def _gen_xarray_for_meta_row(row, overwrite_temporal_resolution=None):
         row.end_datetime,
         t_resolution,
         row.spatial_resolution,
+        row.dataset,
     )
 
 def _mask_query_with_meta(ds_query, ds_meta):
@@ -92,6 +94,7 @@ def query_get_overlap_and_leftover(dr: DataRange):
         dr.end_datetime,
         dr.temporal_resolution,
         dr.spatial_resolution,
+        dr.dataset
     )
 
     false_mask = xr.DataArray(

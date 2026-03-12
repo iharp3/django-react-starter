@@ -66,15 +66,22 @@ class DataRange:
             domain=self.domain,
             height_level=self.height_level)
 
+dataset_raw_resolutions_dict = {
+    "era5": 0.25,
+    "carra":
+}
+
 # TODO: NEED TO REWRITE FOR DIFFERENT DATASETS
-ds_raw = xr.Dataset()
-ds_raw["latitude"] = np.arange(-90, 90.1, 0.25)
-ds_raw["longitude"] = np.arange(-180, 180.1, 0.25)
-ds_05 = ds_raw.coarsen(latitude=2, longitude=2, boundary="trim").max()
-ds_10 = ds_raw.coarsen(latitude=4, longitude=4, boundary="trim").max()
+def make_empty_dataset(dataset):
+    ds_raw = xr.Dataset()
+
+    ds_raw["latitude"] = np.arange(-90, 90.1, 0.25)
+    ds_raw["longitude"] = np.arange(-180, 180.1, 0.25)
+    ds_05 = ds_raw.coarsen(latitude=2, longitude=2, boundary="trim").max()
+    ds_10 = ds_raw.coarsen(latitude=4, longitude=4, boundary="trim").max()
 
 
-def get_lat_lon_range(spatial_resolution):
+def get_lat_lon_range(spatial_resolution, dataset):
     if spatial_resolution == 0.25:
         lat_range = ds_raw.latitude.values
         lon_range = ds_raw.longitude.values
