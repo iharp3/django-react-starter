@@ -12,7 +12,7 @@ class CARRARepository(RemoteRepository):
 
         ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 
-        return f"/data/cara/carra_{ts}.nc"
+        return f"/data/carra/carra_{ts}.nc"
     
     # TODO: write function to turn lat/lon info into East or West domain
     
