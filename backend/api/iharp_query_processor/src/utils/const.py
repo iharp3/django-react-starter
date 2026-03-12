@@ -66,22 +66,31 @@ class DataRange:
             domain=self.domain,
             height_level=self.height_level)
 
-dataset_raw_resolutions_dict = {
-    "era5": 0.25,
-    "carra":
+# TODO: can we change np.arange to params for it so we only have one np.arange?
+dat_range_and_res = {
+    "era5": {   
+                "lat":np.arange(-90,90.1,0.25),
+                "lon":np.arange(-180,180.1,0.25)},
+
+    # TODO: figure out carra ranges for lat/lon for get_lat_lon_range function to use
+    "carra": {
+                "lat":np.arange(),
+                "lon": np.arange()},
 }
 
 # TODO: NEED TO REWRITE FOR DIFFERENT DATASETS
-def make_empty_dataset(dataset):
+def make_empty_datasets(dataset):
     ds_raw = xr.Dataset()
 
-    ds_raw["latitude"] = np.arange(-90, 90.1, 0.25)
-    ds_raw["longitude"] = np.arange(-180, 180.1, 0.25)
+    ds_raw["latitude"] = dat_range_and_res[dataset]["lat"]
+    ds_raw["longitude"] = dat_range_and_res[dataset]["lon"]
     ds_05 = ds_raw.coarsen(latitude=2, longitude=2, boundary="trim").max()
     ds_10 = ds_raw.coarsen(latitude=4, longitude=4, boundary="trim").max()
 
+    return ds_raw, ds_05, ds_10
 
 def get_lat_lon_range(spatial_resolution, dataset):
+    ds_raw, ds_05, ds_10 = make_empty_datasets(dataset)
     if spatial_resolution == 0.25:
         lat_range = ds_raw.latitude.values
         lon_range = ds_raw.longitude.values
