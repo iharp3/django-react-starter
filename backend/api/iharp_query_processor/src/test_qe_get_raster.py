@@ -1,3 +1,16 @@
+#######################################
+# How to run file:
+#
+#   edit the data range/parameters if you want
+# 
+#   run in terminal
+#
+#       source venv/bin/activate
+#       cd /../iharp_query_processor
+#       python -m src.test_qe_get_raster
+#
+#######################################
+
 import pandas as pd
 import numpy as np
 import xarray as xr

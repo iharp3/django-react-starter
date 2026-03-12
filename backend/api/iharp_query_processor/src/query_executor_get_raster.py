@@ -33,9 +33,9 @@ class GetRasterExecutor(QueryExecutor):
     
     def _data_files_for_query(self):
 
-        print("\n===== GetRasterExecutor._data_files_for_query() =====")
-        print("DataRange received:")
-        print(self.dr)
+        # print("\n===== GetRasterExecutor._data_files_for_query() =====")
+        # print("DataRange received:")
+        # print(self.dr)
 
         df_overlap, leftover = query_get_overlap_and_leftover(self.dr)
 
@@ -44,8 +44,8 @@ class GetRasterExecutor(QueryExecutor):
         else:
             local_files = sorted(df_overlap["file_path"].tolist())
 
-        print("Local files found:")
-        print(local_files)
+        # print("Local files found:")
+        # print(local_files)
 
         # TODO: allow multiple leftovers
         if leftover is not None:
@@ -99,8 +99,8 @@ class GetRasterExecutor(QueryExecutor):
         else:
             request_params = {}
 
-        print("\nRequest params created:")
-        print(request_params)
+        # print("\nRequest params created:")
+        # print(request_params)
 
         return local_files, request_params
 
@@ -156,8 +156,8 @@ class GetRasterExecutor(QueryExecutor):
             }
             api_calls.append((dataset, request))
         local_files = sorted(local_files)
-        print("local files:", local_files)
-        print("api:", api_calls)
+        # print("local files:", local_files)
+        # print("api:", api_calls)
         return local_files, api_calls
 
     def _gen_download_file_name(self):
@@ -196,7 +196,7 @@ class GetRasterExecutor(QueryExecutor):
 
     def execute(self):
 
-        print("\n===== GetRasterExecutor.execute() =====")
+        # print("\n===== GetRasterExecutor.execute() =====")
 
         # 1. check local data
         ds_list = []
@@ -217,16 +217,20 @@ class GetRasterExecutor(QueryExecutor):
         # 3. if local data cannot answer query, call APIs to download needed data
         if params:
 
-            print("\nCalling RequestRemoteData with params:")
-            print(params)
+            # print("\nCalling RequestRemoteData with params:")
+            # print(params)
 
             driver = RequestRemoteData.from_dict(params)
             result = driver.execute()
 
-            print("\nDriver result:")
-            print("Success:", result.success)
-            print("Files:", result.files)
-            print("Error:", result.error)
+            # TODO: Send result.files to aggregate (once the query is executed?) to agg new data 
+            #       OR don't do that and have something check if there are new files **not** in metadata.csv 
+            #           and agg it when no queries are running
+
+            # print("\nDriver result:")
+            # print("Success:", result.success)
+            # print("Files:", result.files)
+            # print("Error:", result.error)
             
             if not result.success:
                 raise RuntimeError(result.error)

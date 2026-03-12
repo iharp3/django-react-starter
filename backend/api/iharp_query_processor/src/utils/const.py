@@ -1,7 +1,8 @@
 import numpy as np
 import xarray as xr
 from dataclasses import dataclass
-from typing import override, Optional
+from typing import override, Optional, List
+from numpy import dtype, nan
 
 long_short_name_dict = {
     "2m_temperature": "t2m",
@@ -17,6 +18,16 @@ long_short_name_dict = {
     "ice_temperature_layer_3": "istl3",
     "ice_temperature_layer_4": "istl4",
     "temperature": "temperature",
+    "pressure": "pressure",
+    "relative_humidity":"relative_humidity",
+    "specific_cloud_ice_water_content":"specific_cloud_ice_water_content",
+    "specific_cloud_liquid_water_content":"specific_cloud_liquid_water_content",
+    "wind_direction":"wind_direction",
+    "wind_speed":"wind_speed",
+}
+
+encodings = {
+    "era5": {"dtype": dtype("float32"), "zlib": True, "_FillValue": np.float32(nan), "complevel": 1}
 }
 
 @dataclass
@@ -55,7 +66,7 @@ class DataRange:
             domain=self.domain,
             height_level=self.height_level)
 
-
+# TODO: NEED TO REWRITE FOR DIFFERENT DATASETS
 ds_raw = xr.Dataset()
 ds_raw["latitude"] = np.arange(-90, 90.1, 0.25)
 ds_raw["longitude"] = np.arange(-180, 180.1, 0.25)
