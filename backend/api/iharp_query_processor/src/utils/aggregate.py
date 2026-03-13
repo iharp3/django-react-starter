@@ -3,24 +3,19 @@ import dask
 import xarray as xr
 from src.utils.const import long_short_name_dict, encodings
 
-def space_driver(file_name: str, dataset: str, variable: str, time_range: str ):
+class Aggregate:
 
-    print(f"Processing {file_name}")
-    base_file_name = f"{variable}_{time_range}"
-    encoding_dict = {long_short_name_dict[variable]: encodings[dataset]}
+    def __init__(self, file_name: str, dataset: str, variable: str, time_range: str):
+        self.file_name = file_name
+        self.dataset = dataset
+        self.variable = variable
+        self.time_range = time_range
 
-    for time in ["day", "month", "year"]:
+    def finest_space_driver(self, ds: xr.Dataset, file_name: str, encoding_dict: dict):
         for stat in ["mean", "min", "max"]:
-
-            infile = f"{base_file_name}_025{time}_{stat}.nc"
-
-            ds = xr.open_dataset(
-                infile,
-                chunks={"time": 24, "latitude": 180, "longitude": 360,},    # TODO: determine how to choose chunks for lat/lon/time
-            )
-
+            
             writes = []
-
+            
             for space, coarse in [("05", 2), ("1", 4)]:
 
                 ds_coarse = ds.coarsen(
@@ -36,7 +31,7 @@ def space_driver(file_name: str, dataset: str, variable: str, time_range: str ):
                 elif stat == "max":
                     result = ds_coarse.max()
 
-                outfile = f"{base_file_name}_{space}{time}_{stat}.nc"
+                outfile = f"{file_name}_{space}hour_{stat}.nc"
 
                 delayed = result.to_netcdf(
                     outfile,
@@ -45,97 +40,101 @@ def space_driver(file_name: str, dataset: str, variable: str, time_range: str ):
                 )
 
                 writes.append(delayed)
-    
+
             # compute spatial outputs together
             dask.compute(*writes)
     
-    finest_space_driver(ds=ds, file_name=file_name, encoding_dict=encoding_dict )
+    def space_driver(self, file_name: str, dataset: str, variable: str, time_range: str ):
 
-def finest_space_driver(ds: xr.Dataset, file_name: str, encoding_dict: dict):
-    for stat in ["mean", "min", "max"]:
+        print(f"Processing {file_name}")
+        base_file_name = f"{variable}_{time_range}"
+        encoding_dict = {long_short_name_dict[variable]: encodings[dataset]}
+
+        for time in ["day", "month", "year"]:
+            for stat in ["mean", "min", "max"]:
+
+                infile = f"{base_file_name}_025{time}_{stat}.nc"
+
+                ds = xr.open_dataset(
+                    infile,
+                    chunks={"time": 24, "latitude": 180, "longitude": 360,},    # TODO: determine how to choose chunks for lat/lon/time
+                )
+
+                self.finest_space_driver(ds=ds, file_name=file_name, encoding_dict=encoding_dict )
+
+                writes = []
+
+                for space, coarse in [("05", 2), ("1", 4)]:
+
+                    ds_coarse = ds.coarsen(
+                        latitude=coarse,
+                        longitude=coarse,
+                        boundary="trim",
+                    )
+
+                    if stat == "mean":
+                        result = ds_coarse.mean()
+                    elif stat == "min":
+                        result = ds_coarse.min()
+                    elif stat == "max":
+                        result = ds_coarse.max()
+
+                    outfile = f"{base_file_name}_{space}{time}_{stat}.nc"
+
+                    delayed = result.to_netcdf(
+                        outfile,
+                        encoding=encoding_dict,
+                        compute=False,
+                    )
+
+                    writes.append(delayed)
         
+                # compute spatial outputs together
+                dask.compute(*writes)
+
+    def time_driver(self, file_name: str, dataset: str, variable: str, time_range: str):
+
+        print(f"Processing {file_name}")
+        base_file_name = f"{variable}_{time_range}"
+
+        ds = xr.open_dataset(
+            f"/data/{dataset}/{file_name}.nc",
+            chunks={"time": 24, "latitude": 180, "longitude": 360,},    # TODO: determine how to choose chunks for lat/lon/time
+        )
+
+        # Build resamplers once
+        daily_resampler   = ds.resample(valid_time="D")
+        monthly_resampler = ds.resample(valid_time="ME")
+        yearly_resampler  = ds.resample(valid_time="YE")
+
         writes = []
-        
-        for space, coarse in [("05", 2), ("1", 4)]:
 
-            ds_coarse = ds.coarsen(
-                latitude=coarse,
-                longitude=coarse,
-                boundary="trim",
-            )
-
-            if stat == "mean":
-                result = ds_coarse.mean()
-            elif stat == "min":
-                result = ds_coarse.min()
-            elif stat == "max":
-                result = ds_coarse.max()
-
-            outfile = f"{file_name}_{space}hour_{stat}.nc"
-
-            delayed = result.to_netcdf(
-                outfile,
-                encoding=encoding_dict,
-                compute=False,
-            )
-
-            writes.append(delayed)
-
-        # compute spatial outputs together
-        dask.compute(*writes)
-
-def time_driver(file_name: str, dataset: str, variable: str, time_range: str):
-
-    print(f"Processing {file_name}")
-    base_file_name = f"{variable}_{time_range}"
-
-    ds = xr.open_dataset(
-        f"/data/{dataset}/{file_name}.nc",
-        chunks={"time": 24, "latitude": 180, "longitude": 360,},    # TODO: determine how to choose chunks for lat/lon/time
-    )
-
-    # Build resamplers once
-    daily_resampler   = ds.resample(valid_time="D")
-    monthly_resampler = ds.resample(valid_time="ME")
-    yearly_resampler  = ds.resample(valid_time="YE")
-
-    writes = []
-
-    for freq, resampler in [
-        ("day", daily_resampler),
-        ("month", monthly_resampler),
-        ("year", yearly_resampler),
-    ]:
-
-        for stat, reducer in [
-            ("mean", resampler.mean),
-            ("min",  resampler.min),
-            ("max",  resampler.max),
+        for freq, resampler in [
+            ("day", daily_resampler),
+            ("month", monthly_resampler),
+            ("year", yearly_resampler),
         ]:
 
-            result = reducer()
+            for stat, reducer in [
+                ("mean", resampler.mean),
+                ("min",  resampler.min),
+                ("max",  resampler.max),
+            ]:
 
-            outfile = f"{base_file_name}_025{freq}_{stat}.nc"
+                result = reducer()
 
-            delayed = result.to_netcdf(
-                outfile,
-                encoding={long_short_name_dict[variable]: encodings[dataset]},
-                compute=False,
-            )
+                outfile = f"{base_file_name}_025{freq}_{stat}.nc"
 
-            writes.append(delayed)
+                delayed = result.to_netcdf(
+                    outfile,
+                    encoding={long_short_name_dict[variable]: encodings[dataset]},
+                    compute=False,
+                )
 
-    # Trigger all writes in parallel
-    dask.compute(*writes)
+                writes.append(delayed)
 
-
-class Aggregate:
-
-    def __init__(self, file_name: str, dataset: str, variable: str, time_range: str):
-        self.file_name = file_name
-        self.dataset = dataset
-        self.variable = variable
-        self.time_range = time_range
+        # Trigger all writes in parallel
+        dask.compute(*writes)
 
     def execute(self) -> None:
 
@@ -143,9 +142,9 @@ class Aggregate:
         client = cluster.get_client()
 
         try:
-            time_driver(file_name=self.file_name, dataset=self.dataset, 
+            self.time_driver(file_name=self.file_name, dataset=self.dataset, 
                         variable=self.variable, time_range=self.time_range)
-            space_driver(file_name=self.file_name, dataset=self.dataset,
+            self.space_driver(file_name=self.file_name, dataset=self.dataset,
                         variable=self.variable, time_range=self.time_range)
         except Exception as e:
             client.close()
