@@ -16,7 +16,7 @@ from src.remote.driver import RequestRemoteData
 
 dataset = "carra"
 variables = ["temperature", "pressure"] # , "wind_direction", "wind_speed"]
-years = ["2021", "2022", "2023", "2024"]
+years = ["2022", "2023", "2024"]
 months = ["01", "02", "03","04", "05", "06","07", "08", "09","10", "11", "12"]
 days = ["01", "02", "03",
         "04", "05", "06",
@@ -70,18 +70,16 @@ for year in years:  # 5 years (2020-2024)
                 }
                 
                 print(f"\n\n\t\t....requesting:")
-                driver = RequestRemoteData.from_dict(params)
-                result = driver.execute()
-
-                print("\nDriver result:")
-                print("Success:", result.success)
-                print("Files:", result.files)
-                print("Error:", result.error)
-                print("#####\t######\t ####\t####\t####\t####\t #####\t######\n")
-                print("#####\t######\t ####\t####\t####\t####\t #####\t######\n")
-
-                if not result.success:
-                    raise RuntimeError(result.error)
+                try:
+                    driver = RequestRemoteData.from_dict(params)
+                    result = driver.execute()
+                except Exception as e:
+                    print(f"Error from RequestRemoteData: \n\n {e}")
+                    pass
+                    if not result.success:
+                        raise RuntimeError(result.error)
+                    else:
+                        print(f"Error from RequestRemoteData:\n\n {e}")
                 
                 time_range = f"{year}_height{height_level}_domain{domain}"
                 
