@@ -42,6 +42,9 @@ class RequestRemoteData:
     def execute(self) -> RemoteDownloadResult:
 
         try:
+            # TODO: add max size values to each dataset class and 
+            # split data into various _get_repository/download calls to be within the size
+            
             repo = self._get_repository()
 
             # print("\n===== RequestRemoteData.execute() =====")

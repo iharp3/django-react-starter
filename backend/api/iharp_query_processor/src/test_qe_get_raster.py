@@ -101,8 +101,8 @@ dr = DataRange(
     dataset="carra",
     variable="temperature",
 
-    start_datetime=datetime(2020,1,1),
-    end_datetime=datetime(2021,1,1),
+    start_datetime=datetime(2020,2,1),
+    end_datetime=datetime(2020,2,28),
 
     min_lat=65,
     max_lat=85,

@@ -62,6 +62,9 @@ kill 62932
 
 ## TODO
 1. Deny request with large API calls
+   * calculate total time slices
+   * calculate total spatial region size
+   * deny if greater than some value, and give notice if you are going to download it in smaller chunks
 
 2. Fix the warning that occurs when running `python manage.py makemigrations`:
 

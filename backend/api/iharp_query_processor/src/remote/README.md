@@ -73,8 +73,10 @@
                 lat_dim: slice(self.dr.max_lat, self.dr.min_lat),
                 lon_dim: slice(self.dr.min_lon, self.dr.max_lon)}
             )
-* add `dataset` parameter to `DataRange` class.
 * allow multiple data regions/ranges to be needed for a query (so we do not have to just query one continuous region and time range).
+* automatically split large DataRanges into optimal ECMWF-sized chunks (or other remote repo) so downloads are fast and stable
+    * edit the time range generator?
+    * add max size values to each dataset class and split data into various _get_repository/download calls to be within the size
 * make toml method an option to pass dict to `driver.py`:
 
             write_toml_config("request.toml", config_dict)

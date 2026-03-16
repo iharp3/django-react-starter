@@ -7,12 +7,14 @@ from src.remote.base import RemoteRepository
 class CARRARepository(RemoteRepository):
 
     DATASET = "reanalysis-carra-height-levels"
+    DATADIR = "/data/carra/"
 
     def _gen_filename(self):
 
         ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        fname = f"carra_{ts}.nc"
 
-        return f"/data/carra/carra_{ts}.nc"
+        return self.DATADIR + fname
     
     # TODO: write function to turn lat/lon info into East or West domain
     

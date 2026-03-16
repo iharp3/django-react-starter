@@ -7,12 +7,14 @@ from src.remote.base import RemoteRepository
 class ERA5Repository(RemoteRepository):
 
     DATASET = "reanalysis-era5-single-levels"
+    DATADIR = "/data/"
 
     def _gen_filename(self):
 
         ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        fname = f"era5_{ts}.nc"
 
-        return f"era5_{ts}.nc"
+        return self.DATADIR + fname
     
     def _build_request(self):
 
