@@ -79,6 +79,7 @@ with open(file_list, "a", newline="") as f:
                         writer.writerow([result.files, dataset, variable, time_range])
                         f.flush()
                     except Exception as e:
-                        print(f"Could not append {result.files}, {dataset}, {variable}, {time_range} to csv file")
+                        writer.writerow([result.files, dataset, variable, time_range, "Error", str(e)])
+                        f.flush()
 
                     print(f"\n###\t###\t###\t###\t###\t###\t###\t###\t###\t###\t###\t###\t###\t###\t###\n")
