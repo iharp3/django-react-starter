@@ -42,11 +42,29 @@ Below is the outline of the query processing files.
 
 ### Queries
 
+To answer a query, the backend does the following:
 
+1. Load the metadata of the variable of interest specified in the requested data $R$.
+2. Find the data in storage that matches $R$, if any.
+    * if all of $R$ is in storage, continue to execute query
+    * if part of $R$ is not in storage:
+        * Compute missing data ranges
+        * Download missing ranges
+        * Update metadata/files
+3. Execute query: 
+    * Open all files (lazily) that make up $R$
+    * Slice query to get desired data
+    * Compute result
+
+As we execute the query, we must keep track of the files we open and look through to update our statistics and determine which files are candidates to be replaced if we run out of storage space.
 
 ### Data request
 
-
+The initial data request is provided by the local storage owner as a csv file with the dataset, variable, time and spatial range, and resolution they are interested in.
+* Any other dataset-specific or variable-specific information must be provided
+* The time period should be continuous in each row of the csv
+* The spatial range should be continuous in each row of the csv
+* The resolutions should be the *finest* resolution that is expected to be queried often.
 
 ### Data download
 Data is downloaded when the local storage does not have the requested data $R$ needed to answer a query. We determine if this is the case in `query_executor_get_raster.py`. We find all the local files that have data $L \subset R$ and if $R - L \neq \empty$, we call the `remote/driver.py` file that creates an instance of the `RequestRemoteData` class, and handles the request and download of the desired data.
@@ -86,12 +104,36 @@ In summary, we keep the variable, time range, spatial range, time and space reso
 
 **storage**
 
-Data is stored in files. Each file only stores one variable. The time and spatial ranges vary between files. That information is stored in the `metadata.csv` file. However, both the time and spatial range are continuous, so for example, a variable covering time ranges $\[2010,2015\]\cup[2020-2025]$ will be split up into two files. 
+Data is stored in files. Each file only stores one variable. The time and spatial ranges vary between files. That information is stored in the `metadata.csv` file. However, both the time and spatial range are continuous, so for example, a variable covering time ranges $[2010,2015]\cup[2020-2025]$ will be split up into two files. 
 
 ---
 NOT IMPLEMENTED:
 
+**Outline:**
 
+For each variable in each dataset, we can keep a "metadata" file containing the summary of the metadata of that variable:
+
+        start_datetime, end_datetime, max_lat, min_lat, min_lon, max_lon
+
+This file has no resolutions because if we have data, even if the resolution is too coarse, we will still try to answer the query before downloading the data. We will also keep a separate `files.csv` that keeps the file-specific information:
+
+        start_datetime, end_datetime, max_lat, min_lat, min_lon, max_lon, last_access, temporal_resolution, spatial_resolution
+
+This way, we don't have to look through the files of all the datasets and can go straight to the files of interest. Our storage would have the following structure:
+
+        /data/
+            {dataset}_{variable}.csv            <-- one metadata file for each dataset/variable pair
+            ...
+            {dataset}_{variable}_files.csv      <-- file-specific information
+
+            {dataset}/                          <-- directory for each dataset just for clarity
+                file1.nc
+                file2.nc
+                ...
+
+            {dataset}/
+                file1.nc
+                file2.nc
 
 ## How to...
 
@@ -100,3 +142,4 @@ NOT IMPLEMENTED:
 * Change `download_data.py` parameters from hard-code to arguments passed when you call download data...maybe pass in as a text file?
 * limit the size of data download request or divide it up and give message about it
 * check if online data request and download are done in a tmux session/make it go in a different session than the main polaris so if it fails the whole system doesn't fail
+* change storage structure and metadata.

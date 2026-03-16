@@ -73,6 +73,7 @@ dat_range_and_res = {
                 "lon":np.arange(-180,180.1,0.25)},
 
     # TODO: figure out carra ranges for lat/lon for get_lat_lon_range function to use
+    #           save in .npz file, then load in with dims=np.load(file.npz) and then lat = dims['lat'] etc.
     "carra": {
                 "lat":np.arange(),
                 "lon": np.arange()},
