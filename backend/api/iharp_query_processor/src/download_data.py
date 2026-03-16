@@ -13,10 +13,11 @@
 #######################################
 
 from src.remote.driver import RequestRemoteData
+import csv
 
 dataset = "carra"
 variables = ["temperature", "pressure"] # , "wind_direction", "wind_speed"]
-years = ["2022", "2023", "2024"]
+years = ["2021"]
 months = ["01", "02", "03","04", "05", "06","07", "08", "09","10", "11", "12"]
 days = ["01", "02", "03",
         "04", "05", "06",
@@ -46,57 +47,38 @@ max_lat = None
 min_lon = None
 max_lon = None
 
-all_files = []
-file_list = "/home/uribe055/django-react-starter/file_list.txt"
+file_list = "/home/uribe055/django-react-starter/file_list.csv"
 
-for year in years:  # 5 years (2020-2024)
-    for variable in variables:  # 2 vars -> 10 files
-        print(f"Varable: {variable}")
-        for domain in domains:  # 2 domains -> 20 files
-            print(f"\tDomain: {domain}")
-            for height_level in height_levels:  # 2 levels -> 40 files, at 3.52 GB each = 140.8 GB (check pressure file size)
-                print(f"\t\tHeight levels: {height_level}")
-                params = {"dataset": dataset,
-                        "variable": variable,
-                        "years": [year],
-                        "months": months,
-                        "days": days,
-                        "domain": domain,
-                        "height_level": height_level,
-                        "min_lat": min_lat,
-                        "max_lat": max_lat,
-                        "min_lon": min_lon,
-                        "max_lon": max_lon,
-                }
-                
-                print(f"\n\n\t\t....requesting:")
-                try:
-                    driver = RequestRemoteData.from_dict(params)
-                    result = driver.execute()
-                except Exception as e:
-                    print(f"Error from RequestRemoteData: \n\n {e}")
-                    pass
-                    if not result.success:
-                        raise RuntimeError(result.error)
-                    else:
-                        print(f"Error from RequestRemoteData:\n\n {e}")
-                
-                time_range = f"{year}_height{height_level}_domain{domain}"
-                
-                try:
-                    all_files.append([result.files, dataset, variable, time_range])
-                except Exception as e:
-                    print(f"Could not append {result.files}, {dataset}, {variable}, {time_range} to text file")
+with open(file_list, "a", newline="") as f:
+    writer = csv.writer(f)
 
-                print(f"\n\n\n")
-    
-        try:
-            with open(file_list, 'w') as file:
-                # Join list elements into a single string with newline characters (\n)
-                data_to_write = '\n'.join(all_files)
-                file.write(data_to_write)
-        except Exception as e:
-            print(f"Could not write list of downloaded files:")
-            for f in all_files:
-                print(f)
-            continue
+    for year in years:  # 5 years (2020-2024)
+        for variable in variables:  # 2 vars -> 10 files
+            for domain in domains:  # 2 domains -> 20 files
+                for height_level in height_levels:  # 2 levels -> 40 files, at 3.52 GB each = 140.8 GB (check pressure file size)
+                    params = {"dataset": dataset,
+                            "variable": variable,
+                            "years": [year],
+                            "months": months,
+                            "days": days,
+                            "domain": domain,
+                            "height_level": height_level,
+                            "min_lat": min_lat,
+                            "max_lat": max_lat,
+                            "min_lon": min_lon,
+                            "max_lon": max_lon,
+                    }
+                    try:
+                        driver = RequestRemoteData.from_dict(params)
+                        result = driver.execute()
+                    except Exception as e:
+                        print(f"Error from RequestRemoteData: \n\n {e}")
+                        pass
+                    time_range = f"{year}_height{height_level}_{domain}"
+                    try:
+                        writer.writerow([result.files, dataset, variable, time_range])
+                        f.flush()
+                    except Exception as e:
+                        print(f"Could not append {result.files}, {dataset}, {variable}, {time_range} to csv file")
+
+                    print(f"\n###\t###\t###\t###\t###\t###\t###\t###\t###\t###\t###\t###\t###\t###\t###\n")
