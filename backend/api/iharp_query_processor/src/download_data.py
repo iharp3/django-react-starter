@@ -16,8 +16,8 @@ from src.remote.driver import RequestRemoteData
 import csv
 
 dataset = "carra"
-variables = ["temperature", "pressure"] # , "wind_direction", "wind_speed"]
-years = ["2021"]
+variables = ["pressure"] # , "wind_direction", "wind_speed"]
+years = ["2020"]
 months = ["01", "02", "03","04", "05", "06","07", "08", "09","10", "11", "12"]
 days = ["01", "02", "03",
         "04", "05", "06",

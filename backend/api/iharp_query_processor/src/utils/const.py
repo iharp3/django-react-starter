@@ -5,25 +5,25 @@ from typing import override, Optional, List
 from numpy import dtype, nan
 
 long_short_name_dict = {
-    "2m_temperature": "t2m",
-    "snow_depth": "sd",
-    "snowfall": "sf",
-    "snowmelt": "smlt",
-    "surface_pressure": "sp",
-    "sea_surface_temperature": "sst",
-    "temperature_of_snow_layer": "tsn",
-    "total_precipitation": "tp",
-    "ice_temperature_layer_1": "istl1",
-    "ice_temperature_layer_2": "istl2",
-    "ice_temperature_layer_3": "istl3",
-    "ice_temperature_layer_4": "istl4",
-    "temperature": "temperature",
-    "pressure": "pressure",
-    "relative_humidity":"relative_humidity",
-    "specific_cloud_ice_water_content":"specific_cloud_ice_water_content",
-    "specific_cloud_liquid_water_content":"specific_cloud_liquid_water_content",
-    "wind_direction":"wind_direction",
-    "wind_speed":"wind_speed",
+    "2m_temperature": "t2m",        # ERA5 single level variable
+    "snow_depth": "sd",             # ERA5 single level variable
+    "snowfall": "sf",               # ERA5 single level variable
+    "snowmelt": "smlt",             # ERA5 single level variable
+    "surface_pressure": "sp",               # ERA5 single level variable
+    "sea_surface_temperature": "sst",               # ERA5 single level variable
+    "temperature_of_snow_layer": "tsn",             # ERA5 single level variable
+    "total_precipitation": "tp",                # ERA5 single level variable
+    "ice_temperature_layer_1": "istl1",             # ERA5 single level variable
+    "ice_temperature_layer_2": "istl2",             # ERA5 single level variable
+    "ice_temperature_layer_3": "istl3",             # ERA5 single level variable
+    "ice_temperature_layer_4": "istl4",             # ERA5 single level variable
+    "temperature": "t",     # CARRA height level variable
+    "pressure": "pres",     # CARRA height level variable
+    "relative_humidity":"r",        # CARRA height level variable
+    "specific_cloud_ice_water_content":"ciwc",      # CARRA height level variable
+    "specific_cloud_liquid_water_content":"clwc",       # CARRA height level variable
+    "wind_direction":"wdir",         # CARRA height level variable
+    "wind_speed":"ws",       # CARRA height level variable
 }
 
 encodings = {

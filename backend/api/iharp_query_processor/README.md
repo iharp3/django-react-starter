@@ -113,9 +113,9 @@ NOT IMPLEMENTED:
 
 For each variable in each dataset, we can keep a "metadata" file containing the summary of the metadata of that variable:
 
-        start_datetime, end_datetime, max_lat, min_lat, min_lon, max_lon
+<!-- start_datetime, end_datetime, max_lat, min_lat, min_lon, max_lon
 
-This file has no resolutions because if we have data, even if the resolution is too coarse, we will still try to answer the query before downloading the data. We will also keep a separate `files.csv` that keeps the file-specific information:
+This file has no resolutions because if we have data, even if the resolution is too coarse, we will still try to answer the query before downloading the data. We will also keep a separate `files.csv` that keeps the file-specific information: -->
 
         start_datetime, end_datetime, max_lat, min_lat, min_lon, max_lon, last_access, temporal_resolution, spatial_resolution
 
@@ -124,7 +124,6 @@ This way, we don't have to look through the files of all the datasets and can go
         /data/
             {dataset}_{variable}.csv            <-- one metadata file for each dataset/variable pair
             ...
-            {dataset}_{variable}_files.csv      <-- file-specific information
 
             {dataset}/                          <-- directory for each dataset just for clarity
                 file1.nc

@@ -28,3 +28,4 @@ The class `Aggregate` calls functions `time_driver` and `space_driver`.
 * Delete print statemnts in `get_whole_period.py`
 * Add "hour" aggregation for smaller than one hour time sampling in `aggregate.py`
 * Figure out carra ranges for lat/lon for get_lat_lon_range function to use (`const.py`)
+* Add new (agg and original) files to metadata
