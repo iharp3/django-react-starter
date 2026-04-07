@@ -28,7 +28,8 @@ long_short_name_dict = {
 
 encodings = {
     "era5": {"dtype": dtype("float32"), "zlib": True, "_FillValue": np.float32(nan), "complevel": 1},
-    "carra": {"dtype": dtype("float32"), "zlib": True, "_FillValue": np.float32(nan), "complevel": 1}
+    "carra_e": {"dtype": dtype("float32"), "zlib": True, "_FillValue": np.float32(nan), "complevel": 1},
+    "carra_w": {"dtype": dtype("float32"), "zlib": True, "_FillValue": np.float32(nan), "complevel": 1}
 }
 
 @dataclass

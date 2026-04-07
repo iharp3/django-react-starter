@@ -25,12 +25,6 @@ class Aggregate:
 
     CHUNKS = "auto"
 
-    # CHUNKS = {
-    #     "time": 24,
-    #     "latitude": 180,
-    #     "longitude": 360,
-    # }
-
     def __init__(self, file_name: str, dataset: str, variable: str, time_range: str, additional:str):
         self.file_name = file_name
         self.dataset = dataset

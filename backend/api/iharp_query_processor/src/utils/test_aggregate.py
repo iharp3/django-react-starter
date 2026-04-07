@@ -18,10 +18,7 @@
 from aggregate import Aggregate
 import pandas as pd
 
-file_info = pd.read_csv("/home/uribe055/django-react-starter/file_list.csv", sep=',', skipinitialspace=True, dtype=str)
-
-# agg_obj = Aggregate('carra_20260311_203019','carra','temperature','2020','e_h15')
-# agg_obj.execute()            
+file_info = pd.read_csv("/home/uribe055/django-react-starter/file_list.csv", sep=',', skipinitialspace=True, dtype=str)           
 
 for idx, row in file_info.iterrows():
 
