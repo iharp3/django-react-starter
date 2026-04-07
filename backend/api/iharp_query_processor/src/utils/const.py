@@ -68,18 +68,18 @@ class DataRange:
             height_level=self.height_level)
 
 # TODO: can we change np.arange to params for it so we only have one np.arange?
-# TODO: add west domain to carra
-dims = np.load("carra_east_grid.npz")
+e_dims = np.load("carra_east_grid.npz")
+w_dims = np.load("carra_west_grid.npz")
 dat_range_and_res = {
     "era5": {   
                 "lat":np.arange(-90,90.1,0.25),
                 "lon":np.arange(-180,180.1,0.25)},
-
-    # TODO: figure out carra ranges for lat/lon for get_lat_lon_range function to use
-    #           save in .npz file, then load in with dims=np.load(file.npz) and then lat = dims['lat'] etc.
-    "carra": {
-                "lat":dims['lat'],
-                "lon": dims['lon']},
+    "carra_e": {
+                "lat":e_dims['lat'],
+                "lon": e_dims['lon']},
+    "carra_w": {
+                "lat":w_dims['lat'],
+                "lon": w_dims['lon']},
 }
 
 # TODO: NEED TO REWRITE FOR DIFFERENT DATASETS
