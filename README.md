@@ -61,6 +61,8 @@ kill 62932
 ``` -->
 
 ## TODO
+0. Change query executor calls to DataRanges in views.py(?)
+
 1. Deny request with large API calls
    * calculate total time slices
    * calculate total spatial region size

@@ -27,7 +27,8 @@ long_short_name_dict = {
 }
 
 encodings = {
-    "era5": {"dtype": dtype("float32"), "zlib": True, "_FillValue": np.float32(nan), "complevel": 1}
+    "era5": {"dtype": dtype("float32"), "zlib": True, "_FillValue": np.float32(nan), "complevel": 1},
+    "carra": {"dtype": dtype("float32"), "zlib": True, "_FillValue": np.float32(nan), "complevel": 1}
 }
 
 @dataclass
@@ -67,6 +68,8 @@ class DataRange:
             height_level=self.height_level)
 
 # TODO: can we change np.arange to params for it so we only have one np.arange?
+# TODO: add west domain to carra
+dims = np.load("carra_east_grid.npz")
 dat_range_and_res = {
     "era5": {   
                 "lat":np.arange(-90,90.1,0.25),
@@ -75,8 +78,8 @@ dat_range_and_res = {
     # TODO: figure out carra ranges for lat/lon for get_lat_lon_range function to use
     #           save in .npz file, then load in with dims=np.load(file.npz) and then lat = dims['lat'] etc.
     "carra": {
-                "lat":np.arange(),
-                "lon": np.arange()},
+                "lat":dims['lat'],
+                "lon": dims['lon']},
 }
 
 # TODO: NEED TO REWRITE FOR DIFFERENT DATASETS
@@ -117,3 +120,34 @@ def time_resolution_to_freq(time_resolution):
         return "YE"
     else:
         raise ValueError("Invalid time_resolution")
+    
+def find_lat_lon_dims(ds):
+    lat_candidates = ["latitude", "lat", "y"]
+    lon_candidates = ["longitude", "lon", "long", "x"]
+
+    lat_dim = None
+    lon_dim = None
+
+    # Check dimensions first
+    for dim in ds.dims:
+        d = dim.lower()
+        if d in lat_candidates:
+            lat_dim = dim
+        elif d in lon_candidates:
+            lon_dim = dim
+
+    # Fallback: check coordinates if not found in dims
+    if lat_dim is None:
+        for coord in ds.coords:
+            if coord.lower() in lat_candidates:
+                lat_dim = coord
+
+    if lon_dim is None:
+        for coord in ds.coords:
+            if coord.lower() in lon_candidates:
+                lon_dim = coord
+
+    if lat_dim is None or lon_dim is None:
+        raise ValueError("Could not find latitude/longitude dimensions")
+
+    return lat_dim, lon_dim

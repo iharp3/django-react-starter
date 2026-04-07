@@ -1,0 +1,10 @@
+variable,start_datetime,end_datetime,max_lat,min_lat,min_lon,max_lon,temporal_resolution,spatial_resolution,aggregation,file_path,additional
+temperature,2020-01-01 00:00,2020-12-31 23:00,-1,-1,-1,-1,day,0.25,mean,temperature_2020_e_h15_025day_mean.nc,e_h15
+temperature,2020-01-01 00:00,2020-12-31 23:00,-1,-1,-1,-1,day,0.25,min,temperature_2020_e_h15_025day_min.nc,e_h15
+temperature,2020-01-01 00:00,2020-12-31 23:00,-1,-1,-1,-1,day,0.25,max,temperature_2020_e_h15_025day_max.nc,e_h15
+temperature,2020-01-01 00:00,2020-12-31 23:00,-1,-1,-1,-1,month,0.25,mean,temperature_2020_e_h15_025month_mean.nc,e_h15
+temperature,2020-01-01 00:00,2020-12-31 23:00,-1,-1,-1,-1,month,0.25,min,temperature_2020_e_h15_025month_min.nc,e_h15
+temperature,2020-01-01 00:00,2020-12-31 23:00,-1,-1,-1,-1,month,0.25,max,temperature_2020_e_h15_025month_max.nc,e_h15
+temperature,2020-01-01 00:00,2020-12-31 23:00,-1,-1,-1,-1,year,0.25,mean,temperature_2020_e_h15_025year_mean.nc,e_h15
+temperature,2020-01-01 00:00,2020-12-31 23:00,-1,-1,-1,-1,year,0.25,min,temperature_2020_e_h15_025year_min.nc,e_h15
+temperature,2020-01-01 00:00,2020-12-31 23:00,-1,-1,-1,-1,year,0.25,max,temperature_2020_e_h15_025year_max.nc,e_h15
