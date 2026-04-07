@@ -1,1 +1,2 @@
 METADATA_PATH = "/data/metadata.csv"
+STORAGE_LIMIT_GB = 30

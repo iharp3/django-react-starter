@@ -3,6 +3,7 @@ import pandas as pd
 import xarray as xr
 
 from src.utils.const import DataRange, get_lat_lon_range, time_resolution_to_freq
+from src.query_monitor import update_storage_used
 
 _f_path = ""
 _df_meta: pd.DataFrame
@@ -11,6 +12,7 @@ def init_metadata(f_path):
     global _f_path, _df_meta
     _f_path = f_path
     _df_meta = pd.read_csv(f_path)
+    update_storage_used(set(_df_meta["file_path"]))
 
 def _gen_empty_xarray(
     min_lat,
@@ -96,6 +98,7 @@ def add_metadata(dr: DataRange, file: str):
         "max_lon": dr.max_lon,
         "start_datetime": dr.start_datetime,
         "end_datetime": dr.end_datetime,
+        "file_path": file,
         "precision_level": precision,
         "aggregation":dr.aggregation
         }))
@@ -114,6 +117,20 @@ def remove_metadata(dr: DataRange):
         | (_df_meta["precision_level"] < precision)
         | (_df_meta["aggregation"] not in [dr.aggregation, "none"])
     ]
+
+# Removes metadata surrounding a specific file
+def remove_metadata(filepath: str):
+    _df_meta = _df_meta[
+        (_df_meta["file_path"] != filepath)
+    ]
+
+# Returns a set of all the "largest" (highest precision level) files in the DB
+# Used in query monitor - we only want to consider deleting these
+def get_largest_files() -> set[str]:
+    largest = _df_meta.groupby(["variable", "min_lat", "max_lat", "min_lon", "max_lon", "start_datetime", "end_datetime"])
+    largest = largest["precision_level"].transform(max) == _df_meta["precision_level"]
+
+    return set(_df_meta[largest]["file_path"])
 
 def query_get_overlap_and_leftover(dr: DataRange):
     precision = _resolutions_to_precision_level(dr.temporal_resolution, dr.spatial_resolution)

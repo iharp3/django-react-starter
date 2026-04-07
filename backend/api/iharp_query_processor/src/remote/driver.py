@@ -5,6 +5,8 @@ from typing import Dict
 from src.remote.models import RemoteRequestConfig, RemoteDownloadResult
 from src.remote.era5 import ERA5Repository
 from src.remote.carra import CARRARepository
+from src.query_monitor import keep_file
+from src.utils.const import DataRange
 
 class RequestRemoteData:
     def __init__(self, config: RemoteRequestConfig):
@@ -26,6 +28,34 @@ class RequestRemoteData:
         config = RemoteRequestConfig(**data)
 
         return cls(config)
+    
+    def _to_datarange(self):
+        start_year = str(self.config.years[0])
+        start_month = str(self.config.months[0]).zfill(2)
+        start_day = str(self.config.days[0]).zfill(2)
+        start_date = start_year + '-' + start_month + '-' + start_day + ' 00:00'
+
+        end_year = str(self.config.years[-1])
+        end_month = str(self.config.months[-1]).zfill(2)
+        end_day = str(self.config.days[-1]).zfill(2)
+        end_date = end_year + '-' + end_month + '-' + end_day + ' 23:00'
+
+        return DataRange(
+            dataset=self.config.dataset,
+            variable=self.config.variable,
+            start_datetime=start_date,
+            end_datetime=end_date,
+            min_lat=self.config.min_lat,
+            max_lat=self.config.max_lat,
+            min_lon=self.config.min_lon,
+            max_lon=self.config.max_lon,
+            # This is probably different between datasets, look into it?
+            temporal_resolution="hour",
+            spatial_resolution=0.25,
+            aggregation="none",
+            domain=self.config.domain,
+            height_level=self.config.height_level
+        )
         
     def _get_repository(self):
 
@@ -54,6 +84,10 @@ class RequestRemoteData:
 
             # TODO: decide where downloaded files will go
             files = repo.download()
+
+            # TODO: Modify logging once we decide to start splitting files
+            meta_dr = self._to_datarange()
+            keep_file(meta_dr, files[0])
 
             return RemoteDownloadResult(
                 success = True,
