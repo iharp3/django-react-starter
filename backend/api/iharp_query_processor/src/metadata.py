@@ -17,7 +17,7 @@ def get_all_files():
 
 def get_file_resolutions(f_path: str):
     temp_meta = _df_meta.loc[_df_meta["file_path"] == f_path]
-    return _precision_level_to_resolutions(temp_meta["precision_level"].at[0])
+    return _precision_level_to_resolutions(temp_meta["precision_level"].item())
 
 def _gen_empty_xarray(
     min_lat,
