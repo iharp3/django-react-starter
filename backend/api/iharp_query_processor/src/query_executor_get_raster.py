@@ -7,7 +7,7 @@ import pandas as pd
 import xarray as xr
 
 from src.remote.driver import RequestRemoteData
-from src.metadata import query_get_overlap_and_leftover
+from src.metadata import query_get_overlap_and_leftover, get_file_resolutions
 from src.query_executor import QueryExecutor
 from src.utils.const import DataRange, time_resolution_to_freq
 from src.query_monitor import log_query
@@ -165,14 +165,14 @@ class GetRasterExecutor(QueryExecutor):
         dt = datetime.now().strftime("%Y%m%d_%H%M%S")
         return f"download_{dt}.nc"
 
-    def _process_dataset(self, ds):
+    def _process_dataset(self, ds, curr_spatial_res, curr_temporal_res):
         ds = ds.sel(
             valid_time=slice(self.dr.start_datetime, self.dr.end_datetime),
             latitude=slice(self.dr.min_lat, self.dr.max_lat),
             longitude=slice(self.dr.min_lon, self.dr.max_lon),
         )
         # temporal resample
-        if self.dr.temporal_resolution != "hour":
+        if self.dr.temporal_resolution != curr_temporal_res:
             resampled = ds.resample(valid_time=time_resolution_to_freq(self.dr.temporal_resolution))
             if self.dr.aggregation == "mean":
                 ds = resampled.mean()
@@ -183,8 +183,8 @@ class GetRasterExecutor(QueryExecutor):
             else:
                 raise ValueError("Invalid temporal_aggregation")
         # spatial resample
-        if self.dr.spatial_resolution > 0.25:
-            c_f = int(self.dr.spatial_resolution / 0.25)
+        if self.dr.spatial_resolution > curr_spatial_res:
+            c_f = int(self.dr.spatial_resolution / curr_spatial_res)
             coarsened = ds.coarsen(latitude=c_f, longitude=c_f, boundary="trim")
             if self.dr.aggregation == "mean":
                 ds = coarsened.mean()
@@ -209,7 +209,8 @@ class GetRasterExecutor(QueryExecutor):
         for file in local_files:
 
             with xr.open_dataset(file, engine="netcdf4") as ds:
-                #ds = self._process_dataset(ds)
+                resolutions = get_file_resolutions(file)
+                ds = self._process_dataset(ds, resolutions["spatial_resolution"], resolutions["temporal_resolution"])
 
                 ds_list.append(ds)
             log_query(self.dr, file, time.time())
@@ -240,7 +241,7 @@ class GetRasterExecutor(QueryExecutor):
                 with xr.open_dataset(file, engine="netcdf4") as ds:
                     
                     # TODO: process dataset to keep in storage (create index) / send data to be processed later
-                    ds = self._process_dataset(ds)
+                    ds = self._process_dataset(ds, 0.25, "hour")
 
                     ds_list.append(ds)
                 log_query(self.dr, file, time.time())
