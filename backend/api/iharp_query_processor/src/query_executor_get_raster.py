@@ -37,6 +37,7 @@ class GetRasterExecutor(QueryExecutor):
         # print("DataRange received:")
         # print(self.dr)
 
+        # TODO: check if you utilize lower resolution files
         df_overlap, leftover = query_get_overlap_and_leftover(self.dr)
 
         if df_overlap.empty:

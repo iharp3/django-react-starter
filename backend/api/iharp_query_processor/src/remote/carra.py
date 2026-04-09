@@ -12,7 +12,7 @@ class CARRARepository(RemoteRepository):
     def _gen_filename(self):
 
         ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        fname = f"carra_{ts}.nc"
+        fname = f"carra_{self.config.domain}_{ts}.nc"
 
         return self.DATADIR + fname
     
