@@ -168,7 +168,7 @@ class GetRasterExecutor(QueryExecutor):
     def _process_dataset(self, ds):
         ds = ds.sel(
             valid_time=slice(self.dr.start_datetime, self.dr.end_datetime),
-            latitude=slice(self.dr.max_lat, self.dr.min_lat),
+            latitude=slice(self.dr.min_lat, self.dr.max_lat),
             longitude=slice(self.dr.min_lon, self.dr.max_lon),
         )
         # temporal resample
@@ -194,6 +194,8 @@ class GetRasterExecutor(QueryExecutor):
                 ds = coarsened.min()
             else:
                 raise ValueError("Invalid spatial_aggregation")
+        
+        return ds
 
     def execute(self):
 
@@ -207,7 +209,7 @@ class GetRasterExecutor(QueryExecutor):
         for file in local_files:
 
             with xr.open_dataset(file, engine="netcdf4") as ds:
-                ds = self._process_dataset(ds)
+                #ds = self._process_dataset(ds)
 
                 ds_list.append(ds)
             log_query(self.dr, file, time.time())

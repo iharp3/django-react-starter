@@ -3,7 +3,6 @@ import pandas as pd
 import xarray as xr
 
 from src.utils.const import DataRange, get_lat_lon_range, time_resolution_to_freq
-from src.query_monitor import update_storage_used
 
 _f_path = ""
 _df_meta: pd.DataFrame
@@ -12,7 +11,9 @@ def init_metadata(f_path):
     global _f_path, _df_meta
     _f_path = f_path
     _df_meta = pd.read_csv(f_path)
-    update_storage_used(set(_df_meta["file_path"]))
+
+def get_all_files():
+    return set(_df_meta["file_path"])
 
 def _gen_empty_xarray(
     min_lat,
@@ -43,10 +44,11 @@ def _gen_empty_xarray(
     return ds_empty
 
 def _gen_xarray_for_meta_row(row, overwrite_temporal_resolution=None):
+    resolutions = _precision_level_to_resolutions(row.precision_level)
     if overwrite_temporal_resolution is not None:
         t_resolution = overwrite_temporal_resolution
     else:
-        t_resolution = row.temporal_resolution
+        t_resolution = resolutions["temporal_resolution"]
     return _gen_empty_xarray(
         row.min_lat,
         row.max_lat,
@@ -55,7 +57,7 @@ def _gen_xarray_for_meta_row(row, overwrite_temporal_resolution=None):
         row.start_datetime,
         row.end_datetime,
         t_resolution,
-        row.spatial_resolution,
+        resolutions["spatial_resolution"],
         row.dataset,
     )
 
@@ -146,6 +148,7 @@ def query_get_overlap_and_leftover(dr: DataRange):
         & (_df_meta["aggregation"] == dr.aggregation)
     ]
 
+    resolutions = _precision_level_to_resolutions(precision)
     ds_query = _gen_empty_xarray(
         dr.min_lat,
         dr.max_lat,
@@ -153,7 +156,8 @@ def query_get_overlap_and_leftover(dr: DataRange):
         dr.max_lon,
         dr.start_datetime,
         dr.end_datetime,
-        precision,
+        resolutions["temporal_resolution"],
+        resolutions["spatial_resolution"],
         dr.dataset
     )
 
