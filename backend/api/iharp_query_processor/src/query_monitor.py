@@ -45,6 +45,7 @@ def keep_file(dr: DataRange, file_path: str):
 
 # Frees data until you have a certain amount free
 def _free_data(storageBytes: int) -> None:
+    global _query_list, _total_storage_used_bytes
     # frees an amount of bytes based on "LRU"
     considered_files = get_largest_files()
 
@@ -62,3 +63,18 @@ def _free_data(storageBytes: int) -> None:
 
         if storageBytes <= 0:
             break
+
+def keep_file(dr: DataRange, file_path: str):
+    """Preserves a downloaded file, adding it to metadata and treating it as if it's 
+    in permanent storage.
+
+    dr : The DataRange the file stores, so we can add it to the metadata
+    file_path : The filepath to access the file
+    """
+    global _total_storage_used_bytes, _storage_limit_bytes
+
+    add_metadata(dr, file_path)
+    _total_storage_used_bytes = _total_storage_used_bytes + os.path.getsize(file_path)
+
+    if _total_storage_used_bytes > _storage_limit_bytes:
+        _free_data(_total_storage_used_bytes - _storage_limit_bytes)
