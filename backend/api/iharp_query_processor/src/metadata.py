@@ -13,9 +13,11 @@ def init_metadata(f_path):
     _df_meta = pd.read_csv(f_path)
 
 def get_all_files():
+    global _df_meta
     return set(_df_meta["file_path"])
 
 def get_file_resolutions(f_path: str):
+    global _df_meta
     temp_meta = _df_meta.loc[_df_meta["file_path"] == f_path]
     return _precision_level_to_resolutions(temp_meta["precision_level"].item())
 
@@ -95,22 +97,24 @@ def _resolutions_to_precision_level(temporal_resolution: str, spatial_resolution
 
 # Adds metadata for a given DataRange
 def add_metadata(dr: DataRange, file: str):
+    global _df_meta
     precision = _resolutions_to_precision_level(dr.temporal_resolution, dr.spatial_resolution)
-    _df_meta = pd.concat(_df_meta, pd.DataFrame({
-        "variable": dr.variable, 
-        "min_lat": dr.min_lat,
-        "max_lat": dr.max_lat,
-        "min_lon": dr.min_lon,
-        "max_lon": dr.max_lon,
-        "start_datetime": dr.start_datetime,
-        "end_datetime": dr.end_datetime,
-        "file_path": file,
-        "precision_level": precision,
-        "aggregation":dr.aggregation
-        }))
+    _df_meta = pd.concat([_df_meta, pd.DataFrame({
+        "variable": [dr.variable], 
+        "min_lat": [dr.min_lat],
+        "max_lat": [dr.max_lat],
+        "min_lon": [dr.min_lon],
+        "max_lon": [dr.max_lon],
+        "start_datetime": [dr.start_datetime],
+        "end_datetime": [dr.end_datetime],
+        "file_path": [file],
+        "precision_level": [precision],
+        "aggregation": [dr.aggregation]
+        })])
 
 # Removes metadata down to and including a given DataRange
 def remove_metadata(dr: DataRange):
+    global _df_meta
     precision = _resolutions_to_precision_level(dr.temporal_resolution, dr.spatial_resolution)
     _df_meta = _df_meta[
         (_df_meta["variable"] != dr.variable)
@@ -126,6 +130,7 @@ def remove_metadata(dr: DataRange):
 
 # Removes metadata surrounding a specific file
 def remove_metadata(filepath: str):
+    global _df_meta
     _df_meta = _df_meta[
         (_df_meta["file_path"] != filepath)
     ]
@@ -133,6 +138,7 @@ def remove_metadata(filepath: str):
 # Returns a set of all the "largest" (highest precision level) files in the DB
 # Used in query monitor - we only want to consider deleting these
 def get_largest_files() -> set[str]:
+    global _df_meta
     largest = _df_meta.groupby(["variable", "min_lat", "max_lat", "min_lon", "max_lon", "start_datetime", "end_datetime"])
     largest = largest["precision_level"].transform(max) == _df_meta["precision_level"]
 
