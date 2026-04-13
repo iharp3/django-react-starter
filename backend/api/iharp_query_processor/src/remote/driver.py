@@ -7,6 +7,7 @@ from src.remote.era5 import ERA5Repository
 from src.remote.carra import CARRARepository
 from src.query_monitor import keep_file
 from src.utils.const import DataRange
+from src.utils.aggregate import Aggregate
 
 class RequestRemoteData:
     def __init__(self, config: RemoteRequestConfig):
@@ -88,6 +89,8 @@ class RequestRemoteData:
             # TODO: Modify logging once we decide to start splitting files
             meta_dr = self._to_datarange()
             keep_file(meta_dr, files[0])
+            agg = Aggregate(files[0],"era5",self.config.variable,self.config.years[0]+self.config.years[-1])
+            agg.execute_upsample(meta_dr)
 
             return RemoteDownloadResult(
                 success = True,

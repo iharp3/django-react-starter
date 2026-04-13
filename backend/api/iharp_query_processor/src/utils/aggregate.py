@@ -1,8 +1,10 @@
 from dask.distributed import LocalCluster
 import dask
 import xarray as xr
+import os
 
-from src.utils.const import long_short_name_dict, encodings
+from src.utils.const import long_short_name_dict, encodings, DataRange
+from src.query_monitor import keep_file
 
 class Aggregate:
 
@@ -17,6 +19,13 @@ class Aggregate:
     SPATIAL_SCALES = {
         "05": 2,
         "1": 4,
+    }
+
+    PRECISION_LEVELS = {
+        # ["hour", "025"],
+        ("day", "025"): 2,
+        ("month", "05"): 3,
+        ("year", "1"): 4
     }
 
     CHUNKS = {
@@ -125,6 +134,64 @@ class Aggregate:
                 writes.append(delayed)
 
         dask.compute(*writes)
+
+    
+    def execute_upsample(self, init_dr: DataRange):
+        """Upsamples a downloaded file and saves it at every defined precision level"""
+        with LocalCluster(n_workers=10) as cluster:
+
+            client = cluster.get_client()
+
+            ds = xr.open_dataset(
+                self.file_name,
+                chunks=self.CHUNKS,
+            )
+
+            writes = []
+            new_files = []
+            for precisions, _ in self.PRECISION_LEVELS.items():
+                t_res = precisions[0]
+                s_res = precisions[1]
+                resampler = ds.resample(valid_time=self.TEMPORAL_FREQS[t_res])
+
+                for stat in self.STATS:
+                    result = self._apply_stat(resampler, stat)
+
+                    if s_res != "025":
+                        coarsened = result.coarsen(
+                        latitude=self.SPATIAL_SCALES[s_res],
+                        longitude=self.SPATIAL_SCALES[s_res],
+                        boundary="trim",
+                        )
+                        result = self._apply_stat(coarsened, stat)
+
+                    outfile = f"{self.base_name}_{s_res}{t_res}_{stat}.nc"
+                    directory = os.path.dirname(self.file_name)
+
+                    delayed = result.to_netcdf(
+                        directory + "/" + outfile,
+                        encoding=self.encoding,
+                        compute=False,
+                    )
+                    writes.append(delayed)
+
+                    new_dr = init_dr.__copy__()
+                    if s_res == "025":
+                        new_dr.spatial_resolution = 0.25
+                    elif s_res == "05":
+                        new_dr.spatial_resolution = 0.5
+                    elif s_res == "1":
+                        new_dr.spatial_resolution = 1
+                    new_dr.temporal_resolution = t_res
+                    new_dr.aggregation = stat
+                    new_files.append((new_dr, outfile))
+            
+            dask.compute(*writes)
+
+            for dr, file_path in new_files:
+                keep_file(dr, file_path)
+            
+            client.close()
 
     def execute(self):
 
