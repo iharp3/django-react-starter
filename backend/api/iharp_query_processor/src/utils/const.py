@@ -46,10 +46,8 @@ class DataRange:
     temporal_resolution: str  # e.g., "hour", "day", "month", "year"
     spatial_resolution: float # e.g., 0.25, 0.5, 1.0
     aggregation: str # e.g., "mean", "max", "min"
-
-    # Optional fields
-    domain: Optional[str] = None
-    height_level: Optional[str] = None
+    domain: Optional[str] = None    # Optional field
+    height_level: Optional[str] = None  # Optional field
 
     @override
     def __copy__(self):
@@ -84,18 +82,26 @@ dat_range_and_res = {
 }
 
 # TODO: NEED TO REWRITE FOR DIFFERENT DATASETS
-def make_empty_datasets(dataset):
-    ds_raw = xr.Dataset()
+def make_empty_datasets(dataset, domain):
+    if dataset == "CARRA":
+        if domain == "west":
+            dat = "carra_w"
+        elif domain == "east":
+            dat = "carra_e"
+    # TODO: make this general - decide on capital letters/abv. for datasets/domains
+    else:
+        dat = "era5"
 
-    ds_raw["latitude"] = dat_range_and_res[dataset]["lat"]
-    ds_raw["longitude"] = dat_range_and_res[dataset]["lon"]
+    ds_raw = xr.Dataset()
+    ds_raw["latitude"] = dat_range_and_res[dat]["lat"]
+    ds_raw["longitude"] = dat_range_and_res[dat]["lon"]
     ds_05 = ds_raw.coarsen(latitude=2, longitude=2, boundary="trim").max()
     ds_10 = ds_raw.coarsen(latitude=4, longitude=4, boundary="trim").max()
 
     return ds_raw, ds_05, ds_10
 
-def get_lat_lon_range(spatial_resolution, dataset):
-    ds_raw, ds_05, ds_10 = make_empty_datasets(dataset)
+def get_lat_lon_range(spatial_resolution, dataset, domain):
+    ds_raw, ds_05, ds_10 = make_empty_datasets(dataset, domain)
     if spatial_resolution == 0.25:
         lat_range = ds_raw.latitude.values
         lon_range = ds_raw.longitude.values

@@ -22,7 +22,31 @@ REQUEST_CHOICES = [
     ("find_area", "find_area"),
 ]
 
-VARIABLE_CHOICES = [
+FILTER_PREDICATE_CHOICES = [
+    (">", ">"),
+    ("<", "<"),
+    (">=", ">="),
+    ("<=", "<="),
+    ("=", "="),
+    ("!=", "!="),
+]
+
+DATASET_CHOICES = [
+    ("ERA5", "ERA5"),
+    ("CARRA", "CARRA")
+]
+
+DOMAIN_CHOICES = [
+    ("east_domain", "east_domain"),
+    ("west_domain", "west_domain")
+]
+
+HEIGHT_CHOICES = [
+    ("15_m", "15_m"),
+    ("30_m", "30_m")
+]
+
+VARIABLE_ERA5 = [
     ("2m_temperature", "2m_temperature"),
     ("snow_depth", "snow_depth"),
     ("snowfall", "snowfall"),
@@ -37,20 +61,28 @@ VARIABLE_CHOICES = [
     ("ice_temperature_layer_4", "ice_temperature_layer_4"),
 ]
 
-FILTER_PREDICATE_CHOICES = [
-    (">", ">"),
-    ("<", "<"),
-    (">=", ">="),
-    ("<=", "<="),
-    ("=", "="),
-    ("!=", "!="),
+VARIABLE_CARRA = [
+    ("temperature", "temperature"),
+    ("pressure", "pressure"),
+    ("relative_humidity", "relative_humidity"),
+    ("specific_cloud_ice_water_content", "specific_cloud_ice_water_content"),
+    ("specific_cloud_liquid_water_content", "specific_cloud_liquid_water_content"),
+    ("wind_direction", "wind_direction"),
+    ("wind_speed", "wind_speed")
 ]
 
 
 class GetRasterQueryModel(models.Model):
     requestType = models.CharField(max_length=15, choices=REQUEST_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
-    variable = models.CharField(max_length=50, choices=VARIABLE_CHOICES)
+    dataset = models.CharField(max_length=50, choices=DATASET_CHOICES)
+    def variable(self):
+        if self.dataset == "ERA5":
+            return VARIABLE_ERA5
+        elif self.dataset == "CARRA":
+            return VARIABLE_CARRA
+        else:
+            return []
     startDateTime = models.DateTimeField()
     endDateTime = models.DateTimeField()
     temporalResolution = models.CharField(max_length=10, choices=TEMPORAL_CHOICES)
@@ -61,12 +93,21 @@ class GetRasterQueryModel(models.Model):
     spatialResolution = models.DecimalField(max_digits=3, decimal_places=2)
     aggregation = models.CharField(max_length=10, choices=AGG_CHOICES)
     log_info = models.JSONField(default=list, blank=True)
+    domain = models.CharField(max_length=15, choices=DOMAIN_CHOICES, blank=True)
+    height_level = models.CharField(max_length=15, choices=HEIGHT_CHOICES, blank=True)
 
 
 class HeatmapQueryModel(models.Model):
     requestType = models.CharField(max_length=15, choices=REQUEST_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
-    variable = models.CharField(max_length=50, choices=VARIABLE_CHOICES)
+    dataset = models.CharField(max_length=50, choices=DATASET_CHOICES)
+    def variable(self):
+        if self.dataset == "ERA5":
+            return VARIABLE_ERA5
+        elif self.dataset == "CARRA":
+            return VARIABLE_CARRA
+        else:
+            return []
     startDateTime = models.DateTimeField()
     endDateTime = models.DateTimeField()
     north = models.DecimalField(max_digits=25, decimal_places=20)
@@ -77,12 +118,22 @@ class HeatmapQueryModel(models.Model):
     aggregation = models.CharField(max_length=10, choices=AGG_CHOICES)
     log_info = models.JSONField(default=list, blank=True)
     range_info = models.JSONField(default=list, blank=True)
+    domain = models.CharField(max_length=15, choices=DOMAIN_CHOICES, blank=True)
+    height_level = models.CharField(max_length=15, choices=HEIGHT_CHOICES, blank=True)
+
 
 
 class TimeseriesQueryModel(models.Model):
     requestType = models.CharField(max_length=15, choices=REQUEST_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
-    variable = models.CharField(max_length=50, choices=VARIABLE_CHOICES)
+    dataset = models.CharField(max_length=50, choices=DATASET_CHOICES)
+    def variable(self):
+        if self.dataset == "ERA5":
+            return VARIABLE_ERA5
+        elif self.dataset == "CARRA":
+            return VARIABLE_CARRA
+        else:
+            return []
     startDateTime = models.DateTimeField()
     endDateTime = models.DateTimeField()
     temporalResolution = models.CharField(max_length=10, choices=TEMPORAL_CHOICES)
@@ -92,12 +143,22 @@ class TimeseriesQueryModel(models.Model):
     west = models.DecimalField(max_digits=25, decimal_places=20)
     aggregation = models.CharField(max_length=10, choices=AGG_CHOICES)
     log_info = models.JSONField(default=list, blank=True)
+    domain = models.CharField(max_length=15, choices=DOMAIN_CHOICES, blank=True)
+    height_level = models.CharField(max_length=15, choices=HEIGHT_CHOICES, blank=True)
+
 
 
 class FindAreaModel(models.Model):
     requestType = models.CharField(max_length=15, choices=REQUEST_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
-    variable = models.CharField(max_length=50, choices=VARIABLE_CHOICES)
+    dataset = models.CharField(max_length=50, choices=DATASET_CHOICES)
+    def variable(self):
+        if self.dataset == "ERA5":
+            return VARIABLE_ERA5
+        elif self.dataset == "CARRA":
+            return VARIABLE_CARRA
+        else:
+            return []
     startDateTime = models.DateTimeField()
     endDateTime = models.DateTimeField()
     north = models.DecimalField(max_digits=25, decimal_places=20)
@@ -108,12 +169,22 @@ class FindAreaModel(models.Model):
     aggregation = models.CharField(max_length=10, choices=AGG_CHOICES)
     filterPredicate = models.CharField(max_length=2, choices=FILTER_PREDICATE_CHOICES)
     filterValue = models.FloatField()
+    domain = models.CharField(max_length=15, choices=DOMAIN_CHOICES, blank=True)
+    height_level = models.CharField(max_length=15, choices=HEIGHT_CHOICES, blank=True)
+
 
 
 class FindTimeModel(models.Model):
     requestType = models.CharField(max_length=15, choices=REQUEST_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
-    variable = models.CharField(max_length=50, choices=VARIABLE_CHOICES)
+    dataset = models.CharField(max_length=50, choices=DATASET_CHOICES)
+    def variable(self):
+        if self.dataset == "ERA5":
+            return VARIABLE_ERA5
+        elif self.dataset == "CARRA":
+            return VARIABLE_CARRA
+        else:
+            return []
     startDateTime = models.DateTimeField()
     endDateTime = models.DateTimeField()
     temporalResolution = models.CharField(max_length=10, choices=TEMPORAL_CHOICES)
@@ -124,3 +195,5 @@ class FindTimeModel(models.Model):
     aggregation = models.CharField(max_length=10, choices=AGG_CHOICES)
     filterPredicate = models.CharField(max_length=2, choices=FILTER_PREDICATE_CHOICES, null=True)
     filterValue = models.FloatField(null=True)
+    domain = models.CharField(max_length=15, choices=DOMAIN_CHOICES, blank=True)
+    height_level = models.CharField(max_length=15, choices=HEIGHT_CHOICES, blank=True)

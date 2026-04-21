@@ -51,6 +51,7 @@ def get_raster_query(request):
         serializer.save()
         logger.info(request.data)
 
+        dataset = request.data.get("dataset")
         variable = request.data.get("variable")
         start_datetime = request.data.get("startDateTime")
         end_datetime = request.data.get("endDateTime")
@@ -61,12 +62,15 @@ def get_raster_query(request):
         west = round(float(request.data.get("west")), 3)
         spatial_resolution = float(request.data.get("spatialResolution"))
         aggregation = request.data.get("aggregation")
+        domain = request.data.get("domain")
+        height_level = request.data.get("heightLevel")
 
         formatted_start = format_datetime_string(start_datetime)
         formatted_end = format_datetime_string(end_datetime)
 
         qe = GetRasterExecutor(
             metadata=metadata_fpath,
+            dataset=dataset,
             variable=variable,
             start_datetime=formatted_start,
             end_datetime=formatted_end,
@@ -77,6 +81,8 @@ def get_raster_query(request):
             temporal_resolution=time_resolution,
             spatial_resolution=spatial_resolution,
             aggregation=aggregation,
+            domain=domain,
+            height_level=height_level,
             log_info=None,
         )
         ds = qe.execute()
@@ -96,6 +102,7 @@ def get_raster_query_pickle(request):
         serializer.save()
         logger.info(request.data)
 
+        dataset = request.data.get("dataset")
         variable = request.data.get("variable")
         start_datetime = request.data.get("startDateTime")
         end_datetime = request.data.get("endDateTime")
@@ -106,12 +113,15 @@ def get_raster_query_pickle(request):
         west = round(float(request.data.get("west")), 3)
         spatial_resolution = float(request.data.get("spatialResolution"))
         aggregation = request.data.get("aggregation")
+        domain = request.data.get("domain")
+        height_level = request.data.get("heightLevel")
 
         formatted_start = format_datetime_string(start_datetime)
         formatted_end = format_datetime_string(end_datetime)
 
         qe = GetRasterExecutor(
             metadata=metadata_fpath,
+            dataset=dataset,
             variable=variable,
             start_datetime=formatted_start,
             end_datetime=formatted_end,
@@ -122,6 +132,8 @@ def get_raster_query_pickle(request):
             temporal_resolution=time_resolution,
             spatial_resolution=spatial_resolution,
             aggregation=aggregation,
+            domain=domain,
+            height_level=height_level,
         )
         ds = qe.execute()
 
@@ -139,6 +151,7 @@ def download_query(request):
         serializer.save()
         logger.info(request.data)
 
+        dataset = request.data.get("dataset")
         variable = request.data.get("variable")
         start_datetime = request.data.get("startDateTime")
         end_datetime = request.data.get("endDateTime")
@@ -149,12 +162,15 @@ def download_query(request):
         west = round(float(request.data.get("west")), 3)
         spatial_resolution = float(request.data.get("spatialResolution"))
         aggregation = request.data.get("aggregation")
+        domain = request.data.get("domain")
+        height_level = request.data.get("heightLevel")
 
         formatted_start = format_datetime_string(start_datetime)
         formatted_end = format_datetime_string(end_datetime)
 
         qe = GetRasterExecutor(
             metadata=metadata_fpath,
+            dataset=dataset,
             variable=variable,
             start_datetime=formatted_start,
             end_datetime=formatted_end,
@@ -165,6 +181,8 @@ def download_query(request):
             temporal_resolution=time_resolution,
             spatial_resolution=spatial_resolution,
             aggregation=aggregation,
+            domain=domain,
+            height_level=height_level,
         )
         ds = qe.execute()
 
@@ -207,6 +225,7 @@ def timeseries_query(request):
         serializer.save()
         logger.info(request.data)
 
+        dataset = request.data.get("dataset")
         variable = request.data.get("variable")
         start_datetime = request.data.get("startDateTime")
         end_datetime = request.data.get("endDateTime")
@@ -216,12 +235,15 @@ def timeseries_query(request):
         east = round(float(request.data.get("east")), 3)
         west = round(float(request.data.get("west")), 3)
         aggregation = request.data.get("aggregation")
+        domain = request.data.get("domain")
+        height_level = request.data.get("heightLevel")
 
         formatted_start = format_datetime_string(start_datetime)
         formatted_end = format_datetime_string(end_datetime)
 
         qe = TimeseriesExecutor(
             metadata=metadata_fpath,
+            dataset=dataset,
             variable=variable,
             start_datetime=formatted_start,
             end_datetime=formatted_end,
@@ -232,6 +254,8 @@ def timeseries_query(request):
             max_lon=east,
             aggregation=aggregation,
             time_series_aggregation_method=aggregation,
+            domain=domain,
+            height_level=height_level
             log_info=None,
         )
         ts = qe.execute()
@@ -262,6 +286,7 @@ def heatmap_query(request):
         serializer.save()
         logger.info(request.data)
 
+        dataset = request.data.get("dataset")
         variable = request.data.get("variable")
         start_datetime = request.data.get("startDateTime")
         end_datetime = request.data.get("endDateTime")
@@ -271,12 +296,15 @@ def heatmap_query(request):
         west = round(float(request.data.get("west")), 3)
         spatial_resolution = float(request.data.get("spatialResolution"))
         aggregation = request.data.get("aggregation")
+        domain = request.data.get("domain")
+        height_level = request.data.get("heightLevel")
 
         formatted_start = format_datetime_string(start_datetime)
         formatted_end = format_datetime_string(end_datetime)
 
         qe = HeatmapExecutor(
             metadata=metadata_fpath,
+            dataset=dataset,
             variable=variable,
             start_datetime=formatted_start,
             end_datetime=formatted_end,
@@ -287,6 +315,8 @@ def heatmap_query(request):
             spatial_resolution=spatial_resolution,
             aggregation=aggregation,
             heatmap_aggregation_method=aggregation,
+            domain=domain,
+            height_level=height_level,
             log_info=None,
             range_info=None,
         )
@@ -323,6 +353,7 @@ def find_time_query(request):
         serializer.save()
         logger.info(request.data)
 
+        dataset = request.data.get("dataset")
         variable = request.data.get("variable")
         start_datetime = request.data.get("startDateTime")
         end_datetime = request.data.get("endDateTime")
@@ -332,6 +363,8 @@ def find_time_query(request):
         east = round(float(request.data.get("east")), 3)
         west = round(float(request.data.get("west")), 3)
         aggregation = request.data.get("aggregation")
+        domain = request.data.get("domain")
+        height_level = request.data.get("heightLevel")
 
         filter_predicate = request.data.get("filterPredicate")
         filter_value = request.data.get("filterValue")
@@ -341,6 +374,7 @@ def find_time_query(request):
 
         qe = FindTimeExecutor(
             metadata=metadata_fpath,
+            dataset=dataset,
             variable=variable,
             start_datetime=formatted_start,
             end_datetime=formatted_end,
@@ -353,6 +387,8 @@ def find_time_query(request):
             time_series_aggregation_method=aggregation,
             filter_predicate=filter_predicate,
             filter_value=float(filter_value),
+            domain=domain,
+            height_level=height_level,
         )
         ft = qe.execute()
 
@@ -408,6 +444,7 @@ def find_area_query(request):
         serializer.save()
         logger.info(request.data)
 
+        dataset = request.data.get("dataset")
         variable = request.data.get("variable")
         start_datetime = request.data.get("startDateTime")
         end_datetime = request.data.get("endDateTime")
@@ -419,12 +456,15 @@ def find_area_query(request):
         aggregation = request.data.get("aggregation")
         filter_predicate = request.data.get("filterPredicate")
         filter_value = request.data.get("filterValue")
+        domain = request.data.get("domain")
+        height_level = request.data.get("heightLevel")
 
         formatted_start = format_datetime_string(start_datetime)
         formatted_end = format_datetime_string(end_datetime)
 
         qe = FindAreaExecutor(
             metadata=metadata_fpath,
+            dataset=dataset,
             variable=variable,
             start_datetime=formatted_start,
             end_datetime=formatted_end,
@@ -437,6 +477,8 @@ def find_area_query(request):
             heatmap_aggregation_method=aggregation,
             filter_predicate=filter_predicate,
             filter_value=float(filter_value),
+            domain=domain,
+            height_level=height_level,
         )
         fa = qe.execute()
 

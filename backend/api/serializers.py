@@ -8,6 +8,7 @@ class GetRasterSeriazlier(serializers.ModelSerializer):
         fields = [
             "id",
             "created_at",
+            "dataset",
             "variable",
             "startDateTime",
             "endDateTime",
@@ -19,6 +20,8 @@ class GetRasterSeriazlier(serializers.ModelSerializer):
             "spatialResolution",
             "aggregation",
             "log_info",
+            "domain",
+            "height_level",
         ]
 
 
@@ -28,6 +31,7 @@ class HeatmapSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "created_at",
+            "dataset",
             "variable",
             "startDateTime",
             "endDateTime",
@@ -39,6 +43,8 @@ class HeatmapSerializer(serializers.ModelSerializer):
             "aggregation",
             "log_info",
             "range_info",
+            "domain",
+            "height_level",
         ]
 
 
@@ -48,6 +54,7 @@ class TimeSeriesSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "created_at",
+            "dataset",
             "variable",
             "startDateTime",
             "endDateTime",
@@ -58,6 +65,8 @@ class TimeSeriesSerializer(serializers.ModelSerializer):
             "west",
             "aggregation",
             "log_info",
+            "domain",
+            "height_level",
         ]
 
 
@@ -67,6 +76,7 @@ class FindTimeSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "created_at",
+            "dataset",
             "variable",
             "startDateTime",
             "endDateTime",
@@ -78,6 +88,8 @@ class FindTimeSerializer(serializers.ModelSerializer):
             "aggregation",
             "filterPredicate",
             "filterValue",
+            "domain",
+            "height_level",
         ]
 
 
@@ -87,6 +99,7 @@ class FindAreaSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "created_at",
+            "dataset",
             "variable",
             "startDateTime",
             "endDateTime",
@@ -98,4 +111,6 @@ class FindAreaSerializer(serializers.ModelSerializer):
             "aggregation",
             "filterPredicate",
             "filterValue",
+            "domain",
+            "height_level"
         ]

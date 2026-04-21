@@ -29,8 +29,9 @@ def _gen_empty_xarray(
     temporal_resolution,
     spatial_resolution,
     dataset,
+    domain,
 ):
-    lat_range, lon_range, lat_range_reverse = get_lat_lon_range(spatial_resolution, dataset)
+    lat_range, lon_range, lat_range_reverse = get_lat_lon_range(spatial_resolution, dataset, domain)
     lat_start = lat_range.searchsorted(min_lat, side="left")
     lat_end = lat_range.searchsorted(max_lat, side="right")
     lat_reverse_start = len(lat_range) - lat_end
@@ -62,6 +63,7 @@ def _gen_xarray_for_meta_row(row, overwrite_temporal_resolution=None):
         t_resolution,
         row.spatial_resolution,
         row.dataset,
+        row.domain,
     )
 
 def _mask_query_with_meta(ds_query, ds_meta):
@@ -73,8 +75,9 @@ def _mask_query_with_meta(ds_query, ds_meta):
 
 def query_get_overlap_and_leftover(dr: DataRange):
     df_overlap = _df_meta[
-        (_df_meta["variable"] == dr.variable)
-        & (_df_meta["min_lat"] <= dr.max_lat)
+        (_df_meta["dataset"] == dr.dataset)
+        & (_df_meta["variable"] == dr.variable)
+        & (_df_meta["min_lat"] <= dr.max_lat)   # TODO: change location to domain for carra data?
         & (_df_meta["max_lat"] >= dr.min_lat)
         & (_df_meta["min_lon"] <= dr.max_lon)
         & (_df_meta["max_lon"] >= dr.min_lon)
@@ -94,7 +97,8 @@ def query_get_overlap_and_leftover(dr: DataRange):
         dr.end_datetime,
         dr.temporal_resolution,
         dr.spatial_resolution,
-        dr.dataset
+        dr.dataset,
+        dr.domain,
     )
 
     false_mask = xr.DataArray(
