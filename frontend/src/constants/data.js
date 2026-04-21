@@ -1,9 +1,20 @@
-export const VARIABLES = [
+export const VARIABLE_ERA5 = [
   "2m_temperature", "total_precipitation", "surface_pressure",
+  "sea_surface_temperature",
   "snow_depth", "snowfall", "snowmelt", "temperature_of_snow_layer",
   "ice_temperature_layer_1", "ice_temperature_layer_2",
   "ice_temperature_layer_3", "ice_temperature_layer_4",
 ];
+
+export const VARABLE_CARRA = [
+  "temperature", "pressure", "relative_humidity",
+  "specific_cloud_ice_water_content", "specific_cloud_liquid_water_content",
+  "wind_direction", "wind_speed",
+];
+
+export const DATASETS = [
+  "ERA5", "CARRA",
+]
 
 export const REGIONS = {
   Greenland: { North: 84, South: 58, West: -75, East: -10 },

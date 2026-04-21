@@ -20,6 +20,7 @@ function App() {
   const { drawnShapeBounds, setDrawnShapeBounds } = useContext(BoundsContext);
 
   // Sidebar
+  const [dataset, setDataset] = useState("ERA5");
   const [variable, setVariable] = useState("2m_temperature");
   const [startDate, setStartDate] = useState(dayjs("2020-06-01T00:00Z"));
   const [endDate, setEndDate] = useState(dayjs("2023-12-31T23:00Z"));
@@ -64,6 +65,7 @@ function App() {
   // // Sidebar
   const [formData, setFormData] = useState({
     requestType: "",
+    dataset: dataset,
     variable: variable,
     startDateTime: startDate,
     endDateTime: endDate,
@@ -80,11 +82,12 @@ function App() {
   useEffect(() => {
     setFormData((prev) => ({
       ...prev,
+      dataset:dataset,
       variable: variable,
       startDateTime: startDate,
       endDateTime: endDate,
     }))
-  }, [variable, startDate, endDate]);
+  }, [dataset, variable, startDate, endDate]);
 
   useEffect(() => {
     setFormData((prev) => ({
@@ -183,6 +186,7 @@ function App() {
 
     const newQuery = {
       timestamp: dayjs().format("YYYY-MM-DD HH:mm"),
+      dataset,
       variable,
       spatialPredicates,
       temporalPredicates,
@@ -572,6 +576,8 @@ function App() {
           sidebarCollapsed={sidebarCollapsed}
           setComparisonVal={setComparisonVal}
           setPredicate={setPredicate}
+          dataset={formData.dataset}
+          setDataset={setDataset}
           variable={formData.variable}
           setVariable={setVariable}
           startDate={startDate}

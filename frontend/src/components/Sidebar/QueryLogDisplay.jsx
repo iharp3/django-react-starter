@@ -27,6 +27,7 @@ const QueryLogDisplay = ({ showLog, setShowLog, queryLog }) => {
             <TableHead>
               <TableRow>
                 <TableCell>Time</TableCell>
+                <TableCell>Dataset</TableCell>
                 <TableCell>Variable</TableCell>
                 <TableCell>Spatial Predicates</TableCell>
                 <TableCell>Temporal Predicates</TableCell>
@@ -38,6 +39,7 @@ const QueryLogDisplay = ({ showLog, setShowLog, queryLog }) => {
               {queryLog.map((entry, index) => (
                 <TableRow key={index}>
                   <TableCell>{entry.timestamp}</TableCell>
+                  <TableCell>{entry.dataset}</TableCell>
                   <TableCell>{entry.variable}</TableCell>
                   <TableCell>{entry.spatialPredicates.join(", ")}</TableCell>
                   <TableCell>{entry.temporalPredicates.join(", ")}</TableCell>

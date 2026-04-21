@@ -7,7 +7,7 @@ import AggregationControls from "./AggregationControls";
 import FiltersControls from "./FilterControls";
 import SidebarButtons from "./SidebarButtons";
 import QueryLogDisplay from "./QueryLogDisplay";
-import { VARIABLES } from "../../constants/data";
+import { VARIABLES, DATASETS} from "../../constants/data";
 import "../../styles/sidebar.css";
 import "../../styles/loading.css";
 import { Accordion, AccordionSummary, AccordionDetails, Typography } from "@mui/material";
@@ -17,6 +17,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 const Sidebar = ({
   setComparisonVal,
   setPredicate,
+  dataset,
+  setDataset,
   variable,
   setVariable,
   startDate,
@@ -50,6 +52,20 @@ const Sidebar = ({
       </div>
 
       <Accordion defaultExpanded>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography className="accordion-title">Dataset</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Input
+          val={dataset}
+          setVal={setDataset}
+          options={DATASETS}
+          varLabel="dataset"
+          />
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography className="accordion-title">Variable</Typography>
         </AccordionSummary>
