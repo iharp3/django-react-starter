@@ -255,7 +255,7 @@ def timeseries_query(request):
             aggregation=aggregation,
             time_series_aggregation_method=aggregation,
             domain=domain,
-            height_level=height_level
+            height_level=height_level,
             log_info=None,
         )
         ts = qe.execute()
