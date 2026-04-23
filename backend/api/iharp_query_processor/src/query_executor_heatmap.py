@@ -1,10 +1,10 @@
 import numpy as np
 import xarray as xr
 
-from src.query_executor import QueryExecutor
-from src.query_executor_get_raster import GetRasterExecutor
-from src.utils.const import DataRange
-from src.utils.get_whole_period import (
+from api.iharp_query_processor.src.query_executor import QueryExecutor
+from api.iharp_query_processor.src.query_executor_get_raster import GetRasterExecutor
+from api.iharp_query_processor.src.utils.const import DataRange
+from api.iharp_query_processor.src.utils.get_whole_period import (
     get_whole_ranges_between,
     get_total_hours_in_year,
     get_total_hours_in_month,

@@ -1,5 +1,5 @@
-from src.query_executor import *
-from src.query_executor_get_raster import GetRasterExecutor
+from api.iharp_query_processor.src.query_executor import *
+from api.iharp_query_processor.src.query_executor_get_raster import GetRasterExecutor
 
 
 class TimeseriesExecutor(QueryExecutor):

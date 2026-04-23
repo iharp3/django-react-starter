@@ -5,7 +5,7 @@ import pandas as pd
 import os
 
 # from src.utils.const import long_short_name_dict, encodings
-from const import long_short_name_dict, encodings, find_lat_lon_dims
+from api.iharp_query_processor.src.utils.const import long_short_name_dict, encodings, find_lat_lon_dims
 
 
 class Aggregate:

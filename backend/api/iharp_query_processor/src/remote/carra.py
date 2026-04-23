@@ -2,7 +2,7 @@ import datetime
 import cdsapi
 
 from typing import List
-from src.remote.base import RemoteRepository
+from api.iharp_query_processor.src.remote.base import RemoteRepository
 
 class CARRARepository(RemoteRepository):
 

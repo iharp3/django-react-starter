@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from .views import *
+from api.views import *
 
 urlpatterns = [
     path("query/", get_raster_query, name="query"),

@@ -2,9 +2,9 @@ import traceback
 import tomllib
 
 from typing import Dict
-from src.remote.models import RemoteRequestConfig, RemoteDownloadResult
-from src.remote.era5 import ERA5Repository
-from src.remote.carra import CARRARepository
+from api.iharp_query_processor.src.remote.models import RemoteRequestConfig, RemoteDownloadResult
+from api.iharp_query_processor.src.remote.era5 import ERA5Repository
+from api.iharp_query_processor.src.remote.carra import CARRARepository
 
 class RequestRemoteData:
     def __init__(self, config: RemoteRequestConfig):

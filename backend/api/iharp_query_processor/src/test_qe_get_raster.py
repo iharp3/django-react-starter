@@ -16,11 +16,11 @@ import numpy as np
 import xarray as xr
 from datetime import datetime
 
-from src.query_executor_get_raster import GetRasterExecutor
-from src.query_executor_timeseries import TimeseriesExecutor
-from src.utils.const import DataRange
-import src.query_executor_get_raster as raster_module
-from src.remote.era5 import ERA5Repository
+from api.iharp_query_processor.src.query_executor_get_raster import GetRasterExecutor
+from api.iharp_query_processor.src.query_executor_timeseries import TimeseriesExecutor
+from api.iharp_query_processor.src.utils.const import DataRange
+import api.iharp_query_processor.src.query_executor_get_raster as raster_module
+from api.iharp_query_processor.src.remote.era5 import ERA5Repository
 
 import sys
 import os

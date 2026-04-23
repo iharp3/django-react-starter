@@ -67,8 +67,8 @@ class DataRange:
             height_level=self.height_level)
 
 # TODO: can we change np.arange to params for it so we only have one np.arange?
-e_dims = np.load("carra_east_grid.npz")
-w_dims = np.load("carra_west_grid.npz")
+e_dims = np.load("/data/carra/carra_east_grid.npz")
+w_dims = np.load("/data/carra/carra_west_grid.npz")
 dat_range_and_res = {
     "era5": {   
                 "lat":np.arange(-90,90.1,0.25),

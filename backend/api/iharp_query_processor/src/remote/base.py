@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List
-from src.remote.models import RemoteRequestConfig
+from api.iharp_query_processor.src.remote.models import RemoteRequestConfig
 
 class RemoteRepository(ABC):
 

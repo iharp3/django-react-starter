@@ -15,7 +15,7 @@
 #######################################
 
 
-from aggregate import Aggregate
+from api.iharp_query_processor.src.utils.aggregate import Aggregate
 import pandas as pd
 
 file_info = pd.read_csv("/home/uribe055/django-react-starter/file_list.csv", sep=',', skipinitialspace=True, dtype=str)           

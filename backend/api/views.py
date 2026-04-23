@@ -13,8 +13,8 @@ from rest_framework.response import Response
 from shapely.geometry import Polygon
 
 
-from .serializers import *
-from .iharp_query_processor import *
+from api.serializers import *
+from api.iharp_query_processor import *
 
 
 logger = logging.getLogger(__name__)

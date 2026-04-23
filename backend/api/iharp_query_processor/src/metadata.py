@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
-from src.utils.const import DataRange, get_lat_lon_range, time_resolution_to_freq
+from api.iharp_query_processor.src.utils.const import DataRange, get_lat_lon_range, time_resolution_to_freq
 
 _f_path = ""
 _df_meta: pd.DataFrame

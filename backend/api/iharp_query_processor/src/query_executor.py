@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 import xarray as xr
 
-from src.metadata import init_metadata
-from src.utils.const import long_short_name_dict, DataRange
+from api.iharp_query_processor.src.metadata import init_metadata
+from api.iharp_query_processor.src.utils.const import long_short_name_dict, DataRange
 
 class QueryExecutor(ABC):
     def __init__(

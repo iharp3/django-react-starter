@@ -12,7 +12,7 @@
 #
 #######################################
 
-from src.remote.driver import RequestRemoteData
+from api.iharp_query_processor.src.remote.driver import RequestRemoteData
 import csv
 
 dataset = "carra"

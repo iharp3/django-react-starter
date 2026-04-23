@@ -1,7 +1,7 @@
-from src.query_executor import QueryExecutor
-from src.query_executor_heatmap import HeatmapExecutor
+from api.iharp_query_processor.src.query_executor import QueryExecutor
+from api.iharp_query_processor.src.query_executor_heatmap import HeatmapExecutor
 
-from src.utils.const import DataRange
+from api.iharp_query_processor.src.utils.const import DataRange
 
 
 class FindAreaExecutor(QueryExecutor):
