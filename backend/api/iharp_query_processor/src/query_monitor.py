@@ -10,7 +10,7 @@ _storage_limit_bytes: int
 # TODO: Name's kind of misleading, this is acting more as a data manager?
 def init_query_monitor(storageLimitGB: int):
     global _storage_limit_bytes
-    _storage_limit_bytes = storageLimitGB * 10e9
+    _storage_limit_bytes = storageLimitGB * 1e9
     update_storage_used(get_all_files())
 
 def update_storage_used(files: set[str]):
