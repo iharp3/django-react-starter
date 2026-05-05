@@ -24,6 +24,8 @@ function App() {
   const [variable, setVariable] = useState("2m_temperature");
   const [startDate, setStartDate] = useState(dayjs("2020-06-01T00:00Z"));
   const [endDate, setEndDate] = useState(dayjs("2023-12-31T23:00Z"));
+  const [domain, setDomain] = useState("East");
+  const [height, setHeight] = useState("15 meters");
   const [comparisonVal, setComparisonVal] = useState(285);
   const [predicate, setPredicate] = useState("<");
   const [htmlString, setHtml] = useState("");
@@ -77,6 +79,8 @@ function App() {
     west: -74,
     spatialResolution: 1,
     aggregation: "mean",
+    domain: "East",
+    height: "15 meters",
   });
 
   useEffect(() => {
@@ -86,8 +90,10 @@ function App() {
       variable: variable,
       startDateTime: startDate,
       endDateTime: endDate,
+      domain: domain,
+      height: height,
     }))
-  }, [dataset, variable, startDate, endDate]);
+  }, [dataset, variable, startDate, endDate, domain, height]);
 
   useEffect(() => {
     setFormData((prev) => ({
@@ -237,6 +243,7 @@ function App() {
   }
 
   // Main
+// TODO: make shape bounds for carra match east/west domain
   useEffect(() => {
     if (drawnShapeBounds) {
       const north_val = drawnShapeBounds._northEast.lat;
@@ -274,7 +281,7 @@ function App() {
     else if (formData.temporalResolution === "") {
       // If not, display an error message or perform any other action to prompt the user to select a temporal level
       alert(
-        "ERROR: Please select a temporal level resolution before proceeding..."
+        "ERROR: Please select a temporal resolution level before proceeding..."
       );
       return; // Exit the function early
     } else if (!startDate) {

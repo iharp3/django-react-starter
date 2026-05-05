@@ -39,6 +39,10 @@ export const DATASETS = [
   "ERA5", "CARRA",
 ]
 
+export const HEIGHTS = [
+  "15 meters", "30 meters"
+]
+
 export const REGIONS = {
   Greenland: { North: 84, South: 58, West: -75, East: -10 },
   Alaska: { North: 72, South: 50, West: -170, East: -130 },

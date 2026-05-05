@@ -9,7 +9,7 @@ import AggregationControls from "./AggregationControls";
 import FiltersControls from "./FilterControls";
 import SidebarButtons from "./SidebarButtons";
 import QueryLogDisplay from "./QueryLogDisplay";
-import { VARIABLES_BY_DATASET, DATASETS} from "../../constants/data";
+import { VARIABLES_BY_DATASET, DATASETS, HEIGHTS} from "../../constants/data";
 import "../../styles/sidebar.css";
 import "../../styles/loading.css";
 import { Accordion, AccordionSummary, AccordionDetails, Typography } from "@mui/material";
@@ -113,7 +113,7 @@ const Sidebar = ({
             <Typography className="accordion-title">Height</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <DomainControls formData={formData} handleChange={handleChange} />
+            <HeightControls formData={formData} handleChange={handleChange} />
           </AccordionDetails>
         </Accordion>
       )}
