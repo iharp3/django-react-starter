@@ -14,11 +14,11 @@ class RemoteRequestConfig:
 
     days: List[str]
 
-    min_lat: float
-    max_lat: float
+    min_lat: float | None = None
+    max_lat: float | None = None
 
-    min_lon: float
-    max_lon: float
+    min_lon: float | None = None
+    max_lon: float | None = None
 
     domain: str | None = None
 

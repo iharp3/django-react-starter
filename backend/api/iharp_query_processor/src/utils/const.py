@@ -39,15 +39,15 @@ class DataRange:
     variable: str
     start_datetime: str
     end_datetime: str
-    min_lat: float
-    max_lat: float
-    min_lon: float
-    max_lon: float
-    temporal_resolution: str  # e.g., "hour", "day", "month", "year"
-    spatial_resolution: float # e.g., 0.25, 0.5, 1.0
-    aggregation: str # e.g., "mean", "max", "min"
-    domain: Optional[str] = None    # Optional field
-    height_level: Optional[str] = None  # Optional field
+    min_lat: Optional[float] = None
+    max_lat: Optional[float] = None
+    min_lon: Optional[float] = None
+    max_lon: Optional[float] = None
+    temporal_resolution: str = "month"  # e.g., "hour", "day", "month", "year"
+    spatial_resolution: float = 0.5# e.g., 0.25, 0.5, 1.0
+    aggregation: str = "mean"# e.g., "mean", "max", "min"
+    domain: Optional[str] = None
+    height_level: Optional[str] = None
 
     @override
     def __copy__(self):
@@ -84,9 +84,9 @@ dat_range_and_res = {
 # TODO: NEED TO REWRITE FOR DIFFERENT DATASETS
 def make_empty_datasets(dataset, domain):
     if dataset == "CARRA":
-        if domain == "west":
+        if domain == "West":
             dat = "carra_w"
-        elif domain == "east":
+        elif domain == "East":
             dat = "carra_e"
     # TODO: make this general - decide on capital letters/abv. for datasets/domains
     else:
@@ -100,6 +100,7 @@ def make_empty_datasets(dataset, domain):
 
     return ds_raw, ds_05, ds_10
 
+# TODO: make it so only the necessary coarsening is done instead of all of them
 def get_lat_lon_range(spatial_resolution, dataset, domain):
     ds_raw, ds_05, ds_10 = make_empty_datasets(dataset, domain)
     if spatial_resolution == 0.25:

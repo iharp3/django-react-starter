@@ -2,17 +2,18 @@ import { useState } from "react";
 import Input from "../input";
 import DataInfoDisplay from "./DataInfoDisplay";
 import SpatialPredicateControls from "./SpatialPredicateControls";
+import DomainControls from "./DomainControls";
 import TemporalPredicateControls from "./TemporalPredicateControls";
 import AggregationControls from "./AggregationControls";
 import FiltersControls from "./FilterControls";
 import SidebarButtons from "./SidebarButtons";
 import QueryLogDisplay from "./QueryLogDisplay";
-import { VARIABLES, DATASETS} from "../../constants/data";
+import { VARIABLES_BY_DATASET, DATASETS} from "../../constants/data";
 import "../../styles/sidebar.css";
 import "../../styles/loading.css";
 import { Accordion, AccordionSummary, AccordionDetails, Typography } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-
+import { useEffect } from "react";
 
 const Sidebar = ({
   setComparisonVal,
@@ -35,6 +36,10 @@ const Sidebar = ({
 
   sidebarCollapsed,
 }) => {
+  useEffect(() => {
+    setVariable(""); // or null
+  }, [dataset]);
+
   const [showInfo, setShowInfo] = useState(false);
 
   if (sidebarCollapsed) {
@@ -73,20 +78,33 @@ const Sidebar = ({
           <Input
             val={variable}
             setVal={setVariable}
-            options={VARIABLES}
+            options={VARIABLES_BY_DATASET[dataset] || []}
             varLabel="variable"
           />
         </AccordionDetails>
       </Accordion>
 
-      <Accordion >
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography className="accordion-title">Spatial Predicate</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <SpatialPredicateControls formData={formData} handleChange={handleChange} />
-        </AccordionDetails>
-      </Accordion>
+      {dataset === "ERA5" && (
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography className="accordion-title">Coordinates</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <SpatialPredicateControls formData={formData} handleChange={handleChange} />
+          </AccordionDetails>
+        </Accordion>
+      )}
+
+      {dataset === "CARRA" && (
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography className="accordion-title">Domain</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <DomainControls formData={formData} handleChange={handleChange} />
+          </AccordionDetails>
+        </Accordion>
+      )}
 
       <Accordion >
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>

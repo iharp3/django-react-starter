@@ -30,7 +30,7 @@ def _gen_empty_xarray(
     spatial_resolution,
     dataset,
     domain,
-):
+):# TODO: check this works to create an empty xarray for CARRA data
     lat_range, lon_range, lat_range_reverse = get_lat_lon_range(spatial_resolution, dataset, domain)
     lat_start = lat_range.searchsorted(min_lat, side="left")
     lat_end = lat_range.searchsorted(max_lat, side="right")
@@ -64,14 +64,21 @@ def _gen_xarray_for_meta_row(row, overwrite_temporal_resolution=None):
         row.spatial_resolution,
         row.dataset,
         row.domain,
+        # TODO: add height for CARRA dataset
     )
 
 def _mask_query_with_meta(ds_query, ds_meta):
-    return (
-        ds_query["time"].isin(ds_meta["time"])
-        & ds_query["latitude"].isin(ds_meta["latitude"])
-        & ds_query["longitude"].isin(ds_meta["longitude"])
-    )
+    if ds_query["dataset"] == "CARRA":
+        return (
+            ds_query["time"].isin(ds_meta["time"])
+            & ds_query["domain"].isin(ds_meta["domain"])
+        )
+    else:   # TODO: make general, not just ERA5
+        return (
+            ds_query["time"].isin(ds_meta["time"])
+            & ds_query["latitude"].isin(ds_meta["latitude"])
+            & ds_query["longitude"].isin(ds_meta["longitude"])
+        )
 
 def query_get_overlap_and_leftover(dr: DataRange):
     df_overlap = _df_meta[

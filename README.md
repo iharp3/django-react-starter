@@ -31,6 +31,13 @@ In a new terminal window, run:
 source venv/bin/activate
 
 cd frontend
+```
+If you need to build the frontend, run:
+```bash
+npm run build
+```
+Else, just run:
+```bash
 npm run dev
 ```
 This will give you a local host link to view the current frontend.

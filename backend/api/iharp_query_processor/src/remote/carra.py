@@ -16,8 +16,6 @@ class CARRARepository(RemoteRepository):
 
         return self.DATADIR + fname
     
-    # TODO: write function to turn lat/lon info into East or West domain
-    
     def _build_request(self):
 
         cfg = self.config
