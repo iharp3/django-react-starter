@@ -3,6 +3,7 @@ import Input from "../input";
 import DataInfoDisplay from "./DataInfoDisplay";
 import SpatialPredicateControls from "./SpatialPredicateControls";
 import DomainControls from "./DomainControls";
+import HeightControls from "./HeightControls";
 import TemporalPredicateControls from "./TemporalPredicateControls";
 import AggregationControls from "./AggregationControls";
 import FiltersControls from "./FilterControls";
@@ -99,6 +100,17 @@ const Sidebar = ({
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography className="accordion-title">Domain</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <DomainControls formData={formData} handleChange={handleChange} />
+          </AccordionDetails>
+        </Accordion>
+      )}
+
+      {dataset === "CARRA" && (
+        <Accordion>
+          <AccordionSummary >
+            <Typography className="accordion-title">Height</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <DomainControls formData={formData} handleChange={handleChange} />
