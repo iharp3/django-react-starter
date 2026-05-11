@@ -33,10 +33,6 @@ class GetRasterExecutor(QueryExecutor):
     
     def _data_files_for_query(self):
 
-        # print("\n===== GetRasterExecutor._data_files_for_query() =====")
-        # print("DataRange received:")
-        # print(self.dr)
-
         # TODO: check if you utilize lower resolution files
         df_overlap, leftover = query_get_overlap_and_leftover(self.dr)
 
@@ -45,11 +41,35 @@ class GetRasterExecutor(QueryExecutor):
         else:
             local_files = sorted(df_overlap["file_path"].tolist())
 
-        # print("Local files found:")
-        # print(local_files)
+        if leftover:        # TODO: allow multiple leftovers
 
-        # TODO: allow multiple leftovers
-        if leftover is not None:
+            requests = []
+
+            for cov in leftover:
+                start = cov.time_range[0]
+                end = cov.time_range[1]
+
+                years = [str(y) for y in range(start.year, end.year + 1)]
+                req = {
+                    "dataset": self.dr.dataset,
+                    "variable": self.dr.variable,
+                    "years": years,
+                }
+
+                if self.dr.dataset == "ERA5":
+                    req.update({
+                        "min_lat": cov.spatial["min_lat"],
+                        "max_lat": cov.spatial["max_lat"],
+                        "min_lon": cov.spatial["min_lon"],
+                        "max_lon": cov.spatial["max_lon"],
+                    })
+                elif self.dr.dataset == "CARRA":
+                    req["domain"] = cov.spatial["domain"]
+
+                requests.append(req)
+        else:
+            requests = []
+
             leftover_min_lat = math.floor(leftover.latitude.min().item())
             leftover_max_lat = math.ceil(leftover.latitude.max().item())
             leftover_min_lon = math.floor(leftover.longitude.min().item())
