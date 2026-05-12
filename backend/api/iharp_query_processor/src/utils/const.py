@@ -4,6 +4,19 @@ from dataclasses import dataclass
 from typing import override, Optional, List
 from numpy import dtype, nan
 
+DATASET_GRID_DIMS = {
+    "ERA5": {
+        "x": "longitude",
+        "y": "latitude",
+        "time": "valid_time",
+    },
+    "CARRA": {
+        "x": "x",
+        "y": "y",
+        "time": "time",
+    }
+}
+
 long_short_name_dict = {
     "2m_temperature": "t2m",        # ERA5 single level variable
     "snow_depth": "sd",             # ERA5 single level variable

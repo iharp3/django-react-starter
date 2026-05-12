@@ -1,6 +1,6 @@
 from api.iharp_query_processor.src.query_executor import *
 from api.iharp_query_processor.src.query_executor_get_raster import GetRasterExecutor
-
+from api.iharp_query_processor.src.utils.const import DATASET_GRID_DIMS
 
 class TimeseriesExecutor(QueryExecutor):
     def __init__(
@@ -17,7 +17,6 @@ class TimeseriesExecutor(QueryExecutor):
         self.log_info = log_info if log_info is not None else []
 
     def execute(self):
-        # print(f"[TimeseriesExecutor] Starting execution")
         print("\n===== TimeseriesExecutor.execute() =====")
         print("DataRange:", self.dr)
         print("Aggregation:", self.time_series_aggregation_method)
@@ -28,16 +27,14 @@ class TimeseriesExecutor(QueryExecutor):
             dr=temp_dr,
         )
         raster = get_raster_executor.execute()
-
-        print(f"[DEBUG] self.log_info type: {type(self.log_info)}")
-        print(f"[DEBUG] self.log_info content: {self.log_info}")
         self.log_info.append(get_raster_executor.get_log())
 
+        dims = DATASET_GRID_DIMS[self.dr.dataset]
         if self.time_series_aggregation_method == "mean":
-            return raster.mean(dim=["latitude", "longitude"]).compute()
+            return raster.mean(dim=[dims["y"], dims["x"]]).compute()
         elif self.time_series_aggregation_method == "max":
-            return raster.max(dim=["latitude", "longitude"]).compute()
+            return raster.max(dim=[dims["y"], dims["x"]]).compute()
         elif self.time_series_aggregation_method == "min":
-            return raster.min(dim=["latitude", "longitude"]).compute()
+            return raster.min(dim=[dims["y"], dims["x"]]).compute()
         else:
             raise ValueError(f"Invalid time series aggregation method: {self.time_series_aggregation_method}")
