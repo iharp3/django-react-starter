@@ -71,10 +71,10 @@ def subtract_bbox(q, m):
         return [q]
 
     pieces.extend([
-    {"min_lat": qlat[0], "max_lat": lat_overlap[0], "min_lon": *qlon},
-    {"min_lat": lat_overlap[1], "max_lat": qlat[1], "min_lon": *qlon},
-    {"min_lat": *lat_overlap, "min_lon": qlon[0], "max_lon": lon_overlap[0]},
-    {"min_lat": *lat_overlap, "min_lon": lon_overlap[1], "max_lon": qlon[1]},
+    {"min_lat": qlat[0], "max_lat": lat_overlap[0], "min_lon": [*qlon]},
+    {"min_lat": lat_overlap[1], "max_lat": qlat[1], "min_lon": [*qlon]},
+    {"min_lat": [*lat_overlap], "min_lon": qlon[0], "max_lon": lon_overlap[0]},
+    {"min_lat": [*lat_overlap], "min_lon": lon_overlap[1], "max_lon": qlon[1]},
     ])
 
     return [p for p in pieces if p["min_lat"] < p["max_lat"] and p["min_lon"] < p["max_lon"]]
