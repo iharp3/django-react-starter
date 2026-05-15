@@ -24,7 +24,7 @@ function App() {
   const [variable, setVariable] = useState("2m_temperature");
   const [startDate, setStartDate] = useState(dayjs("2020-06-01T00:00Z"));
   const [endDate, setEndDate] = useState(dayjs("2023-12-31T23:00Z"));
-  const [domain, setDomain] = useState("East");
+  const [domain, setDomain] = useState("east_domain");
   const [height, setHeight] = useState("15 meters");
   const [comparisonVal, setComparisonVal] = useState(285);
   const [predicate, setPredicate] = useState("<");
@@ -79,7 +79,7 @@ function App() {
     west: -74,
     spatialResolution: 1,
     aggregation: "mean",
-    domain: "East",
+    domain: "east_domain",
     height: "15 meters",
   });
 
