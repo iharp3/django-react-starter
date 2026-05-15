@@ -1,7 +1,7 @@
 import numpy as np
 import xarray as xr
 from dataclasses import dataclass
-from typing import override, Optional, List
+from typing import override, Optional
 from numpy import dtype, nan
 
 DATASET_GRID_DIMS = {
@@ -93,42 +93,6 @@ dat_range_and_res = {
                 "lat":w_dims['lat'],
                 "lon": w_dims['lon']},
 }
-
-# TODO: NEED TO REWRITE FOR DIFFERENT DATASETS
-def make_empty_datasets(dataset, domain):
-    if dataset == "CARRA":
-        if domain == "West":
-            dat = "carra_w"
-        elif domain == "East":
-            dat = "carra_e"
-    # TODO: make this general - decide on capital letters/abv. for datasets/domains
-    else:
-        dat = "era5"
-
-    ds_raw = xr.Dataset()
-    ds_raw["latitude"] = dat_range_and_res[dat]["lat"]
-    ds_raw["longitude"] = dat_range_and_res[dat]["lon"]
-    ds_05 = ds_raw.coarsen(latitude=2, longitude=2, boundary="trim").max()
-    ds_10 = ds_raw.coarsen(latitude=4, longitude=4, boundary="trim").max()
-
-    return ds_raw, ds_05, ds_10
-
-# TODO: make it so only the necessary coarsening is done instead of all of them
-def get_lat_lon_range(spatial_resolution, dataset, domain):
-    ds_raw, ds_05, ds_10 = make_empty_datasets(dataset, domain)
-    if spatial_resolution == 0.25:
-        lat_range = ds_raw.latitude.values
-        lon_range = ds_raw.longitude.values
-    elif spatial_resolution == 0.5:
-        lat_range = ds_05.latitude.values
-        lon_range = ds_05.longitude.values
-    elif spatial_resolution == 1.0:
-        lat_range = ds_10.latitude.values
-        lon_range = ds_10.longitude.values
-    else:
-        raise ValueError("Invalid spatial_resolution")
-    return lat_range, lon_range, lat_range[::-1]
-
 
 def time_resolution_to_freq(time_resolution):
     if time_resolution == "hour":
