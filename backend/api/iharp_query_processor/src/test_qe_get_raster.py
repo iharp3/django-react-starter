@@ -18,7 +18,7 @@ from datetime import datetime
 
 from api.iharp_query_processor.src.query_executor_get_raster import GetRasterExecutor
 from api.iharp_query_processor.src.query_executor_timeseries import TimeseriesExecutor
-from api.iharp_query_processor.src.utils.const import DataRange
+from api.iharp_query_processor.src.utils.const import DataRange, DATASET_GRID_DIMS
 import api.iharp_query_processor.src.query_executor_get_raster as raster_module
 from api.iharp_query_processor.src.remote.era5 import ERA5Repository
 
@@ -42,12 +42,17 @@ def mock_query_get_overlap_and_leftover(dr):
 
     data = np.random.rand(len(times), len(lat), len(lon))
 
+    dims = DATASET_GRID_DIMS[dr.dataset]
+    time_dim = dims["time"]
+    x_dim = dims["x"]
+    y_dim = dims["y"]
+
     ds = xr.Dataset(
-        {"t2m": (["valid_time", "latitude", "longitude"], data)},
+        {"t2m": ([time_dim, y_dim, x_dim], data)},
         coords={
-            "valid_time": times,
-            "latitude": lat,
-            "longitude": lon,
+            time_dim: times,
+            y_dim: lat,
+            x_dim: lon,
         },
     )
 
@@ -84,12 +89,17 @@ def fake_download(self):
 
     data = np.random.rand(len(times), len(lat), len(lon))
 
+    dims = DATASET_GRID_DIMS[dr.dataset]
+    time_dim = dims["time"]
+    x_dim = dims["x"]
+    y_dim = dims["y"]
+
     ds = xr.Dataset(
-        {"t2m": (["valid_time", "latitude", "longitude"], data)},
+        {"t2m": ([time_dim, y_dim, x_dim], data)},
         coords={
-            "valid_time": times,
-            "latitude": lat,
-            "longitude": lon,
+            time_dim: times,
+            y_dim: lat,
+            x_dim: lon,
         },
     )
 

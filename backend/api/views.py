@@ -15,9 +15,11 @@ from shapely.geometry import Polygon
 
 from api.serializers import *
 from api.iharp_query_processor import *
+from api.iharp_query_processor.src.utils.const import DATASET_GRID_DIMS
 
-
+print("hit view")
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 MSG_FORMAT = "[%(asctime)s %(name)s-%(levelname)s]: %(message)s"
 LOG_DATE_FORMAT = "%d/%b/%Y %H:%M:%S"
 logging.basicConfig(level=logging.INFO, format=MSG_FORMAT, datefmt=LOG_DATE_FORMAT)
@@ -260,8 +262,19 @@ def timeseries_query(request):
         )
         ts = qe.execute()
 
+        logger.info(f"Dataset: {dataset}")
+        logger.info(f"Variable: {variable}")
+        logger.info(f"Returned timeseries data keys: {ts.keys() if ts is not None else 'none'}")
+        logger.info(f"Returned timeseries data: {ts}")
+
+        # dims = DATASET_GRID_DIMS[dataset]
+        # time_dim = dims["time"]
+
+        dims = DATASET_GRID_DIMS.get(dataset, {})
+        time_dim = dims.get("time", "valid_time")
+
         short_variable = get_variable_short_name(variable)
-        fig = go.Figure([go.Scatter(x=ts["time"], y=ts[short_variable])])
+        fig = go.Figure([go.Scatter(x=ts[time_dim], y=ts[short_variable])])
         json_fig = fig.to_json()
         json_data = json.loads(json_fig)
 
@@ -322,8 +335,16 @@ def heatmap_query(request):
         )
         hm = qe.execute()
 
+        dims = DATASET_GRID_DIMS.get(dataset, {})
+        x_dim = dims.get("x", "longitude")
+        y_dim = dims.get("y", "latitude")
+
+        # dims = DATASET_GRID_DIMS[dataset]
+        # x_dim = dims["x"]
+        # y_dim = dims["y"]
+
         var_short_name = get_variable_short_name(variable)
-        fig = go.Figure(data=go.Heatmap(x=hm["longitude"], y=hm["latitude"], z=hm[var_short_name], colorscale="RdBu_r"))
+        fig = go.Figure(data=go.Heatmap(x=hm[x_dim], y=hm[y_dim], z=hm[var_short_name], colorscale="RdBu_r"))
         fig.update_traces(hovertemplate=f"lon: %{{x}}<br>lat: %{{y}}<br>{var_short_name}: %{{z}}<extra></extra>")
         fig.update_layout(yaxis=dict(scaleanchor="x", scaleratio=1), xaxis=dict(constrain="domain"))
         json_fig = fig.to_json()
@@ -410,16 +431,21 @@ def find_time_query(request):
         true_mask = ft[var_short_name] == True
         false_mask = ft[var_short_name] == False
 
+        # dims = DATASET_GRID_DIMS[dataset]
+        # time_dim = dims["time"]
+
+        dims = DATASET_GRID_DIMS.get(dataset, {})
+        time_dim = dims.get("time", "valid_time")
         fig = go.Figure([
             go.Scatter(
-                x=ft["time"][true_mask],
+                x=ft[time_dim][true_mask],
                 y=ft[var_short_name][true_mask],
                 mode="markers",
                 marker=dict(size=12, color=color_map[True]),
                 name="True"   # <-- legend label
             ),
             go.Scatter(
-                x=ft["time"][false_mask],
+                x=ft[time_dim][false_mask],
                 y=ft[var_short_name][false_mask],
                 mode="markers",
                 marker=dict(size=12, color=color_map[False]),
@@ -482,13 +508,26 @@ def find_area_query(request):
         )
         fa = qe.execute()
 
+        # dims = DATASET_GRID_DIMS[dataset]
+        # x_dim = dims["x"]
+        # y_dim = dims["y"]
+        dims = DATASET_GRID_DIMS.get(dataset, {})
+        x_dim = dims.get("x", "longitude")
+        y_dim = dims.get("y", "latitude")
+
         fa_low = fa
         # fa_low = fa.isel(latitude=slice(0, len(fa["latitude"]), 4), longitude=slice(0, len(fa["longitude"]), 4))
         df = fa_low.to_dataframe().reset_index()
-        df["latitude"] = df["latitude"] - 0.5
-        df["longitude"] = df["longitude"] - 0.5
+
+        if x_dim in df.columns and y_dim in df.columns:
+            df["latitude"] = df[y_dim] - 0.5
+            df["longitude"] = df[x_dim] - 0.5
+        else:
+            df["latitude"] = df.get("latitude", df.get("lat"))
+            df["longitude"] = df.get("longitude", df.get("lon"))
         df["latitude2"] = df["latitude"] + 1
         df["longitude2"] = df["longitude"] + 1
+
         gdf = gpd.GeoDataFrame(
             df,
             geometry=[

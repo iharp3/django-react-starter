@@ -6,10 +6,43 @@ import cdsapi
 import pandas as pd
 import xarray as xr
 
+import logging
+
 from api.iharp_query_processor.src.remote.driver import RequestRemoteData
 from api.iharp_query_processor.src.metadata import query_get_overlap_and_leftover
 from api.iharp_query_processor.src.query_executor import QueryExecutor
 from api.iharp_query_processor.src.utils.const import DataRange, time_resolution_to_freq, DATASET_GRID_DIMS
+
+def _select_carra(ds, dr):
+    # always restrict by time first
+    sel = ds.sel(time=slice(dr.start_datetime, dr.end_datetime))
+
+    # prefer selecting by domain coordinate (e.g. "east_domain" / "west_domain")
+    domain_key = getattr(dr, "domain", None)
+    if domain_key is not None:
+        if "domain" in ds.coords:
+            try:
+                return sel.sel(domain=domain_key)
+            except Exception:
+                pass
+        for coord_name in ("east_domain", "west_domain"):
+            if coord_name in ds.coords:
+                try: 
+                    return sel.sel({coord_name: domain_key})
+                except Exception:
+                    pass
+
+    # # fallback: if dataset uses lat/lon dims, apply spatial slice using dr bounds
+    # lat_dim = "latitude" if "latitude" in ds.dims else ("lat" if "lat" in ds.dims else None)
+    # lon_dim = "longitude" if "longitude" in ds.dims else ("lon" if "lon" in ds.dims else None)
+    # if lat_dim and lon_dim and getattr(dr, "max_lat", None) is not None:
+    #     return sel.sel(**{
+    #         lat_dim: slice(dr.max_lat, dr.min_lat),
+    #         lon_dim: slice(dr.min_lon, dr.max_lon),
+    #     })
+
+    # nothing else to do
+    return sel
 
 DATASET_SELECTORS = {
     "ERA5": lambda ds, dr: ds.sel(
@@ -18,10 +51,19 @@ DATASET_SELECTORS = {
         longitude=slice(dr.min_lon, dr.max_lon),
     ),
 
-    "CARRA": lambda ds, dr: ds.sel(
-        time=slice(dr.start_datetime, dr.end_datetime)
-    )
+    "CARRA": _select_carra,
 }
+# DATASET_SELECTORS = {
+#     "ERA5": lambda ds, dr: ds.sel(
+#         valid_time=slice(dr.start_datetime, dr.end_datetime),
+#         latitude=slice(dr.max_lat, dr.min_lat),
+#         longitude=slice(dr.min_lon, dr.max_lon),
+#     ),
+
+#     "CARRA": lambda ds, dr: ds.sel(
+#         time=slice(dr.start_datetime, dr.end_datetime)
+#     )
+# }
 
 
 class GetRasterExecutor(QueryExecutor):
@@ -104,7 +146,23 @@ class GetRasterExecutor(QueryExecutor):
                     }
                 )
             elif region.dataset == "CARRA":
+                if getattr(region, "domain", None):
+                    req.update({"domain": region.domain})
                 req["domain"] = region.spatial["domain"]
+                domain_val = None
+                if isinstance(region.spatial, dict):
+                    domain_val = region.spatial.get("domain")
+                if domain_val:
+                    req.update({"domain": domain_val})
+                else:
+                    req.update(
+                        {
+                            "min_lat": region.spatial["min_lat"],
+                            "max_lat": region.spatial["max_lat"],
+                            "min_lon": region.spatial["min_lon"],
+                            "max_lon": region.spatial["max_lon"], 
+                        }
+                    )
             else:
                 raise ValueError(
                     f"Unsupported dataset: {region.dataset}" 
@@ -112,6 +170,7 @@ class GetRasterExecutor(QueryExecutor):
             
             requests.append(req)
 
+        print(f"local_files: {local_files}")
         return local_files, requests
     
     def _gen_download_file_name(self):

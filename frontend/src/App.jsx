@@ -25,7 +25,7 @@ function App() {
   const [startDate, setStartDate] = useState(dayjs("2020-06-01T00:00Z"));
   const [endDate, setEndDate] = useState(dayjs("2023-12-31T23:00Z"));
   const [domain, setDomain] = useState("east_domain");
-  const [height, setHeight] = useState("15 meters");
+  const [height, setHeight] = useState("15_m");
   const [comparisonVal, setComparisonVal] = useState(285);
   const [predicate, setPredicate] = useState("<");
   const [htmlString, setHtml] = useState("");
@@ -80,7 +80,7 @@ function App() {
     spatialResolution: 1,
     aggregation: "mean",
     domain: "east_domain",
-    height: "15 meters",
+    height: "15_m",
   });
 
   useEffect(() => {

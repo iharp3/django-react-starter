@@ -3,7 +3,7 @@ import xarray as xr
 
 from api.iharp_query_processor.src.query_executor import QueryExecutor
 from api.iharp_query_processor.src.query_executor_timeseries import TimeseriesExecutor
-from api.iharp_query_processor.src.utils.const import DataRange
+from api.iharp_query_processor.src.utils.const import DataRange, DATASET_GRID_DIMS
 from api.iharp_query_processor.src.utils.get_whole_period import get_whole_period_between, get_last_date_of_month, time_array_to_range
 
 
@@ -22,6 +22,7 @@ class FindTimeExecutor(QueryExecutor):
         self.time_series_aggregation_method = time_series_aggregation_method
         self.filter_predicate = filter_predicate
         self.filter_value = filter_value
+        self.dims = DATASET_GRID_DIMS[self.dr.dataset]
 
     def execute(self):
         if self.dr.temporal_resolution == "hour" and self.filter_predicate != "!=":
@@ -66,9 +67,10 @@ class FindTimeExecutor(QueryExecutor):
         """
         years, months, days, hours = get_whole_period_between(self.dr.start_datetime, self.dr.end_datetime)
         time_points = pd.date_range(start=self.dr.start_datetime, end=self.dr.end_datetime, freq="h")
+        time_dim = self.dims["time"]
         result = xr.Dataset(
-            data_vars={self.variable_short_name: (["valid_time"], [None] * len(time_points))},
-            coords=dict(valid_time=time_points),
+            data_vars={self.variable_short_name: ([time_dim], [None] * len(time_points))},
+            coords=dict(time_dim=time_points),
         )
 
         if years:
@@ -78,8 +80,8 @@ class FindTimeExecutor(QueryExecutor):
             for year in years:
                 year_determined = False
                 year_datetime = f"{year}-12-31 00:00:00"
-                curr_year_min = year_min[self.variable_short_name].sel(valid_time=year_datetime).values.item()
-                curr_year_max = year_max[self.variable_short_name].sel(valid_time=year_datetime).values.item()
+                curr_year_min = year_min[self.variable_short_name].sel(time_dim=year_datetime).values.item()
+                curr_year_max = year_max[self.variable_short_name].sel(time_dim=year_datetime).values.item()
                 print(f"year: {year}, min: {curr_year_min}, max: {curr_year_max}")
                 if self.filter_predicate == ">":
                     if curr_year_min > self.filter_value:
@@ -115,8 +117,8 @@ class FindTimeExecutor(QueryExecutor):
             for month in months:
                 month_determined = False
                 month_datetime = f"{month}-{get_last_date_of_month(pd.Timestamp(month))} 00:00:00"
-                curr_month_min = month_min[self.variable_short_name].sel(valid_time=month_datetime).values.item()
-                curr_month_max = month_max[self.variable_short_name].sel(valid_time=month_datetime).values.item()
+                curr_month_min = month_min[self.variable_short_name].sel(time_dim=month_datetime).values.item()
+                curr_month_max = month_max[self.variable_short_name].sel(time_dim=month_datetime).values.item()
                 if self.filter_predicate == ">":
                     if curr_month_min > self.filter_value:
                         print(f"{month}: min > filter, True")
@@ -153,8 +155,8 @@ class FindTimeExecutor(QueryExecutor):
             for day in days:
                 day_determined = False
                 day_datetime = f"{day} 00:00:00"
-                curr_day_min = day_min[self.variable_short_name].sel(valid_time=day_datetime).values.item()
-                curr_day_max = day_max[self.variable_short_name].sel(valid_time=day_datetime).values.item()
+                curr_day_min = day_min[self.variable_short_name].sel(time_dim=day_datetime).values.item()
+                curr_day_max = day_max[self.variable_short_name].sel(time_dim=day_datetime).values.item()
                 if self.filter_predicate == ">":
                     if curr_day_min > self.filter_value:
                         print(f"{day}: min > filter, True")
@@ -182,7 +184,7 @@ class FindTimeExecutor(QueryExecutor):
                     # add hours to hours
                     hours = hours + [f"{day} {hour:02d}:00:00" for hour in range(24)]
 
-        result_undetermined = result["valid_time"].where(result[self.variable_short_name].isnull(), drop=True)
+        result_undetermined = result[time_dim].where(result[self.variable_short_name].isnull(), drop=True)
         if result_undetermined.size > 0:
             hour_range = time_array_to_range(result_undetermined.values, "hour")
             first_hour = hour_range[0][0]

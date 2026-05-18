@@ -5,7 +5,7 @@ import pandas as pd
 import os
 
 # from src.utils.const import long_short_name_dict, encodings
-from api.iharp_query_processor.src.utils.const import long_short_name_dict, encodings, find_lat_lon_dims
+from api.iharp_query_processor.src.utils.const import long_short_name_dict, encodings, find_lat_lon_dims, DATASET_GRID_DIMS
 
 
 class Aggregate:
@@ -38,6 +38,8 @@ class Aggregate:
 
         self.records = []
 
+        self.dims = DATASET_GRID_DIMS[self.dataset]
+
     def _log_record(self, outfile, temporal_res, spatial_res, aggregation):
 
         # assuming time_range is just one year
@@ -65,7 +67,9 @@ class Aggregate:
 
     def _spatial_aggregate(self, ds, stat):
         """Return spatially aggregated datasets."""
-        lat_dim, lon_dim = find_lat_lon_dims(ds)
+
+        lat_dim = self.dims["y"]
+        lon_dim = self.dims["x"]
 
         outputs = {}
         for label, coarse in self.SPATIAL_SCALES.items():
@@ -88,8 +92,9 @@ class Aggregate:
 
         writes = []
 
+        time_dim = self.dims["time"]
         for label, freq in self.TEMPORAL_FREQS.items():
-            resampler = ds.resample(valid_time=freq)
+            resampler = ds.resample(time_dim=freq)
             for stat in self.STATS:
                 result = self._apply_stat(resampler, stat)
                 outfile = f"/data/{self.dataset}/{self.base_name}_025{label}_{stat}.nc"

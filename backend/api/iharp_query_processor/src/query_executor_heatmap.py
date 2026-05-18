@@ -3,7 +3,7 @@ import xarray as xr
 
 from api.iharp_query_processor.src.query_executor import QueryExecutor
 from api.iharp_query_processor.src.query_executor_get_raster import GetRasterExecutor
-from api.iharp_query_processor.src.utils.const import DataRange
+from api.iharp_query_processor.src.utils.const import DataRange, DATASET_GRID_DIMS
 from api.iharp_query_processor.src.utils.get_whole_period import (
     get_whole_ranges_between,
     get_total_hours_in_year,
@@ -133,15 +133,20 @@ class HeatmapExecutor(QueryExecutor):
             print(f"num hours: {num_hrs}\tstart: {start_hour}, \tend: {end_hour}")
             hour_hours += [1 for _ in hr_range]
 
-        xrds_concat = xr.concat(ds_year + ds_month + ds_day + ds_hour, dim="valid_time", join="outer")
+        dims = DATASET_GRID_DIMS[self.dr.dataset]
+
+        xrds_concat = xr.concat(ds_year + ds_month + ds_day + ds_hour, dim=dims["time"], join="outer")
         nd_array = xrds_concat[self.variable_short_name].to_numpy()
         weights = np.array(year_hours + month_hours + day_hours + hour_hours)
         total_hours = get_total_hours_between(self.dr.start_datetime, self.dr.end_datetime)
         weights = weights / total_hours
         average = np.average(nd_array, axis=0, weights=weights)
+        y_dim = dims["y"]
+        x_dim = dims["x"]
+
         res = xr.Dataset(
-            {self.variable_short_name: (["latitude", "longitude"], average)},
-            coords={"latitude": xrds_concat.latitude, "longitude": xrds_concat.longitude},
+            {self.variable_short_name: ([y_dim, x_dim], average)},
+            coords={y_dim: xrds_concat[y_dim], x_dim: xrds_concat[x_dim]},
         )
         self.range_info.append({"year": num_yrs, "month": num_mos, "day": num_days, "hour": num_hrs})
         return res
@@ -221,7 +226,8 @@ class HeatmapExecutor(QueryExecutor):
             num_hrs=(len(hr_range))
             print(f"num hours: {num_hrs}\tstart: {start_hour}, \tend: {end_hour}")
             self.range_info.append({"year": num_yrs, "month": num_mos, "day": num_days, "hour": num_hrs})
-        return xr.concat(ds_year + ds_month + ds_day + ds_hour, dim="valid_time", join="outer").max(dim="valid_time")
+            dims = DATASET_GRID_DIMS[self.dr.dataset]
+        return xr.concat(ds_year + ds_month + ds_day + ds_hour, dim=dims["time"], join="outer").max(dim=dims["time"])
 
     def _get_min_heatmap(self):
         num_yrs = 0
@@ -299,5 +305,5 @@ class HeatmapExecutor(QueryExecutor):
             print(f"num hours: {num_hrs}\tstart: {start_hour}, \tend: {end_hour}")
             self.range_info.append({"year": num_yrs, "month": num_mos, "day": num_days, "hour": num_hrs})
             
-        # get min heatmap from ds_year, ds_month, ds_day, ds_hour
-        return xr.concat(ds_year + ds_month + ds_day + ds_hour, dim="valid_time", join="outer").min(dim="valid_time")
+        dims = DATASET_GRID_DIMS[self.dr.dataset]
+        return xr.concat(ds_year + ds_month + ds_day + ds_hour, dim=dims["time"], join="outer").min(dim=dims["time"])
