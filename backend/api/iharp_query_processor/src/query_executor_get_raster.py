@@ -5,43 +5,50 @@ import math
 import cdsapi
 import pandas as pd
 import xarray as xr
+import numpy as np
 
 import logging
 
 from api.iharp_query_processor.src.remote.driver import RequestRemoteData
 from api.iharp_query_processor.src.metadata import query_get_overlap_and_leftover
 from api.iharp_query_processor.src.query_executor import QueryExecutor
-from api.iharp_query_processor.src.utils.const import DataRange, time_resolution_to_freq, DATASET_GRID_DIMS
+from api.iharp_query_processor.src.utils.const import DataRange, time_resolution_to_freq, DATASET_GRID_DIMS, CARRA_COORDINATES
+
+def _carra_time_selector(ds, dr):
+    print(f"[_carra_time_selector] Dataset coords: {list(ds.coords)}, dims: {list(ds.dims)}")
+    for time_dim in ("valid_time", "time"):
+        if time_dim in ds.coords or time_dim in ds.dims:
+            print(f"[_carra_time_selector] Found time dim: {time_dim}")
+            return ds.sel({time_dim: slice(dr.start_datetime, dr.end_datetime)})
+    raise ValueError(f"CARRA dataset has no recognized time coordinate. Available coords: {list(ds.coords)}, dims: {list(ds.dims)}")
 
 def _select_carra(ds, dr):
-    # always restrict by time first
-    sel = ds.sel(time=slice(dr.start_datetime, dr.end_datetime))
+    print(f"[_select_carra] Called with domain={dr.domain}")
+    sel = _carra_time_selector(ds, dr)
+    print(f"[_select_carra] After time selection, coords: {list(sel.coords)}, dims: {list(sel.dims)}")
+    
+    domain = getattr(dr, "domain", None)
+    if domain is None:
+        raise ValueError("CARRA queries require a domain value")
 
-    # prefer selecting by domain coordinate (e.g. "east_domain" / "west_domain")
-    domain_key = getattr(dr, "domain", None)
-    if domain_key is not None:
-        if "domain" in ds.coords:
+    if "domain" in sel.coords:
+        print(f"[_select_carra] Selecting by 'domain' coord with value={domain}")
+        result = sel.sel(domain=domain)
+        print(f"[_select_carra] Result shape: {result.sizes}")
+        return result
+
+    for coord_name in ("east_domain", "west_domain"):
+        if coord_name in sel.coords:
+            print(f"[_select_carra] Found coord {coord_name}, attempting selection")
             try:
-                return sel.sel(domain=domain_key)
-            except Exception:
+                result = sel.sel({coord_name: domain})
+                print(f"[_select_carra] Success! Result shape: {result.sizes}")
+                return result
+            except Exception as e:
+                print(f"[_select_carra] Failed to select {coord_name}: {e}")
                 pass
-        for coord_name in ("east_domain", "west_domain"):
-            if coord_name in ds.coords:
-                try: 
-                    return sel.sel({coord_name: domain_key})
-                except Exception:
-                    pass
 
-    # # fallback: if dataset uses lat/lon dims, apply spatial slice using dr bounds
-    # lat_dim = "latitude" if "latitude" in ds.dims else ("lat" if "lat" in ds.dims else None)
-    # lon_dim = "longitude" if "longitude" in ds.dims else ("lon" if "lon" in ds.dims else None)
-    # if lat_dim and lon_dim and getattr(dr, "max_lat", None) is not None:
-    #     return sel.sel(**{
-    #         lat_dim: slice(dr.max_lat, dr.min_lat),
-    #         lon_dim: slice(dr.min_lon, dr.max_lon),
-    #     })
-
-    # nothing else to do
+    print(f"[_select_carra] No domain coord found. Returning full dataset. Available coords: {list(sel.coords)}")
     return sel
 
 DATASET_SELECTORS = {
@@ -52,18 +59,8 @@ DATASET_SELECTORS = {
     ),
 
     "CARRA": _select_carra,
+    
 }
-# DATASET_SELECTORS = {
-#     "ERA5": lambda ds, dr: ds.sel(
-#         valid_time=slice(dr.start_datetime, dr.end_datetime),
-#         latitude=slice(dr.max_lat, dr.min_lat),
-#         longitude=slice(dr.min_lon, dr.max_lon),
-#     ),
-
-#     "CARRA": lambda ds, dr: ds.sel(
-#         time=slice(dr.start_datetime, dr.end_datetime)
-#     )
-# }
 
 
 class GetRasterExecutor(QueryExecutor):
@@ -110,7 +107,9 @@ class GetRasterExecutor(QueryExecutor):
         requests = []
 
         for region in remaining_regions:
-
+            print(f"DATA NOT IN LOCAL FILES: {region.dataset}, {region.variable}, {region.start}, {region.end}, {region.spatial}")
+            # TODO: add limit for size of data to download, offline downloading, etc.
+            # continue
             # 
             # half-open interval [start, end)
             # 
@@ -128,7 +127,6 @@ class GetRasterExecutor(QueryExecutor):
                 "dataset": region.dataset,
                 "variable": region.variable,
                 "years": years,
-
                 "start_datetime": start.isoformat(),
                 "end_datetime": end.isoformat(),
             }
@@ -146,23 +144,22 @@ class GetRasterExecutor(QueryExecutor):
                     }
                 )
             elif region.dataset == "CARRA":
-                if getattr(region, "domain", None):
-                    req.update({"domain": region.domain})
-                req["domain"] = region.spatial["domain"]
-                domain_val = None
-                if isinstance(region.spatial, dict):
-                    domain_val = region.spatial.get("domain")
-                if domain_val:
-                    req.update({"domain": domain_val})
-                else:
-                    req.update(
-                        {
-                            "min_lat": region.spatial["min_lat"],
-                            "max_lat": region.spatial["max_lat"],
-                            "min_lon": region.spatial["min_lon"],
-                            "max_lon": region.spatial["max_lon"], 
-                        }
-                    )
+                req.update(
+                    {
+                        "domain": region.spatial["domain"],
+                    }
+                )
+                if getattr(self.dr, "height_level", None) is not None:
+                    req["height_level"] = self.dr.height_level
+            # else:
+            #     req.update(
+            #         {
+            #             "min_lat": region.spatial["min_lat"],
+            #             "max_lat": region.spatial["max_lat"],
+            #             "min_lon": region.spatial["min_lon"],
+            #             "max_lon": region.spatial["max_lon"], 
+            #         }
+            #     )
             else:
                 raise ValueError(
                     f"Unsupported dataset: {region.dataset}" 

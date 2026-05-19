@@ -22,7 +22,7 @@ function App() {
   // Sidebar
   const [dataset, setDataset] = useState("ERA5");
   const [variable, setVariable] = useState("2m_temperature");
-  const [startDate, setStartDate] = useState(dayjs("2020-06-01T00:00Z"));
+  const [startDate, setStartDate] = useState(dayjs("2022-01-01T00:00Z"));
   const [endDate, setEndDate] = useState(dayjs("2023-12-31T23:00Z"));
   const [domain, setDomain] = useState("east_domain");
   const [height, setHeight] = useState("15_m");
@@ -64,7 +64,7 @@ function App() {
   //   setActiveAdminTab(v);
   // }
 
-  // // Sidebar
+  // Sidebar
   const [formData, setFormData] = useState({
     requestType: "",
     dataset: dataset,
@@ -166,6 +166,18 @@ function App() {
     }
   };
 
+  const buildRequestPayload = (overrides = {}) => ({
+    ...formData,
+    dataset,
+    variable,
+    domain,
+    height,
+    heightLevel: height,
+    startDateTime: startDate.toISOString(),
+    endDateTime: endDate.toISOString(),
+    ...overrides,
+  });
+
   const queryData = async () => {
     setIsLoading(true);
 
@@ -176,7 +188,8 @@ function App() {
       formData.south != null ? `S: ${round2(formData.south)}` : "S: -",
       formData.east  != null ? `E: ${round2(formData.east)}` : "E: -",
       formData.west  != null ? `W: ${round2(formData.west)}` : "W: -",
-      formData.spatialResolution ? `Resolution: ${formData.spatialResolution}` : "Resolution: -"
+      formData.spatialResolution ? `Resolution: ${formData.spatialResolution}` : "Resolution: -",
+      formData.domain ? `Domain: ${formData.domain}`: "Domain: -",
     ];
 
     const temporalPredicates = [
@@ -206,14 +219,8 @@ function App() {
     try {
       const response = await fetch("/api/query/", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...formData,
-          startDateTime: dayjs(formData.startDateTime).toISOString(),
-          endDateTime: dayjs(formData.endDateTime).toISOString(),
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(buildRequestPayload()),
       });
 
       if (response.ok) {
@@ -298,10 +305,11 @@ function App() {
       (formData.north > 90) ||
       (formData.south < -90) ||
       (formData.west < -180) ||
-      (formData.east > 180)
+      (formData.east > 180) &&
+      isNaN(formData.domain)
     ) {
       alert(
-        "ERROR: Please select an area on the map or enter FOUR coordinates of interest manually(S,N,W,E) before proceeding..."
+        "ERROR: Please select an area on the map or enter FOUR coordinates of interest manually(S,N,W,E) OR choose a domain before proceeding..."
       );
       alert(
         "Coordinates should be between -90:90 and -180:180 for (S,N,W,E) respectively..."
@@ -315,10 +323,8 @@ function App() {
     try {
       const response = await fetch("/api/timeseries/", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(buildRequestPayload({ requestType: "Time Series" })),
       });
       if (response.ok) {
         const responseData = await response.json();
@@ -341,32 +347,23 @@ function App() {
 
   const handleHeatMap = async (e) => {
     if (e) e.preventDefault();
-
     if (formData.variable === "") {
-      // If not, display an error message or perform any other action to prompt the user to select a temporal level
-      alert(
-        "ERROR: Please select a variable before proceeding..."
-      );
-      return; // Exit the function early
+      alert("ERROR: Please select a variable before proceeding...");
+      return;
     }
     else if (endDate.isBefore(startDate)) {
-      alert(
-        "ERROR: End Date Time Must Be After Than Start Date Time"
-      );
-      return; // Exit the function early
+      alert("ERROR: End Date Time Must Be After Than Start Date Time");
+      return;
     }
     else if (formData.temporalResolution === "") {
-      // If not, display an error message or perform any other action to prompt the user to select a temporal level
-      alert(
-        "ERROR: Please select a temporal level resolution before proceeding..."
-      );
-      return; // Exit the function early
+      alert("ERROR: Please select a temporal resolution level before proceeding...");
+      return;
     } else if (!startDate) {
       alert("ERROR: Please select a start date and time before proceeding.");
-      return; // Exit the function early
+      return;
     } else if (!endDate) {
       alert("ERROR: Please select an end date and time before proceeding..");
-      return; // Exit the function early
+      return;
     } else if (
       isNaN(formData.north) ||
       isNaN(formData.south) ||
@@ -375,28 +372,26 @@ function App() {
       (formData.north > 90) ||
       (formData.south < -90) ||
       (formData.west < -180) ||
-      (formData.east > 180)
+      (formData.east > 180) &&
+      isNaN(formData.domain)
     ) {
-      alert(
-        "ERROR: Please select an area on the map or enter FOUR coordinates of interest manually(S,N,W,E) before proceeding..."
-      );
-      alert(
-        "Coordinates should be between -90:90 and -180:180 for (S,N,W,E) respectively..."
-      );
-      return; // Exit the function early
+      alert("ERROR: Please select an area on the map or enter FOUR coordinates of interest manually(S,N,W,E) OR choose a domain before proceeding...");
+      alert("Coordinates should be between -90:90 and -180:180 for (S,N,W,E) respectively...");
+      return;
     }
-    // setActiveTab("HeatMap")
-    formData.requestType = "Heap Map";
-    formData.startDateTime = startDate;
-    formData.endDateTime = endDate;
+    
+    const payload = buildRequestPayload({ requestType: "Heat Map" });
+    console.log("BEFORE FETCH: sending payload to /api/heatmap/", payload);
+    
     try {
+      console.log("FETCHING /api/heatmap/");
       const response = await fetch("/api/heatmap/", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
+      console.log("FETCH RESPONSE received:", response.status, response.ok);
+      
       if (response.ok) {
         const responseData = await response.json();
         console.log("Successfully requested heat map data:", responseData);
@@ -413,9 +408,9 @@ function App() {
         );
       }
     } catch (error) {
-      console.error("Error requesting Heat Map:", error);
+      console.error("FETCH ERROR:", error);
     }
-  }
+  };
 
   const handleFindTime = async (e) => {
     if (e) e.preventDefault();
@@ -453,7 +448,8 @@ function App() {
       (formData.north > 90) ||
       (formData.south < -90) ||
       (formData.west < -180) ||
-      (formData.east > 180)
+      (formData.east > 180) &&
+      isNaN(formData.domain)
     ) {
       alert(
         "ERROR: Please select an area on the map or enter FOUR coordinates of interest manually(S,N,W,E) before proceeding..."
@@ -470,10 +466,8 @@ function App() {
     try {
       const response = await fetch("/api/findtime/", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(buildRequestPayload({ requestType: "Find Time" })),
       });
       if (response.ok) {
         const responseData = await response.json();
@@ -491,7 +485,7 @@ function App() {
     } catch (error) {
       console.error("Error requesting Find Time:", error);
     }
-  }
+  };
 
   const handleFindArea = async (e) => {
     if (e) e.preventDefault();
@@ -529,7 +523,8 @@ function App() {
       (formData.north > 90) ||
       (formData.south < -90) ||
       (formData.west < -180) ||
-      (formData.east > 180)
+      (formData.east > 180) &&
+      isNaN(formData.domain)
     ) {
       alert(
         "ERROR: Please select an area on the map or enter FOUR coordinates of interest manually(S,N,W,E) before proceeding..."
@@ -546,10 +541,8 @@ function App() {
     try {
       const response = await fetch("/api/findarea/", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(buildRequestPayload({ requestType: "Find Area" })),
       });
       if (response.ok) {
         const responseData = await response.json();
@@ -583,9 +576,9 @@ function App() {
           sidebarCollapsed={sidebarCollapsed}
           setComparisonVal={setComparisonVal}
           setPredicate={setPredicate}
-          dataset={formData.dataset}
+          dataset={dataset}
           setDataset={setDataset}
-          variable={formData.variable}
+          variable={variable}
           setVariable={setVariable}
           startDate={startDate}
           setStartDate={setStartDate}
@@ -595,9 +588,10 @@ function App() {
           handleChange={handleChange}
           queryData={queryData}
           isLoading={isLoading}
-          queryLog={queryLog} 
+          queryLog={queryLog}
           showQueryLog={showQueryLog}
-          setShowQueryLog={setShowQueryLog}/>
+          setShowQueryLog={setShowQueryLog}
+        />
       </div>
 
       <div className="main-content">

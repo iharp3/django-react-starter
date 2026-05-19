@@ -120,7 +120,7 @@ const Sidebar = ({
 
       <Accordion >
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography className="accordion-title">Temporal Predicate</Typography>
+          <Typography className="accordion-title">Time Interval</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <TemporalPredicateControls

@@ -36,9 +36,6 @@ class HeatmapExecutor(QueryExecutor):
 
     def get_range(self):
         return self.range_info
-        both_dict = {"log": self.log_info,
-                     "ranges": self.range_info}
-        return both_dict
 
     def execute(self):
         if self.heatmap_aggregation_method == "mean":

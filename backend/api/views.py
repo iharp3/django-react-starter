@@ -15,7 +15,17 @@ from shapely.geometry import Polygon
 
 from api.serializers import *
 from api.iharp_query_processor import *
-from api.iharp_query_processor.src.utils.const import DATASET_GRID_DIMS
+from api.iharp_query_processor.src.utils.const import DataRange, DATASET_GRID_DIMS, CARRA_COORDINATES
+
+east = CARRA_COORDINATES["east_domain"]
+west = CARRA_COORDINATES["west_domain"]
+
+# North, South, East, West
+# max lat, min lat, max lon, min lon
+CARDINAL_BOUNDS = {
+    "east_domain": [east['lat'].max, east['lat'].min, east['lon'].max, east['lon'].min],
+    "west_domain": [west['lat'].max, west['lat'].min, west['lon'].max, west['lon'].min]
+}
 
 print("hit view")
 logger = logging.getLogger(__name__)
@@ -53,38 +63,24 @@ def get_raster_query(request):
         serializer.save()
         logger.info(request.data)
 
-        dataset = request.data.get("dataset")
-        variable = request.data.get("variable")
-        start_datetime = request.data.get("startDateTime")
-        end_datetime = request.data.get("endDateTime")
-        time_resolution = request.data.get("temporalResolution")
-        north = round(float(request.data.get("north")), 3)
-        south = round(float(request.data.get("south")), 3)
-        east = round(float(request.data.get("east")), 3)
-        west = round(float(request.data.get("west")), 3)
-        spatial_resolution = float(request.data.get("spatialResolution"))
-        aggregation = request.data.get("aggregation")
-        domain = request.data.get("domain")
-        height_level = request.data.get("heightLevel")
-
-        formatted_start = format_datetime_string(start_datetime)
-        formatted_end = format_datetime_string(end_datetime)
-
+        dr = DataRange(
+            dataset=request.data.get("dataset"),
+            variable=request.data.get("variable"),
+            start_datetime=format_datetime_string(request.data.get("startDateTime")),
+            end_datetime=format_datetime_string(request.data.get("endDateTime")),
+            min_lat=request.data.get("south"),
+            max_lat=request.data.get("north"),
+            min_lon=request.data.get("west"),
+            max_lon=request.data.get("east"),
+            spatial_resolution=request.data.get("spatialResolution", 0.25),
+            temporal_resolution=request.data.get("temporalResolution"),
+            aggregation=request.data.get("aggregation"),
+            domain=request.data.get("domain"),
+            height_level=request.data.get("height_level") or request.data.get("heightLevel"),
+        )
+        
         qe = GetRasterExecutor(
-            metadata=metadata_fpath,
-            dataset=dataset,
-            variable=variable,
-            start_datetime=formatted_start,
-            end_datetime=formatted_end,
-            min_lat=south,
-            max_lat=north,
-            min_lon=west,
-            max_lon=east,
-            temporal_resolution=time_resolution,
-            spatial_resolution=spatial_resolution,
-            aggregation=aggregation,
-            domain=domain,
-            height_level=height_level,
+            dr,
             log_info=None,
         )
         ds = qe.execute()
@@ -104,38 +100,23 @@ def get_raster_query_pickle(request):
         serializer.save()
         logger.info(request.data)
 
-        dataset = request.data.get("dataset")
-        variable = request.data.get("variable")
-        start_datetime = request.data.get("startDateTime")
-        end_datetime = request.data.get("endDateTime")
-        time_resolution = request.data.get("temporalResolution")
-        north = round(float(request.data.get("north")), 3)
-        south = round(float(request.data.get("south")), 3)
-        east = round(float(request.data.get("east")), 3)
-        west = round(float(request.data.get("west")), 3)
-        spatial_resolution = float(request.data.get("spatialResolution"))
-        aggregation = request.data.get("aggregation")
-        domain = request.data.get("domain")
-        height_level = request.data.get("heightLevel")
-
-        formatted_start = format_datetime_string(start_datetime)
-        formatted_end = format_datetime_string(end_datetime)
-
+        dr = DataRange(
+            dataset=request.data.get("dataset"),
+            variable=request.data.get("variable"),
+            start_datetime=format_datetime_string(request.data.get("startDateTime")),
+            end_datetime=format_datetime_string(request.data.get("endDateTime")),
+            min_lat=request.data.get("south"),
+            max_lat=request.data.get("north"),
+            min_lon=request.data.get("west"),
+            max_lon=request.data.get("east"),
+            spatial_resolution=request.data.get("spatialResolution", 0.25),
+            temporal_resolution=request.data.get("temporalResolution"),
+            aggregation=request.data.get("aggregation"),
+            domain=request.data.get("domain"),
+            height_level=request.data.get("height_level") or request.data.get("heightLevel"),
+        )
         qe = GetRasterExecutor(
-            metadata=metadata_fpath,
-            dataset=dataset,
-            variable=variable,
-            start_datetime=formatted_start,
-            end_datetime=formatted_end,
-            min_lat=south,
-            max_lat=north,
-            min_lon=west,
-            max_lon=east,
-            temporal_resolution=time_resolution,
-            spatial_resolution=spatial_resolution,
-            aggregation=aggregation,
-            domain=domain,
-            height_level=height_level,
+            dr,
         )
         ds = qe.execute()
 
@@ -153,38 +134,24 @@ def download_query(request):
         serializer.save()
         logger.info(request.data)
 
-        dataset = request.data.get("dataset")
-        variable = request.data.get("variable")
-        start_datetime = request.data.get("startDateTime")
-        end_datetime = request.data.get("endDateTime")
-        time_resolution = request.data.get("temporalResolution")
-        north = round(float(request.data.get("north")), 3)
-        south = round(float(request.data.get("south")), 3)
-        east = round(float(request.data.get("east")), 3)
-        west = round(float(request.data.get("west")), 3)
-        spatial_resolution = float(request.data.get("spatialResolution"))
-        aggregation = request.data.get("aggregation")
-        domain = request.data.get("domain")
-        height_level = request.data.get("heightLevel")
-
-        formatted_start = format_datetime_string(start_datetime)
-        formatted_end = format_datetime_string(end_datetime)
+        dr = DataRange(
+            dataset=request.data.get("dataset"),
+            variable=request.data.get("variable"),
+            start_datetime=format_datetime_string(request.data.get("startDateTime")),
+            end_datetime=format_datetime_string(request.data.get("endDateTime")),
+            min_lat=request.data.get("south"),
+            max_lat=request.data.get("north"),
+            min_lon=request.data.get("west"),
+            max_lon=request.data.get("east"),
+            spatial_resolution=request.data.get("spatialResolution", 0.25),
+            temporal_resolution=request.data.get("temporalResolution"),
+            aggregation=request.data.get("aggregation"),
+            domain=request.data.get("domain"),
+            height_level=request.data.get("height_level") or request.data.get("heightLevel"),
+        )
 
         qe = GetRasterExecutor(
-            metadata=metadata_fpath,
-            dataset=dataset,
-            variable=variable,
-            start_datetime=formatted_start,
-            end_datetime=formatted_end,
-            min_lat=south,
-            max_lat=north,
-            min_lon=west,
-            max_lon=east,
-            temporal_resolution=time_resolution,
-            spatial_resolution=spatial_resolution,
-            aggregation=aggregation,
-            domain=domain,
-            height_level=height_level,
+            dr,
         )
         ds = qe.execute()
 
@@ -227,53 +194,36 @@ def timeseries_query(request):
         serializer.save()
         logger.info(request.data)
 
-        dataset = request.data.get("dataset")
-        variable = request.data.get("variable")
-        start_datetime = request.data.get("startDateTime")
-        end_datetime = request.data.get("endDateTime")
-        time_resolution = request.data.get("temporalResolution")
-        north = round(float(request.data.get("north")), 3)
-        south = round(float(request.data.get("south")), 3)
-        east = round(float(request.data.get("east")), 3)
-        west = round(float(request.data.get("west")), 3)
-        aggregation = request.data.get("aggregation")
-        domain = request.data.get("domain")
-        height_level = request.data.get("heightLevel")
-
-        formatted_start = format_datetime_string(start_datetime)
-        formatted_end = format_datetime_string(end_datetime)
+        dr = DataRange(
+            dataset=request.data.get("dataset"),
+            variable=request.data.get("variable"),
+            start_datetime=format_datetime_string(request.data.get("startDateTime")),
+            end_datetime=format_datetime_string(request.data.get("endDateTime")),
+            min_lat=request.data.get("south"),
+            max_lat=request.data.get("north"),
+            min_lon=request.data.get("west"),
+            max_lon=request.data.get("east"),
+            spatial_resolution=request.data.get("spatialResolution", 0.25),
+            temporal_resolution=request.data.get("temporalResolution"),
+            aggregation=request.data.get("aggregation"),
+            domain=request.data.get("domain"),
+            height_level=request.data.get("height_level") or request.data.get("heightLevel"),
+        )
 
         qe = TimeseriesExecutor(
-            metadata=metadata_fpath,
-            dataset=dataset,
-            variable=variable,
-            start_datetime=formatted_start,
-            end_datetime=formatted_end,
-            temporal_resolution=time_resolution,
-            min_lat=south,
-            max_lat=north,
-            min_lon=west,
-            max_lon=east,
-            aggregation=aggregation,
-            time_series_aggregation_method=aggregation,
-            domain=domain,
-            height_level=height_level,
+            dr,
+            time_series_aggregation_method=dr.aggregation,
             log_info=None,
         )
         ts = qe.execute()
 
-        logger.info(f"Dataset: {dataset}")
-        logger.info(f"Variable: {variable}")
-        logger.info(f"Returned timeseries data keys: {ts.keys() if ts is not None else 'none'}")
-        logger.info(f"Returned timeseries data: {ts}")
-
         # dims = DATASET_GRID_DIMS[dataset]
         # time_dim = dims["time"]
 
-        dims = DATASET_GRID_DIMS.get(dataset, {})
+        dims = DATASET_GRID_DIMS.get(dr.dataset, {})
         time_dim = dims.get("time", "valid_time")
 
-        short_variable = get_variable_short_name(variable)
+        short_variable = get_variable_short_name(dr.variable)
         fig = go.Figure([go.Scatter(x=ts[time_dim], y=ts[short_variable])])
         json_fig = fig.to_json()
         json_data = json.loads(json_fig)
@@ -293,49 +243,40 @@ def timeseries_query(request):
 
 @api_view(["POST"])
 def heatmap_query(request):
-    logger.info("Heatmap Query")
+    logger.info("Heatmap request payload: %s", request.data)
     serializer = HeatmapSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
         logger.info(request.data)
 
-        dataset = request.data.get("dataset")
-        variable = request.data.get("variable")
-        start_datetime = request.data.get("startDateTime")
-        end_datetime = request.data.get("endDateTime")
-        north = round(float(request.data.get("north")), 3)
-        south = round(float(request.data.get("south")), 3)
-        east = round(float(request.data.get("east")), 3)
-        west = round(float(request.data.get("west")), 3)
-        spatial_resolution = float(request.data.get("spatialResolution"))
-        aggregation = request.data.get("aggregation")
-        domain = request.data.get("domain")
-        height_level = request.data.get("heightLevel")
+        dr = DataRange(
+            dataset=request.data.get("dataset"),
+            variable=request.data.get("variable"),
+            start_datetime=format_datetime_string(request.data.get("startDateTime")),
+            end_datetime=format_datetime_string(request.data.get("endDateTime")),
+            min_lat=request.data.get("south"),
+            max_lat=request.data.get("north"),
+            min_lon=request.data.get("west"),
+            max_lon=request.data.get("east"),
+            spatial_resolution=request.data.get("spatialResolution", 0.25),
+            temporal_resolution=request.data.get("temporalResolution"),
+            aggregation=request.data.get("aggregation"),
+            domain=request.data.get("domain"),
+            height_level=request.data.get("height_level") or request.data.get("heightLevel"),
+        )
 
-        formatted_start = format_datetime_string(start_datetime)
-        formatted_end = format_datetime_string(end_datetime)
+        logger.info("DataRange created: dataset=%s, domain=%s", dr.dataset, dr.domain)
 
         qe = HeatmapExecutor(
-            metadata=metadata_fpath,
-            dataset=dataset,
-            variable=variable,
-            start_datetime=formatted_start,
-            end_datetime=formatted_end,
-            min_lat=south,
-            max_lat=north,
-            min_lon=west,
-            max_lon=east,
-            spatial_resolution=spatial_resolution,
-            aggregation=aggregation,
-            heatmap_aggregation_method=aggregation,
-            domain=domain,
-            height_level=height_level,
+            dr,
+            heatmap_aggregation_method=dr.aggregation,
             log_info=None,
             range_info=None,
         )
+
         hm = qe.execute()
 
-        dims = DATASET_GRID_DIMS.get(dataset, {})
+        dims = DATASET_GRID_DIMS.get(dr.dataset, {})
         x_dim = dims.get("x", "longitude")
         y_dim = dims.get("y", "latitude")
 
@@ -343,8 +284,8 @@ def heatmap_query(request):
         # x_dim = dims["x"]
         # y_dim = dims["y"]
 
-        var_short_name = get_variable_short_name(variable)
-        fig = go.Figure(data=go.Heatmap(x=hm[x_dim], y=hm[y_dim], z=hm[var_short_name], colorscale="RdBu_r"))
+        var_short_name = get_variable_short_name(dr.variable)
+        fig = go.Figure(data=go.Heatmap(x=hm[x_dim].values, y=hm[y_dim].values, z=hm[var_short_name], colorscale="RdBu_r")) #TODO: check if .values is needed
         fig.update_traces(hovertemplate=f"lon: %{{x}}<br>lat: %{{y}}<br>{var_short_name}: %{{z}}<extra></extra>")
         fig.update_layout(yaxis=dict(scaleanchor="x", scaleratio=1), xaxis=dict(constrain="domain"))
         json_fig = fig.to_json()
@@ -374,46 +315,34 @@ def find_time_query(request):
         serializer.save()
         logger.info(request.data)
 
-        dataset = request.data.get("dataset")
-        variable = request.data.get("variable")
-        start_datetime = request.data.get("startDateTime")
-        end_datetime = request.data.get("endDateTime")
-        time_resolution = request.data.get("temporalResolution")
-        north = round(float(request.data.get("north")), 3)
-        south = round(float(request.data.get("south")), 3)
-        east = round(float(request.data.get("east")), 3)
-        west = round(float(request.data.get("west")), 3)
-        aggregation = request.data.get("aggregation")
-        domain = request.data.get("domain")
-        height_level = request.data.get("heightLevel")
+        dr = DataRange(
+            dataset=request.data.get("dataset"),
+            variable=request.data.get("variable"),
+            start_datetime=format_datetime_string(request.data.get("startDateTime")),
+            end_datetime=format_datetime_string(request.data.get("endDateTime")),
+            min_lat=request.data.get("south"),
+            max_lat=request.data.get("north"),
+            min_lon=request.data.get("west"),
+            max_lon=request.data.get("east"),
+            spatial_resolution=request.data.get("spatialResolution", 0.25),
+            temporal_resolution=request.data.get("temporalResolution"),
+            aggregation=request.data.get("aggregation"),
+            domain=request.data.get("domain"),
+            height_level=request.data.get("height_level") or request.data.get("heightLevel"),
+        )
 
         filter_predicate = request.data.get("filterPredicate")
         filter_value = request.data.get("filterValue")
 
-        formatted_start = format_datetime_string(start_datetime)
-        formatted_end = format_datetime_string(end_datetime)
-
         qe = FindTimeExecutor(
-            metadata=metadata_fpath,
-            dataset=dataset,
-            variable=variable,
-            start_datetime=formatted_start,
-            end_datetime=formatted_end,
-            min_lat=south,
-            max_lat=north,
-            min_lon=west,
-            max_lon=east,
-            temporal_resolution=time_resolution,
-            aggregation=aggregation,
-            time_series_aggregation_method=aggregation,
+            dr,
+            time_series_aggregation_method=dr.aggregation,
             filter_predicate=filter_predicate,
             filter_value=float(filter_value),
-            domain=domain,
-            height_level=height_level,
         )
         ft = qe.execute()
 
-        var_short_name = get_variable_short_name(variable)
+        var_short_name = get_variable_short_name(dr.variable)
         # color_map = {True: "#005AB5", False: "#DC3220"}
         # fig = go.Figure(
         #     [
@@ -434,7 +363,7 @@ def find_time_query(request):
         # dims = DATASET_GRID_DIMS[dataset]
         # time_dim = dims["time"]
 
-        dims = DATASET_GRID_DIMS.get(dataset, {})
+        dims = DATASET_GRID_DIMS.get(dr.dataset, {})
         time_dim = dims.get("time", "valid_time")
         fig = go.Figure([
             go.Scatter(
@@ -470,48 +399,36 @@ def find_area_query(request):
         serializer.save()
         logger.info(request.data)
 
-        dataset = request.data.get("dataset")
-        variable = request.data.get("variable")
-        start_datetime = request.data.get("startDateTime")
-        end_datetime = request.data.get("endDateTime")
-        north = round(float(request.data.get("north")), 3)
-        south = round(float(request.data.get("south")), 3)
-        east = round(float(request.data.get("east")), 3)
-        west = round(float(request.data.get("west")), 3)
-        spatial_resolution = float(request.data.get("spatialResolution"))
-        aggregation = request.data.get("aggregation")
+        dr = DataRange(
+            dataset=request.data.get("dataset"),
+            variable=request.data.get("variable"),
+            start_datetime=format_datetime_string(request.data.get("startDateTime")),
+            end_datetime=format_datetime_string(request.data.get("endDateTime")),
+            min_lat=request.data.get("south"),
+            max_lat=request.data.get("north"),
+            min_lon=request.data.get("west"),
+            max_lon=request.data.get("east"),
+            spatial_resolution=request.data.get("spatialResolution", 0.25),
+            temporal_resolution=request.data.get("temporalResolution"),
+            aggregation=request.data.get("aggregation"),
+            domain=request.data.get("domain"),
+            height_level=request.data.get("height_level") or request.data.get("heightLevel"),
+        )
+
         filter_predicate = request.data.get("filterPredicate")
         filter_value = request.data.get("filterValue")
-        domain = request.data.get("domain")
-        height_level = request.data.get("heightLevel")
-
-        formatted_start = format_datetime_string(start_datetime)
-        formatted_end = format_datetime_string(end_datetime)
 
         qe = FindAreaExecutor(
-            metadata=metadata_fpath,
-            dataset=dataset,
-            variable=variable,
-            start_datetime=formatted_start,
-            end_datetime=formatted_end,
-            min_lat=south,
-            max_lat=north,
-            min_lon=west,
-            max_lon=east,
-            spatial_resolution=spatial_resolution,
-            aggregation=aggregation,
-            heatmap_aggregation_method=aggregation,
+            dr,
             filter_predicate=filter_predicate,
             filter_value=float(filter_value),
-            domain=domain,
-            height_level=height_level,
         )
         fa = qe.execute()
 
         # dims = DATASET_GRID_DIMS[dataset]
         # x_dim = dims["x"]
         # y_dim = dims["y"]
-        dims = DATASET_GRID_DIMS.get(dataset, {})
+        dims = DATASET_GRID_DIMS.get(dr.dataset, {})
         x_dim = dims.get("x", "longitude")
         y_dim = dims.get("y", "latitude")
 
@@ -520,8 +437,8 @@ def find_area_query(request):
         df = fa_low.to_dataframe().reset_index()
 
         if x_dim in df.columns and y_dim in df.columns:
-            df["latitude"] = df[y_dim] - 0.5
-            df["longitude"] = df[x_dim] - 0.5
+            df["latitude"] = df[y_dim.values] - 0.5 #TODO: check if .values is needed
+            df["longitude"] = df[x_dim.values] - 0.5
         else:
             df["latitude"] = df.get("latitude", df.get("lat"))
             df["longitude"] = df.get("longitude", df.get("lon"))
@@ -535,7 +452,7 @@ def find_area_query(request):
                 for x, y, x2, y2 in zip(df["longitude"], df["latitude"], df["longitude2"], df["latitude2"])
             ],
         )
-        var_short_name = get_variable_short_name(variable)
+        var_short_name = get_variable_short_name(dr.variable)
         color_mapping = {True: "#005AB5", False: "#DC3220"}
         fig = px.choropleth_mapbox(
             gdf,
@@ -558,13 +475,15 @@ def find_area_query(request):
             )
         )
 
+        n, s, e, w = CARDINAL_BOUNDS[dr.domain]
+
         fig.update_traces(marker_line_width=0)
         fig.update_layout(
             mapbox_style="white-bg",
-            mapbox_bounds_east=east,
-            mapbox_bounds_north=north,
-            mapbox_bounds_west=west,
-            mapbox_bounds_south=south,
+            mapbox_bounds_east=e,
+            mapbox_bounds_north=n,
+            mapbox_bounds_west=w,
+            mapbox_bounds_south=s,
             mapbox_layers=[
                 {
                     "below": "traces",

@@ -13,9 +13,15 @@ DATASET_GRID_DIMS = {
     "CARRA": {
         "x": "x",
         "y": "y",
-        "time": "time",
+        "time": "valid_time",
     }
 }
+
+CARRA_COORDINATES = {
+    "east_domain": np.load("/data/carra/carra_east_grid.npz"),
+    "west_domain": np.load("/data/carra/carra_west_grid.npz"),
+}
+
 
 long_short_name_dict = {
     "2m_temperature": "t2m",        # ERA5 single level variable

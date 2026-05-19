@@ -39,8 +39,12 @@ export const DATASETS = [
   "ERA5", "CARRA",
 ]
 
+export const DOMAINS = [
+  "east_domain", "west_domain",
+]
+
 export const HEIGHTS = [
-  "15 meters", "30 meters"
+  "15_m", "30_m"
 ]
 
 export const REGIONS = {

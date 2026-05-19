@@ -4,24 +4,57 @@ import "../styles/findarea.css";
 
 const FindArea = ({ findAreaImage, formData }) => {
 
-  const bounds = [
-    (formData.north + formData.south) / 2,
-    (formData.east + formData.west) / 2,
-  ]
+  const DOMAIN_BOUNDS = {
+    east_domain: {
+      east: 107,
+      west: 54,
+      north: 86,
+      south: 58
+    },
+    west_domain: {
+      east:76,
+      west:-81,
+      north: 86,
+      south: 58
+    }
+  };
+
+  const mapBounds = 
+    DOMAIN_BOUNDS[formData.domain] || {
+      east: formData.east,
+      west: formData.west,
+      north: formData.north,
+      south: formData.south,
+    };
+
+  const centerLat = (mapBounds.north + mapBounds.south) / 2;
+  const centerLon = (mapBounds.east + mapBounds.west) / 2;
+
+  const lonSpan = Math.abs(mapBounds.east - mapBounds.west);
+  const latSpan = Math.abs(mapBounds.north - mapBounds.south);
+
+  const maxSpan = Math.max(lonSpan, latSpan);
+
+  let zoom = 1;
+
+  if (maxSpan < 0.1) zoom = 12;
+  else if (maxSpan < 0.5) zoom = 10;
+  else if (maxSpan < 1) zoom = 8;
+  else if (maxSpan < 5) zoom = 6;
+  else if (maxSpan < 20) zoom = 4;
+  else if (maxSpan < 60) zoom = 3;
+  else zoom = 1;
 
   const findAreaLayout = {
     mapbox: {
       style: "white-bg",
-      // TODO: Mess with these bounds a bit, right now it will update on any change on the main map.
-      // Change this so that they only get updated on find area query. 
-      center: { lat: bounds[0], lon: bounds[1] },
-      zoom: 5,
-      bounds: {
-        east: 180,
-        north: 90,
-        west: -180,
-        south: -90,
-      },
+
+      center: { lat: centerLat, lon: centerLon },
+
+      bounds: mapBounds,
+      
+      zoom: zoom,
+
       layers: [
         {
           below: "traces",
@@ -34,6 +67,7 @@ const FindArea = ({ findAreaImage, formData }) => {
     margin: { r: 1, t: 5, l: 1, b: 10 },
     plot_bgcolor: "#ffffff",
     paper_bgcolor: "#ffffff",
+
     showlegend: true,
     legend: {
       font: { size: 12 },
