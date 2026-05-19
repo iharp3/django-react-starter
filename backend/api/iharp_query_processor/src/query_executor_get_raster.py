@@ -24,6 +24,8 @@ def _carra_time_selector(ds, dr):
 
 def _select_carra(ds, dr):
     print(f"[_select_carra] Called with domain={dr.domain}")
+    print(f"[_select_carra] Full dataset before time selection: coords={list(ds.coords)}, dims={list(ds.dims)}")
+    
     sel = _carra_time_selector(ds, dr)
     print(f"[_select_carra] After time selection, coords: {list(sel.coords)}, dims: {list(sel.dims)}")
     
@@ -31,24 +33,20 @@ def _select_carra(ds, dr):
     if domain is None:
         raise ValueError("CARRA queries require a domain value")
 
+    # Try direct domain coordinate
     if "domain" in sel.coords:
-        print(f"[_select_carra] Selecting by 'domain' coord with value={domain}")
-        result = sel.sel(domain=domain)
-        print(f"[_select_carra] Result shape: {result.sizes}")
-        return result
+        print(f"[_select_carra] Found 'domain' coord with values: {sel.coords['domain'].values}")
+        print(f"[_select_carra] Trying to select domain={domain}")
+        try:
+            result = sel.sel(domain=domain)
+            print(f"[_select_carra] Success! Result shape: {result.sizes}")
+            # return result
+        except Exception as e:
+            print(f"[_select_carra] Failed to select 'domain'={domain}: {e}")
 
-    for coord_name in ("east_domain", "west_domain"):
-        if coord_name in sel.coords:
-            print(f"[_select_carra] Found coord {coord_name}, attempting selection")
-            try:
-                result = sel.sel({coord_name: domain})
-                print(f"[_select_carra] Success! Result shape: {result.sizes}")
-                return result
-            except Exception as e:
-                print(f"[_select_carra] Failed to select {coord_name}: {e}")
-                pass
-
-    print(f"[_select_carra] No domain coord found. Returning full dataset. Available coords: {list(sel.coords)}")
+    # If no domain coordinate exists, just return the time-selected data
+    print(f"[_select_carra] WARNING: No domain coordinate found. Returning full time-selected dataset.")
+    print(f"[_select_carra] Available coords: {list(sel.coords)}")
     return sel
 
 DATASET_SELECTORS = {
